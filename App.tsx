@@ -30,7 +30,7 @@ function App() {
       isCustom: false
     };
     setCartItems(prev => [...prev, newItem]);
-    setIsCartOpen(true);
+    // Cart sidebar kept closed to show button animation feedback
   };
 
   const addCustomToCart = (item: CartItem) => {
