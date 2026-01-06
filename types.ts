@@ -5,6 +5,7 @@ export interface Ingredient {
   name: string;
   price: number;
   calories: number;
+  color?: string; // For visual builder
 }
 
 export interface Dough {
@@ -23,22 +24,55 @@ export interface Pizza {
   image: string;
   type: PizzaType;
   calories: number;
-  ingredientsList: string[]; // List of ingredient names for display
-  history?: string; // Story for the modal
+  ingredientsList: string[];
+  history?: string;
+}
+
+export interface ExtraItem {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: 'drink' | 'dessert';
 }
 
 export interface CartItem {
-  id: string; // Unique ID for the cart item (timestamp based)
+  id: string;
   pizzaName: string;
   basePrice: number;
   quantity: number;
   isCustom: boolean;
-  dough?: Dough; // Only for custom
-  customIngredients?: Ingredient[]; // Only for custom
+  dough?: Dough;
+  customIngredients?: Ingredient[];
+  isExtra?: boolean; // Flag to identify upsell items
 }
 
 export interface DeliveryDetails {
   method: 'delivery' | 'pickup';
   address: string;
   instructions: string;
+  coords?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+export interface Coupon {
+  code: string;
+  discountPercent: number;
+  description: string;
+}
+
+export interface HighScore {
+  name: string;
+  score: number;
+  date: string;
+}
+
+export type ToastType = 'success' | 'error' | 'info';
+
+export interface ToastMessage {
+  id: string;
+  message: string;
+  type: ToastType;
 }

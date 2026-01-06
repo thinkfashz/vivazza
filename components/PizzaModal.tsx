@@ -2,6 +2,7 @@ import React from 'react';
 import { Pizza } from '../types';
 import { X, Flame } from 'lucide-react';
 import { formatCLP } from '../utils';
+import ImageWithFallback from './ImageWithFallback';
 
 interface PizzaModalProps {
   pizza: Pizza | null;
@@ -29,10 +30,11 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAdd }
 
         <div className="grid md:grid-cols-2">
           <div className="h-64 md:h-full relative">
-            <img 
+            <ImageWithFallback 
               src={pizza.image} 
               alt={pizza.name} 
               className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
           <div className="p-8 flex flex-col justify-center bg-grain">
