@@ -4,6 +4,7 @@
 import React from 'react';
 import { Pizza } from '../types';
 import { formatCLP } from '../utils';
+import { INGREDIENTS } from '../constants';
 import { X, UtensilsCrossed, Flame, History, ShoppingBag } from 'lucide-react';
 import ImageWithFallback from './ImageWithFallback';
 
@@ -16,6 +17,16 @@ interface PizzaModalProps {
 
 const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAdd }) => {
   if (!isOpen || !pizza) return null;
+
+  // Función para encontrar el precio del ingrediente si existe en nuestras constantes
+  const getIngredientInfo = (ingName: string) => {
+    const normalizedSearch = ingName.toLowerCase();
+    const found = INGREDIENTS.find(i => 
+      i.name.toLowerCase().includes(normalizedSearch) || 
+      normalizedSearch.includes(i.name.toLowerCase())
+    );
+    return found;
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-vivazza-stone/80 backdrop-blur-md animate-fade-in">
@@ -43,7 +54,7 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAdd }
           </div>
         </div>
 
-        <div className="md:w-1/2 p-8 md:p-14 overflow-y-auto flex flex-col no-scrollbar">
+        <div className="md:w-1/2 p-8 md:p-14 overflow-y-auto flex flex-col no-scrollbar text-vivazza-stone">
           <div className="hidden md:block mb-10">
             <span className="text-vivazza-red font-black uppercase tracking-[0.25em] text-xs mb-3 block">
               {pizza.type === 'traditional' ? 'Receta Tradicional Italiana' : 'Selección Firma de Autor'}
@@ -69,11 +80,25 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAdd }
                   <span className="text-[10px] font-black uppercase tracking-widest">Ingredientes</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {pizza.ingredientsList.map((ing, i) => (
-                    <span key={i} className="text-[9px] font-bold bg-white px-2 py-1 rounded-md border border-gray-200 text-gray-500 uppercase">
-                      {ing}
-                    </span>
-                  ))}
+                  {pizza.ingredientsList.map((ing, i) => {
+                    const info = getIngredientInfo(ing);
+                    return (
+                      <div key={i} className="group relative">
+                        <span className="cursor-help text-[9px] font-bold bg-white px-2 py-1 rounded-md border border-gray-200 text-gray-500 uppercase transition-colors group-hover:border-vivazza-red/30 group-hover:text-vivazza-red">
+                          {ing}
+                        </span>
+                        {/* Tooltip */}
+                        <div className="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-vivazza-stone text-white text-[10px] rounded-xl whitespace-nowrap shadow-xl z-30 animate-in fade-in zoom-in duration-200">
+                          <p className="font-black uppercase tracking-widest">{ing}</p>
+                          <p className="text-vivazza-gold font-medium mt-0.5">
+                            {info ? `Valor estimado: ${formatCLP(info.price)}` : 'Incluido en base'}
+                          </p>
+                          {/* Triangle pointer */}
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-vivazza-stone" />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -147,7 +146,8 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
         )}
       </div>
 
-      <style jsx global>{`
+      {/* Fix: Replaced styled-jsx with standard style tag and dangerouslySetInnerHTML to resolve TS property errors */}
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes slide-in-bottom {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
@@ -155,7 +155,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
         .animate-slide-in-bottom {
           animation: slide-in-bottom 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
         }
-      `}</style>
+      ` }} />
     </div>
   );
 };

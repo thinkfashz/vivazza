@@ -1,11 +1,10 @@
 
 "use client";
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CartItem, ExtraItem, Coupon, DeliveryDetails, ToastType } from '../types';
 import { EXTRAS, COUPONS } from '../constants';
 import { formatCLP, generateWhatsAppLink } from '../utils';
-// Fix: Added missing Store icon import from lucide-react
-import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, CreditCard, Store } from 'lucide-react';
+import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, CreditCard, Store, AlertCircle, Loader2 } from 'lucide-react';
 import OrderSuccessModal from './OrderSuccessModal';
 import LocationMap from './LocationMap';
 
@@ -38,6 +37,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
     address: '',
     instructions: ''
   });
+  
+  // Estados para Autocompletado de Direcciones
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearchingAddress, setIsSearchingAddress] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
+  // Fix: Replaced NodeJS.Timeout with ReturnType<typeof setTimeout> to resolve "Cannot find namespace 'NodeJS'"
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [couponInput, setCouponInput] = useState('');
   const [isOrderSuccess, setIsOrderSuccess] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -45,6 +53,104 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const subtotal = useMemo(() => cartItems.reduce((sum, item) => sum + (item.basePrice * item.quantity), 0), [cartItems]);
   const discount = useMemo(() => appliedCoupon ? (subtotal * appliedCoupon.discountPercent / 100) : 0, [subtotal, appliedCoupon]);
   const total = subtotal - discount;
+
+  // Limpiar sugerencias al cerrar el sidebar
+  useEffect(() => {
+    if (!isOpen) {
+      setShowSuggestions(false);
+      setAddressError(null);
+    }
+  }, [isOpen]);
+
+  const fetchAddressSuggestions = async (query: string) => {
+    if (query.length < 3) {
+      setAddressSuggestions([]);
+      return;
+    }
+
+    setIsSearchingAddress(true);
+    try {
+      // Usamos Photon (OSM) que es gratuito y no requiere API Key. 
+      // Sesgamos la búsqueda a Chile para mejores resultados locales.
+      const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lat=-35.4264&lon=-71.6554&location_bias_scale=0.5`);
+      const data = await response.json();
+      
+      const suggestions = data.features.map((f: any) => ({
+        label: [
+          f.properties.name,
+          f.properties.street,
+          f.properties.housenumber,
+          f.properties.city,
+          f.properties.state
+        ].filter(Boolean).join(', '),
+        coords: {
+          lat: f.geometry.coordinates[1],
+          lng: f.geometry.coordinates[0]
+        }
+      }));
+      
+      setAddressSuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+    } catch (error) {
+      console.error("Error fetching suggestions", error);
+    } finally {
+      setIsSearchingAddress(false);
+    }
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDeliveryDetails(d => ({ ...d, address: value }));
+    setAddressError(null);
+
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    
+    if (value.length >= 3) {
+      searchTimeoutRef.current = setTimeout(() => {
+        fetchAddressSuggestions(value);
+      }, 500);
+    } else {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const selectSuggestion = (suggestion: any) => {
+    setDeliveryDetails(prev => ({
+      ...prev,
+      address: suggestion.label,
+      coords: suggestion.coords
+    }));
+    setShowSuggestions(false);
+    setAddressError(null);
+  };
+
+  // Generador de sonido de horno "Ding"
+  const playOrderSound = () => {
+    try {
+      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      
+      const audioCtx = new AudioContextClass();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.type = 'triangle'; 
+      oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime); 
+      oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1); 
+
+      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5); 
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.5);
+    } catch (e) {
+      console.warn("Feedback de audio no disponible", e);
+    }
+  };
 
   const vibrate = () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
@@ -69,11 +175,16 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   };
 
   const handleCheckout = () => {
-    if (deliveryDetails.method === 'delivery' && !deliveryDetails.address) {
-      showToast('Falta tu dirección de entrega', 'info');
-      return;
+    if (deliveryDetails.method === 'delivery') {
+      if (!deliveryDetails.address || deliveryDetails.address.length < 5) {
+        setAddressError('Por favor, ingresa una dirección válida.');
+        showToast('Dirección inválida', 'error');
+        return;
+      }
     }
+    
     vibrate();
+    playOrderSound(); 
     const whatsappUrl = generateWhatsAppLink(cartItems, total, deliveryDetails, appliedCoupon);
     window.open(whatsappUrl, '_blank');
     setIsOrderSuccess(true);
@@ -81,11 +192,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
   const handleLocationConfirm = (address: string, coords: { lat: number; lng: number }) => {
     setDeliveryDetails(prev => ({ ...prev, address, coords }));
+    setAddressError(null);
   };
 
   return (
     <>
-      {/* Overlay con Blur */}
       <div 
         className={`fixed inset-0 z-50 bg-vivazza-stone/40 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
@@ -93,7 +204,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
       
       <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white z-[60] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
         
-        {/* Header Dinámico */}
         <div className="px-6 py-5 border-b border-gray-100 flex items-center bg-white sticky top-0 z-20">
           {step === 'delivery' && (
             <button onClick={() => setStep('cart')} className="p-2 -ml-2 mr-2 text-vivazza-stone hover:bg-gray-100 rounded-full transition-colors">
@@ -101,7 +211,17 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             </button>
           )}
           <div className="flex-grow flex items-center gap-3">
-            <ShoppingBag className="text-vivazza-red" size={22} />
+            <div className="relative">
+              <ShoppingBag className="text-vivazza-red" size={22} />
+              {cartItems.length > 0 && (
+                <span 
+                  key={cartItems.length}
+                  className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-vivazza-stone text-[8px] font-bold text-white animate-cart-pop"
+                >
+                  {cartItems.length}
+                </span>
+              )}
+            </div>
             <h2 className="font-heading text-2xl text-vivazza-stone uppercase tracking-tight">
               {step === 'cart' ? 'Mi Pedido' : 'Finalizar Entrega'}
             </h2>
@@ -111,11 +231,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           </button>
         </div>
 
-        {/* Contenedor de Pasos con Transición Horizontal */}
         <div className="flex-grow overflow-hidden relative">
           <div className={`absolute inset-0 flex transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${step === 'delivery' ? '-translate-x-full' : 'translate-x-0'}`}>
             
-            {/* Paso 1: Carrito */}
             <div className="w-full h-full flex-shrink-0 flex flex-col overflow-y-auto p-6 space-y-8 no-scrollbar">
               {cartItems.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-20 opacity-30">
@@ -141,7 +259,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                     ))}
                   </div>
 
-                  {/* Upselling Section */}
                   <div className="bg-vivazza-cream/40 rounded-3xl p-6 border border-vivazza-gold/10">
                     <h4 className="font-heading text-lg text-vivazza-stone mb-4 uppercase flex items-center gap-2">
                       <Tag size={16} className="text-vivazza-gold" /> Completa tu combo
@@ -159,7 +276,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                     </div>
                   </div>
 
-                  {/* Cupón */}
                   {!appliedCoupon && (
                     <div className="flex gap-2">
                       <input 
@@ -178,7 +294,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               )}
             </div>
 
-            {/* Paso 2: Datos de Entrega */}
             <div className="w-full h-full flex-shrink-0 overflow-y-auto p-6 space-y-8 no-scrollbar">
               <div className="space-y-6">
                 <div>
@@ -195,21 +310,51 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
                 {deliveryDetails.method === 'delivery' ? (
                   <div className="space-y-4 animate-fade-in-up">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Dirección de Envío</label>
+                    <div className="space-y-2 relative">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex justify-between">
+                        Dirección de Envío
+                        {isSearchingAddress && <Loader2 size={12} className="animate-spin text-vivazza-red" />}
+                      </label>
                       <div className="relative">
                         <input 
                           type="text" 
                           placeholder="Calle, número, ciudad..." 
                           value={deliveryDetails.address} 
-                          onChange={(e) => setDeliveryDetails(d => ({ ...d, address: e.target.value }))} 
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm pr-12 focus:ring-2 focus:ring-vivazza-red/20 outline-none transition-all font-medium" 
+                          onChange={handleAddressChange} 
+                          onFocus={() => { if(addressSuggestions.length > 0) setShowSuggestions(true); }}
+                          autoComplete="off"
+                          className={`w-full bg-gray-50 border ${addressError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm pr-12 focus:ring-2 focus:ring-vivazza-red/20 outline-none transition-all font-medium`} 
                         />
                         <button onClick={() => setIsMapOpen(true)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-vivazza-red/10 text-vivazza-red p-2 rounded-xl hover:bg-vivazza-red hover:text-white transition-all">
                           <MapPin size={20} />
                         </button>
                       </div>
+
+                      {/* Error Message */}
+                      {addressError && (
+                        <div className="flex items-center gap-1.5 text-red-500 mt-1 animate-fade-in">
+                          <AlertCircle size={14} />
+                          <span className="text-[10px] font-bold uppercase tracking-tight">{addressError}</span>
+                        </div>
+                      )}
+
+                      {/* Suggestions Dropdown */}
+                      {showSuggestions && (
+                        <div className="absolute top-full left-0 right-0 z-[100] mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                          {addressSuggestions.map((suggestion, idx) => (
+                            <button 
+                              key={idx}
+                              onClick={() => selectSuggestion(suggestion)}
+                              className="w-full text-left p-4 hover:bg-vivazza-cream border-b border-gray-50 last:border-0 flex items-start gap-3 transition-colors group"
+                            >
+                              <MapPin size={16} className="text-gray-300 mt-0.5 group-hover:text-vivazza-red" />
+                              <span className="text-xs font-medium text-vivazza-stone truncate">{suggestion.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
+
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Notas Adicionales</label>
                       <input 
@@ -256,7 +401,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           </div>
         </div>
 
-        {/* Footer Persistente con Botón de Acción */}
         {cartItems.length > 0 && (
           <div className="p-6 bg-white border-t border-gray-50 space-y-4 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] z-30">
              <div className="flex justify-between items-end mb-2">
@@ -287,7 +431,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                 </button>
              )}
              
-             {/* Safe area padding for mobile */}
              <div className="h-safe-bottom" />
           </div>
         )}

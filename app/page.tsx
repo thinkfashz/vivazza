@@ -141,7 +141,10 @@ export default function App() {
             <button onClick={() => { setIsCartOpen(true); vibrate(); }} className="relative p-2 text-vivazza-stone group">
               <ShoppingBag size={28} className="group-hover:scale-110 transition-transform" />
               {cartItems.length > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-vivazza-red rounded-full ring-2 ring-white">
+                <span 
+                  key={cartItems.length}
+                  className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-vivazza-red rounded-full ring-2 ring-white animate-cart-pop"
+                >
                   {cartItems.length}
                 </span>
               )}
@@ -215,7 +218,14 @@ export default function App() {
         <button onClick={() => { setIsCartOpen(true); vibrate(); }} className="flex flex-col items-center gap-1 p-2 relative text-gray-400">
           <div className="relative">
             <ShoppingBag size={24} />
-            {cartItems.length > 0 && <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-vivazza-red text-[9px] font-bold text-white"> {cartItems.length} </span>}
+            {cartItems.length > 0 && (
+              <span 
+                key={cartItems.length}
+                className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-vivazza-red text-[9px] font-bold text-white animate-cart-pop"
+              > 
+                {cartItems.length} 
+              </span>
+            )}
           </div>
           <span className="text-[10px] font-bold">Pedido</span>
         </button>

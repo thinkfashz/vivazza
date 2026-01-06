@@ -1,31 +1,34 @@
-
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Coupon, HighScore } from '../types';
+import { Coupon } from '../types';
 import { COUPONS } from '../constants';
-import { Gamepad2, Trophy, Play, RotateCcw, Pizza } from 'lucide-react';
+import { Gamepad2, Play, RotateCcw, Trophy } from 'lucide-react';
 
-// Minijuego para ganar cupones de descuento
 interface PizzaRushProps {
   onWinCoupon: (coupon: Coupon) => void;
 }
 
 const PizzaRush: React.FC<PizzaRushProps> = ({ onWinCoupon }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [gameState, setGameState] = useState<'start' | 'playing' | 'won' | 'lost'>('start');
   const [score, setScore] = useState(0);
-  const [highScores, setHighScores] = useState<HighScore[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const gameStateRef = useRef({
-    pizzas: [] as { x: number; y: number; id: number; speed: number }[],
-    lastSpawn: 0,
-    score: 0
-  });
+  
+  // Game Constants
+  const PADDLE_HEIGHT = 15;
+  const PADDLE_WIDTH = 100;
+  const BALL_RADIUS = 8;
+  const BRICK_ROWS = 4;
+  const BRICK_COLS = 7;
+  const BRICK_PADDING = 10;
+  const BRICK_OFFSET_TOP = 40;
+  const BRICK_OFFSET_LEFT = 35;
 
-  useEffect(() => {
-    const savedScores = localStorage.getItem('vivazza_highscores');
-    if (savedScores) setHighScores(JSON.parse(savedScores));
-  }, []);
+  // Fix: Added initial value undefined to useRef to comply with strict argument checks
+  const requestRef = useRef<number | undefined>(undefined);
+  const paddleRef = useRef(0);
+  const ballRef = useRef({ x: 0, y: 0, dx: 3, dy: -3 });
+  const bricksRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -35,141 +38,196 @@ const PizzaRush: React.FC<PizzaRushProps> = ({ onWinCoupon }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let animationFrameId: number;
+    // Initialize bricks
+    bricksRef.current = [];
+    for (let c = 0; c < BRICK_COLS; c++) {
+      bricksRef.current[c] = [];
+      for (let r = 0; r < BRICK_ROWS; r++) {
+        bricksRef.current[c][r] = { x: 0, y: 0, status: 1 };
+      }
+    }
 
-    const update = (time: number) => {
-      if (gameStateRef.current.lastSpawn === 0) gameStateRef.current.lastSpawn = time;
+    ballRef.current = { 
+      x: canvas.width / 2, 
+      y: canvas.height - 40, 
+      dx: 3 + Math.random() * 2, 
+      dy: -3 - Math.random() * 2 
+    };
+    paddleRef.current = (canvas.width - PADDLE_WIDTH) / 2;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      if (time - gameStateRef.current.lastSpawn > 800) {
-        gameStateRef.current.pizzas.push({
-          x: Math.random() * (canvas.width - 50),
-          y: -50,
-          id: Date.now(),
-          speed: 2 + Math.random() * 3
-        });
-        gameStateRef.current.lastSpawn = time;
+      // Draw Bricks (Toppings)
+      let currentBricks = 0;
+      for (let c = 0; c < BRICK_COLS; c++) {
+        for (let r = 0; r < BRICK_ROWS; r++) {
+          if (bricksRef.current[c][r].status === 1) {
+            currentBricks++;
+            const brickX = c * (60 + BRICK_PADDING) + BRICK_OFFSET_LEFT;
+            const brickY = r * (25 + BRICK_PADDING) + BRICK_OFFSET_TOP;
+            bricksRef.current[c][r].x = brickX;
+            bricksRef.current[c][r].y = brickY;
+            
+            ctx.beginPath();
+            ctx.roundRect(brickX, brickY, 60, 25, 5);
+            ctx.fillStyle = r % 2 === 0 ? "#A61D24" : "#D4AF37"; // Red or Gold bricks
+            ctx.fill();
+            ctx.closePath();
+          }
+        }
       }
 
-      gameStateRef.current.pizzas = gameStateRef.current.pizzas.filter(p => {
-        p.y += p.speed;
-        return p.y < canvas.height;
-      });
+      // Draw Ball (The Dough)
+      ctx.beginPath();
+      ctx.arc(ballRef.current.x, ballRef.current.y, BALL_RADIUS, 0, Math.PI * 2);
+      ctx.fillStyle = "#FDFCF0";
+      ctx.fill();
+      ctx.strokeStyle = "#A61D24";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.closePath();
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      gameStateRef.current.pizzas.forEach(p => {
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + 40, p.y);
-        ctx.lineTo(p.x + 20, p.y + 50);
-        ctx.closePath();
-        ctx.fill();
-        
-        ctx.fillStyle = '#fde68a';
-        ctx.beginPath();
-        ctx.arc(p.x + 20, p.y + 15, 10, 0, Math.PI * 2);
-        ctx.fill();
-      });
+      // Draw Paddle (Pizza Peel)
+      ctx.beginPath();
+      ctx.roundRect(paddleRef.current, canvas.height - PADDLE_HEIGHT - 10, PADDLE_WIDTH, PADDLE_HEIGHT, 8);
+      ctx.fillStyle = "#1c1917";
+      ctx.fill();
+      ctx.closePath();
 
-      animationFrameId = requestAnimationFrame(update);
+      // Collision Detection: Walls
+      if (ballRef.current.x + ballRef.current.dx > canvas.width - BALL_RADIUS || ballRef.current.x + ballRef.current.dx < BALL_RADIUS) {
+        ballRef.current.dx = -ballRef.current.dx;
+      }
+      if (ballRef.current.y + ballRef.current.dy < BALL_RADIUS) {
+        ballRef.current.dy = -ballRef.current.dy;
+      } else if (ballRef.current.y + ballRef.current.dy > canvas.height - BALL_RADIUS - 10) {
+        if (ballRef.current.x > paddleRef.current && ballRef.current.x < paddleRef.current + PADDLE_WIDTH) {
+          ballRef.current.dy = -ballRef.current.dy;
+          // Add a bit of speed
+          ballRef.current.dx *= 1.05;
+          ballRef.current.dy *= 1.05;
+        } else {
+          setGameState('lost');
+          setIsPlaying(false);
+        }
+      }
+
+      // Collision Detection: Bricks
+      for (let c = 0; c < BRICK_COLS; c++) {
+        for (let r = 0; r < BRICK_ROWS; r++) {
+          const b = bricksRef.current[c][r];
+          if (b.status === 1) {
+            if (ballRef.current.x > b.x && ballRef.current.x < b.x + 60 && ballRef.current.y > b.y && ballRef.current.y < b.y + 25) {
+              ballRef.current.dy = -ballRef.current.dy;
+              b.status = 0;
+              setScore(s => s + 10);
+            }
+          }
+        }
+      }
+
+      if (currentBricks === 0) {
+        setGameState('won');
+        setIsPlaying(false);
+        onWinCoupon(COUPONS[2]);
+      }
+
+      ballRef.current.x += ballRef.current.dx;
+      ballRef.current.y += ballRef.current.dy;
+
+      requestRef.current = requestAnimationFrame(draw);
     };
 
-    animationFrameId = requestAnimationFrame(update);
+    requestRef.current = requestAnimationFrame(draw);
 
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          endGame();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const relativeX = e.clientX - rect.left;
+      if (relativeX > 0 && relativeX < canvas.width) {
+        paddleRef.current = relativeX - PADDLE_WIDTH / 2;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const relativeX = e.touches[0].clientX - rect.left;
+      if (relativeX > 0 && relativeX < canvas.width) {
+        paddleRef.current = relativeX - PADDLE_WIDTH / 2;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      clearInterval(timer);
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [isPlaying]);
 
   const startGame = () => {
     setScore(0);
-    setTimeLeft(30);
-    gameStateRef.current = { pizzas: [], lastSpawn: 0, score: 0 };
+    setGameState('playing');
     setIsPlaying(true);
   };
 
-  const endGame = () => {
-    setIsPlaying(false);
-    const finalScore = gameStateRef.current.score;
-    setScore(finalScore);
-
-    const newScore: HighScore = { name: 'Jugador', score: finalScore, date: new Date().toLocaleDateString() };
-    const updatedHighScores = [...highScores, newScore].sort((a, b) => b.score - a.score).slice(0, 5);
-    setHighScores(updatedHighScores);
-    localStorage.setItem('vivazza_highscores', JSON.stringify(updatedHighScores));
-
-    if (finalScore >= 10) {
-      onWinCoupon(COUPONS[2]); // GAMERWIN
-    }
-  };
-
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isPlaying) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const clickedPizzaIndex = gameStateRef.current.pizzas.findIndex(p => 
-      x >= p.x && x <= p.x + 40 && y >= p.y && y <= p.y + 50
-    );
-
-    if (clickedPizzaIndex !== -1) {
-      gameStateRef.current.pizzas.splice(clickedPizzaIndex, 1);
-      gameStateRef.current.score += 1;
-      setScore(gameStateRef.current.score);
-    }
-  };
-
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in-up">
+    <div className="max-w-4xl mx-auto animate-fade-in-up px-4">
       <div className="bg-vivazza-stone rounded-[2.5rem] p-8 md:p-12 text-white mb-8 shadow-premium text-center">
         <Gamepad2 size={48} className="text-vivazza-red mx-auto mb-6" />
-        <h2 className="font-heading text-5xl md:text-7xl mb-4 uppercase">PIZZA <span className="text-vivazza-red">RUSH</span></h2>
-        <p className="text-gray-400 mb-8 max-w-md mx-auto">¡Corta 10 pizzas antes de que caigan y gana un 15% de descuento en tu pedido!</p>
+        <h2 className="font-heading text-5xl md:text-7xl mb-4 uppercase">PIZZA <span className="text-vivazza-red">BREAKER</span></h2>
+        <p className="text-gray-400 mb-8 max-w-md mx-auto">¡Destruye todos los ingredientes rebotando la masa y gana un 15% de descuento!</p>
         
-        {!isPlaying ? (
+        {gameState !== 'playing' && (
           <button onClick={startGame} className="bg-vivazza-red text-white px-12 py-5 rounded-2xl font-heading text-2xl shadow-red hover:scale-105 active:scale-95 transition-all flex items-center gap-3 mx-auto">
-            <Play fill="currentColor" size={24} /> COMENZAR DESAFÍO
+             <Play fill="currentColor" size={24} /> {gameState === 'start' ? 'JUGAR AHORA' : 'REINTENTAR'}
           </button>
-        ) : (
-          <div className="flex justify-center gap-8 text-2xl font-heading">
-             <div className="bg-white/10 px-6 py-2 rounded-xl border border-white/20">SCORE: <span className="text-vivazza-gold">{score}</span></div>
-             <div className="bg-white/10 px-6 py-2 rounded-xl border border-white/20">TIEMPO: <span className="text-vivazza-red">{timeLeft}s</span></div>
+        )}
+
+        {gameState === 'playing' && (
+          <div className="text-2xl font-heading text-vivazza-gold">
+            PUNTOS: <span>{score}</span>
           </div>
         )}
       </div>
 
-      {isPlaying && (
-        <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl border-4 border-vivazza-stone/10 cursor-crosshair h-[500px]">
-          <canvas ref={canvasRef} width={800} height={500} className="w-full h-full" onClick={handleCanvasClick} />
-        </div>
-      )}
+      <div className={`relative bg-vivazza-cream rounded-3xl overflow-hidden shadow-2xl border-4 border-vivazza-stone/10 h-[500px] flex items-center justify-center ${gameState === 'playing' ? 'cursor-none' : ''}`}>
+        <canvas 
+          ref={canvasRef} 
+          width={500} 
+          height={500} 
+          className="max-w-full h-full aspect-square"
+        />
 
-      {!isPlaying && score > 0 && (
-        <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 text-center animate-bounce-in mb-8">
-           <h3 className="font-heading text-4xl text-vivazza-stone mb-2">¡PUNTUACIÓN: {score}!</h3>
-           <p className="text-gray-500 mb-6">{score >= 10 ? '¡Has ganado el cupón GAMERWIN!' : '¡Casi! Necesitas 10 puntos.'}</p>
-           <button onClick={startGame} className="flex items-center gap-2 mx-auto text-vivazza-red font-bold uppercase tracking-widest text-xs hover:underline">
-             <RotateCcw size={14} /> Reintentar
-           </button>
-        </div>
-      )}
+        {gameState === 'won' && (
+          <div className="absolute inset-0 bg-vivazza-stone/90 flex flex-col items-center justify-center p-8 animate-fade-in">
+             <Trophy size={80} className="text-vivazza-gold mb-6 animate-bounce" />
+             <h3 className="font-heading text-6xl text-white mb-4">¡VICTORIA!</h3>
+             <p className="text-vivazza-gold font-bold uppercase tracking-widest text-sm text-center mb-8">Has ganado el cupón PIZZABREAKER</p>
+             <button onClick={startGame} className="text-white border border-white/20 px-8 py-3 rounded-xl font-bold text-xs uppercase hover:bg-white/10 transition-all flex items-center gap-2">
+               <RotateCcw size={16} /> VOLVER A JUGAR
+             </button>
+          </div>
+        )}
+
+        {gameState === 'lost' && (
+          <div className="absolute inset-0 bg-red-950/90 flex flex-col items-center justify-center p-8 animate-fade-in">
+             <h3 className="font-heading text-6xl text-white mb-4">Masa Quemada</h3>
+             <p className="text-gray-300 font-bold uppercase tracking-widest text-xs text-center mb-8">No te rindas, ¡inténtalo de nuevo!</p>
+             <button onClick={startGame} className="bg-vivazza-red text-white px-8 py-4 rounded-xl font-heading text-xl shadow-lg active:scale-95 transition-all">
+               REINTENTAR DESAFÍO
+             </button>
+          </div>
+        )}
+      </div>
+      
+      <p className="text-center text-gray-400 text-[10px] font-bold mt-4 uppercase tracking-widest">
+        Control: Mueve el mouse o desliza el dedo para mover la pala
+      </p>
     </div>
   );
 };
 
-// Se agrega exportación por defecto para corregir error de importación
 export default PizzaRush;

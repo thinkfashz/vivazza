@@ -1,10 +1,10 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Pizza } from '../types';
 import { formatCLP } from '../utils';
-import { Info, Plus } from 'lucide-react';
+import { Info, Plus, Check } from 'lucide-react';
 import ImageWithFallback from './ImageWithFallback';
 
 interface PizzaCardProps {
@@ -15,11 +15,26 @@ interface PizzaCardProps {
 }
 
 const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, index = 0 }) => {
-  // Load the first 2-3 images with high priority to improve LCP
+  const [isAdded, setIsAdded] = useState(false);
   const isPriority = index < 3;
 
+  const handleAdd = () => {
+    onAdd(pizza);
+    setIsAdded(true);
+    
+    // Feedback hápitco si está disponible
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(20);
+    }
+
+    // Resetear el estado después de la animación
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1500);
+  };
+
   return (
-    <div className="bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group flex flex-col md:flex-row border border-gray-100/50">
+    <div className={`bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group flex flex-col md:flex-row border ${isAdded ? 'border-vivazza-red scale-[1.02] shadow-red' : 'border-gray-100/50'}`}>
       <div className="md:w-2/5 relative h-56 md:h-auto overflow-hidden">
         <ImageWithFallback 
           src={pizza.image} 
@@ -64,11 +79,19 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
               <Info size={22} />
             </button>
             <button 
-              onClick={() => onAdd(pizza)}
-              className="bg-vivazza-red text-white p-4 rounded-2xl shadow-red hover:bg-red-700 active:scale-90 transition-all duration-300 group/btn"
+              onClick={handleAdd}
+              className={`${isAdded ? 'bg-green-600' : 'bg-vivazza-red'} text-white p-4 rounded-2xl shadow-red hover:opacity-90 active:scale-90 transition-all duration-300 group/btn relative overflow-hidden`}
               aria-label="Agregar al carrito"
             >
-              <Plus size={24} className="group-hover/btn:rotate-90 transition-transform duration-300" />
+              <div className={`transition-transform duration-300 ${isAdded ? 'scale-0' : 'scale-100'}`}>
+                <Plus size={24} className="group-hover/btn:rotate-90 transition-transform duration-300" />
+              </div>
+              
+              {isAdded && (
+                <div className="absolute inset-0 flex items-center justify-center animate-in zoom-in duration-300">
+                  <Check size={24} />
+                </div>
+              )}
             </button>
           </div>
         </div>

@@ -1,4 +1,6 @@
 
+import { VIVAZZA_PHONE } from './constants';
+
 export const formatCLP = (amount: number): string => {
   return new Intl.NumberFormat('es-CL', {
     style: 'currency',
@@ -8,15 +10,15 @@ export const formatCLP = (amount: number): string => {
 };
 
 export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: any, coupon: any) => {
-  const phone = "56912345678"; // Reemplazar con número real de Vivazza
+  const phone = VIVAZZA_PHONE; 
   
   let message = `🍕 *NUEVO PEDIDO VIVAZZA*\n`;
+  message += `_Pizzas Artesanales Prehorneadas_\n`;
   message += `--------------------------\n\n`;
   
   cartItems.forEach(item => {
     message += `*${item.quantity}x ${item.pizzaName}*\n`;
     if (item.isCustom) {
-      message += `  - Masa: ${item.dough?.name}\n`;
       message += `  - Ingredientes: ${item.customIngredients?.map((i: any) => i.name).join(', ')}\n`;
     }
     message += `  Subtotal: ${formatCLP(item.basePrice)}\n\n`;
@@ -33,7 +35,7 @@ export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: 
     message += `🏠 *Dirección:* ${delivery.address}\n`;
   }
   if (delivery.instructions) {
-    message += `📝 *Instrucciones:* ${delivery.instructions}\n`;
+    message += `📝 *Notas:* ${delivery.instructions}\n`;
   }
 
   const encodedMessage = encodeURIComponent(message);
