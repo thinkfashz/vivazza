@@ -1,3 +1,4 @@
+
 import { Pizza, Dough, Ingredient, Coupon, ExtraItem } from './types';
 
 export const BASE_CUSTOM_PRICE = 7000;
@@ -12,14 +13,20 @@ export const COUPONS: Coupon[] = [
 ];
 
 export const EXTRAS: ExtraItem[] = [
-  { id: 'e1', name: 'Coca-Cola Zero 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e2', name: 'Cerveza Artesanal IPA', price: 3500, category: 'drink', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e3', name: 'Tiramisú Casero', price: 3900, category: 'dessert', image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e4', name: 'Agua Mineral 500ml', price: 1500, category: 'drink', image: 'https://images.unsplash.com/photo-1560023907-5f339617ea30?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e5', name: 'Sprite 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1625772290748-390944add67e?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e6', name: 'Brownie de Chocolate', price: 2200, category: 'dessert', image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e7', name: 'Garlic Knots (4u)', price: 3500, category: 'dessert', image: 'https://images.unsplash.com/photo-1619531006597-827299052061?auto=format&fit=crop&w=200&q=80' },
-  { id: 'e8', name: 'Salsa Garlic Dip', price: 1200, category: 'drink', image: 'https://images.unsplash.com/photo-1585325701166-381ca9130013?auto=format&fit=crop&w=200&q=80' },
+  { id: 'e1', name: 'Coca-Cola Zero 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e2', name: 'Cerveza Artesanal IPA', price: 3500, category: 'drink', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e3', name: 'Tiramisú Casero', price: 3900, category: 'dessert', image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e4', name: 'Agua Mineral 500ml', price: 1500, category: 'drink', image: 'https://images.unsplash.com/photo-1560023907-5f339617ea30?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e5', name: 'Sprite 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1625772290748-390944add67e?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e6', name: 'Brownie de Chocolate', price: 2200, category: 'dessert', image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e7', name: 'Garlic Knots (4u)', price: 3500, category: 'side', image: 'https://images.unsplash.com/photo-1619531006597-827299052061?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e8', name: 'Salsa Garlic Dip', price: 1200, category: 'side', image: 'https://images.unsplash.com/photo-1585325701166-381ca9130013?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e9', name: 'Pesto Albahaca & Nuez', price: 1800, category: 'side', image: 'https://images.unsplash.com/photo-1590779033100-9f60702a0559?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e10', name: 'Ensalada Caprese', price: 5900, category: 'salad', image: 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e11', name: 'Limonada Menta-Jengibre', price: 2900, category: 'drink', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e12', name: 'Focaccia al Rosmarino', price: 4200, category: 'side', image: 'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e13', name: 'Cheesecake de Arándanos', price: 4500, category: 'dessert', image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e14', name: 'Cerveza Amber Ale Local', price: 3800, category: 'drink', image: 'https://images.unsplash.com/photo-1571767499270-138347257c48?auto=format&fit=crop&w=400&q=80' },
 ];
 
 export const DOUGHS: Dough[] = [

@@ -1,3 +1,4 @@
+
 export type PizzaType = 'traditional' | 'special' | 'custom';
 
 export interface Ingredient {
@@ -33,7 +34,7 @@ export interface ExtraItem {
   name: string;
   price: number;
   image: string;
-  category: 'drink' | 'dessert';
+  category: 'drink' | 'dessert' | 'side' | 'salad';
 }
 
 export interface CartItem {
