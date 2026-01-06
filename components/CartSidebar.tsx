@@ -60,6 +60,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
     if (!isOpen) {
       setShowSuggestions(false);
       setAddressError(null);
+      setStep('cart');
     }
   }, [isOpen]);
 
@@ -90,6 +91,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const handleCheckout = () => {
     if (deliveryDetails.method === 'delivery' && (!deliveryDetails.address || deliveryDetails.address.length < 5)) {
         setAddressError('Ingresa una dirección válida');
+        showToast('Por favor, indica tu dirección de despacho', 'error');
         return;
     }
     const whatsappUrl = generateWhatsAppLink(cartItems, total, deliveryDetails, appliedCoupon);
@@ -107,7 +109,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             <button onClick={() => setStep('cart')} className="p-2 -ml-2 mr-2 hover:bg-gray-100 rounded-full"><ChevronLeft size={24} /></button>
           )}
           <h2 className="font-heading text-2xl uppercase tracking-tight flex-grow">
-            {step === 'cart' ? '🛒 Mi Pedido' : '🛵 Entrega'}
+            {step === 'cart' ? '🛒 Mi Pedido' : '🛵 Detalles de Entrega'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} /></button>
         </div>
@@ -156,7 +158,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                   {/* Nivel 2: Upselling Agresivo */}
                   <div className="bg-vivazza-stone text-white rounded-[2rem] p-6 shadow-xl">
                     <h4 className="font-heading text-xl mb-4 flex items-center gap-2 uppercase">
-                      <Tag size={18} className="text-vivazza-gold" /> Completa tu experiencia
+                      <Tag size={18} className="text-vivazza-gold" /> ¿Algo más?
                     </h4>
                     <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                       {EXTRAS.map(extra => (
@@ -176,30 +178,33 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
             {/* Step 2: Delivery */}
             <div className="w-full h-full flex-shrink-0 overflow-y-auto p-6 space-y-6 no-scrollbar">
-              <h4 className="font-heading text-xl uppercase mb-4">Detalles de Entrega</h4>
+              <h4 className="font-heading text-xl uppercase mb-4">¿Dónde entregamos?</h4>
               <div className="grid grid-cols-2 gap-3 bg-gray-100 p-1.5 rounded-2xl mb-6">
                 <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'delivery' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'delivery' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>DELIVERY</button>
-                <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'pickup' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'pickup' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>RETIRO</button>
+                <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'pickup' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'pickup' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>RETIRO LOCAL</button>
               </div>
 
               {deliveryDetails.method === 'delivery' && (
                 <div className="space-y-4 animate-fade-in-up">
                   <div className="relative">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Dirección exacta</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tu Dirección en Talca</label>
                     <div className="relative mt-1">
-                      <input type="text" placeholder="Calle, N°, Ciudad..." value={deliveryDetails.address} onChange={handleAddressChange} className={`w-full bg-gray-50 border ${addressError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm font-medium pr-12`} />
+                      <input type="text" placeholder="Calle, N°, Población..." value={deliveryDetails.address} onChange={handleAddressChange} className={`w-full bg-gray-50 border ${addressError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm font-medium pr-12`} />
                       <button onClick={() => setIsMapOpen(true)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-vivazza-red text-white p-2 rounded-xl"><MapPin size={18} /></button>
                     </div>
                   </div>
-                  <input type="text" placeholder="Instrucciones (opcional)" value={deliveryDetails.instructions} onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium" />
+                  <input type="text" placeholder="Instrucciones para el repartidor..." value={deliveryDetails.instructions} onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium" />
                 </div>
               )}
               
               <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 space-y-3">
                  <div className="flex justify-between text-xs font-bold text-gray-400"><span>SUBTOTAL</span><span>{formatCLP(subtotal)}</span></div>
-                 <div className="flex justify-between text-xs font-bold text-gray-400"><span>ENVÍO</span><span>{remainingForFreeDelivery === 0 ? 'GRATIS' : 'POR CALCULAR'}</span></div>
-                 <div className="flex justify-between text-lg font-black text-vivazza-stone border-t pt-3"><span>TOTAL</span><span>{formatCLP(total)}</span></div>
+                 <div className="flex justify-between text-xs font-bold text-gray-400"><span>DESCUENTO</span><span>{formatCLP(discount)}</span></div>
+                 <div className="flex justify-between text-lg font-black text-vivazza-stone border-t pt-3 uppercase"><span>Total aprox</span><span>{formatCLP(total)}</span></div>
               </div>
+              <p className="text-[10px] text-gray-400 font-medium text-center px-4 leading-relaxed italic">
+                El total final será confirmado por nuestro personal vía WhatsApp incluyendo el costo de envío según tu zona.
+              </p>
             </div>
 
           </div>
@@ -209,7 +214,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           <div className="p-6 bg-white border-t border-gray-50 z-30">
              {step === 'cart' ? (
                 <button onClick={() => setStep('delivery')} className="w-full bg-vivazza-red text-white py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center justify-center gap-3 active:scale-95 transition-all">
-                  CONTINUAR <ChevronRight size={24} />
+                  CONTINUAR CON LA ENTREGA <ChevronRight size={24} />
                 </button>
              ) : (
                 <button onClick={handleCheckout} className="w-full bg-green-600 text-white py-5 rounded-2xl font-heading text-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-all">

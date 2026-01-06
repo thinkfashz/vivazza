@@ -7,12 +7,13 @@ import PizzaModal from './components/PizzaModal';
 import PizzaLab from './components/PizzaLab';
 import PizzaRush from './components/PizzaRush';
 import Wholesale from './components/Wholesale';
+import PizzaCatalog from './components/PizzaCatalog';
 import CartSidebar from './components/CartSidebar';
 import NotFound from './components/NotFound';
 import { ToastContainer } from './components/Toast';
-import { ShoppingBag, Gamepad2, Pizza as PizzaIcon, Home, Instagram, MessageCircle, Building2, MapPin, Phone, ExternalLink, Star, Quote, Clock, Truck } from 'lucide-react';
+import { ShoppingBag, Gamepad2, Pizza as PizzaIcon, Home, Instagram, MessageCircle, Building2, MapPin, Phone, ExternalLink, Star, Quote, Clock, Truck, List } from 'lucide-react';
 
-type Section = 'menu' | 'lab' | 'game' | 'wholesale' | '404';
+type Section = 'menu' | 'catalog' | 'lab' | 'game' | 'wholesale' | '404';
 
 function App() {
   const [mounted, setMounted] = useState(false);
@@ -134,9 +135,9 @@ function App() {
           </div>
 
           <div className="flex space-x-10">
-            {['menu', 'lab', 'game', 'wholesale'].map((sec) => (
+            {['menu', 'catalog', 'lab', 'game', 'wholesale'].map((sec) => (
               <button key={sec} onClick={() => handleNavChange(sec as Section)} className={`font-heading text-xl uppercase tracking-tight transition-colors ${activeSection === sec ? 'text-vivazza-red underline decoration-2 underline-offset-8' : 'text-vivazza-stone hover:text-vivazza-red'}`}>
-                {sec === 'wholesale' ? 'B2B' : sec === 'game' ? 'Jugar' : sec === 'lab' ? 'Pizza Lab' : 'Carta'}
+                {sec === 'wholesale' ? 'B2B' : sec === 'game' ? 'Jugar' : sec === 'lab' ? 'Lab' : sec === 'catalog' ? 'Catálogo' : 'Inicio'}
               </button>
             ))}
           </div>
@@ -162,24 +163,34 @@ function App() {
                 <h2 className="font-heading text-7xl md:text-9xl mb-6 leading-none text-white tracking-tighter uppercase">EL SABOR DE <br/><span className="text-vivazza-red">LA PACIENCIA</span></h2>
                 <p className="text-gray-300 text-xl font-medium mb-12 max-w-lg leading-relaxed">Fermentamos nuestra masa por 48 horas para lograr una ligereza y crunch inigualables.</p>
                 <div className="flex flex-wrap gap-4">
-                  <button onClick={() => document.getElementById('carta')?.scrollIntoView({behavior: 'smooth'})} className="bg-vivazza-red text-white px-12 py-5 rounded-2xl font-heading text-2xl shadow-red active:scale-95 transition-all">EXPLORAR CARTA</button>
-                  <button onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)} className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-12 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3">CATÁLOGO WA</button>
+                  <button onClick={() => handleNavChange('catalog')} className="bg-vivazza-red text-white px-12 py-5 rounded-2xl font-heading text-2xl shadow-red active:scale-95 transition-all">VER CATÁLOGO</button>
+                  <button onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)} className="bg-green-600 text-white px-12 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95 transition-all">
+                    <MessageCircle size={24} /> CATÁLOGO WA
+                  </button>
                 </div>
               </div>
               <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1950&q=80" className="absolute inset-0 w-full h-full object-cover opacity-50" alt="Hero Vivazza" />
             </div>
 
-            {/* Carta */}
+            {/* Carta Rápida */}
             <section id="carta">
-              <h3 className="font-heading text-5xl text-vivazza-stone uppercase mb-12">Nuestras Pizzas</h3>
+              <div className="flex justify-between items-end mb-12">
+                <h3 className="font-heading text-5xl text-vivazza-stone uppercase leading-none">Pizzas <span className="text-vivazza-red">Destacadas</span></h3>
+                <button 
+                  onClick={() => handleNavChange('catalog')}
+                  className="text-vivazza-red font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 hover:underline"
+                >
+                  Ver todo el catálogo <ExternalLink size={14} />
+                </button>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {specialPizzas.concat(traditionalPizzas).map((pizza, idx) => (
+                {specialPizzas.concat(traditionalPizzas).slice(0, 3).map((pizza, idx) => (
                   <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={idx} />
                 ))}
               </div>
             </section>
 
-            {/* Nueva Sección de Testimonios - Valor de Marca */}
+            {/* Testimonios */}
             <section className="bg-white rounded-[4rem] p-12 md:p-24 shadow-xl border border-gray-50">
                <div className="text-center mb-16">
                   <div className="inline-flex items-center gap-1 text-vivazza-gold mb-4">
@@ -204,7 +215,7 @@ function App() {
                </div>
             </section>
 
-            {/* Sustitución de Mapa por Zonas y Horarios */}
+            {/* Cobertura y Horarios */}
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                <div className="space-y-8">
                   <h3 className="font-heading text-6xl text-vivazza-stone uppercase tracking-tighter">COBERTURA <br/><span className="text-vivazza-red">& HORARIOS</span></h3>
@@ -222,8 +233,8 @@ function App() {
                         </ul>
                      </div>
                   </div>
-                  <button onClick={() => handleSocialClick(`https://www.google.com/maps/search/?api=1&query=${VIVAZZA_LOCATION.lat},${VIVAZZA_LOCATION.lng}`)} className="bg-vivazza-stone text-white px-10 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95">
-                     VER LOCAL EN GOOGLE MAPS <ExternalLink size={24} />
+                  <button onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)} className="bg-green-600 text-white px-10 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95 transition-all shadow-lg">
+                     CONSULTAR POR WHATSAPP <MessageCircle size={24} />
                   </button>
                </div>
                <div className="bg-vivazza-red rounded-[4rem] p-12 md:p-20 text-white shadow-premium relative overflow-hidden group">
@@ -241,6 +252,7 @@ function App() {
           </div>
         )}
 
+        {activeSection === 'catalog' && <PizzaCatalog onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} />}
         {activeSection === 'lab' && <PizzaLab onAddToCart={addCustomToCart} showToast={addToast} />}
         {activeSection === 'game' && <PizzaRush onWinCoupon={(c) => {setAppliedCoupon(c); addToast("¡Descuento ganado!", "success"); setIsCartOpen(true);}} />}
         {activeSection === 'wholesale' && <Wholesale />}
@@ -251,23 +263,23 @@ function App() {
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-200 px-6 py-3 z-40 flex justify-between items-center shadow-lg pb-safe-bottom">
         <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
           <Home size={22} />
-          <span className="text-[9px] font-black uppercase">Carta</span>
+          <span className="text-[9px] font-black uppercase">Inicio</span>
+        </button>
+        <button onClick={() => handleNavChange('catalog')} className={`flex flex-col items-center gap-1 ${activeSection === 'catalog' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <List size={22} />
+          <span className="text-[9px] font-black uppercase">Catálogo</span>
         </button>
         <button onClick={() => handleNavChange('lab')} className={`flex flex-col items-center gap-1 ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-gray-400'}`}>
           <PizzaIcon size={22} />
           <span className="text-[9px] font-black uppercase">Lab</span>
         </button>
-        <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 ${activeSection === 'game' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Gamepad2 size={22} />
-          <span className="text-[9px] font-black uppercase">Gamer</span>
-        </button>
         <button onClick={() => { playUISound(880); setIsCartOpen(true); }} className="relative bg-vivazza-red text-white p-3 rounded-2xl -mt-8 shadow-red ring-4 ring-white active:scale-90 transition-all">
           <ShoppingBag size={24} />
           {cartItems.length > 0 && <span className="absolute -top-2 -right-2 bg-vivazza-stone text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full ring-2 ring-white">{cartItems.length}</span>}
         </button>
-        <button onClick={() => handleNavChange('wholesale')} className={`flex flex-col items-center gap-1 ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Building2 size={22} />
-          <span className="text-[9px] font-black uppercase">B2B</span>
+        <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 ${activeSection === 'game' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <Gamepad2 size={22} />
+          <span className="text-[9px] font-black uppercase">Gamer</span>
         </button>
       </div>
 

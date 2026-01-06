@@ -24,18 +24,32 @@ export const REVIEWS = [
 ];
 
 export const INGREDIENTS: Ingredient[] = [
+  // Bases y Quesos
   { id: 'moz', name: 'Mozzarella Premium', price: 1200, calories: 80, color: '#FDE68A' },
+  { id: 'par', name: 'Parmesano', price: 1300, calories: 110, color: '#FEF3C7' },
+  { id: 'azu', name: 'Queso Azul', price: 1800, calories: 100, color: '#D1FAE5' },
+  
+  // Carnes
   { id: 'pep', name: 'Pepperoni Americano', price: 1500, calories: 120, color: '#B91C1C' },
+  { id: 'jam', name: 'Jamón Serrano', price: 2000, calories: 90, color: '#991B1B' },
+  { id: 'toc', name: 'Tocino Ahumado', price: 1500, calories: 150, color: '#78350F' },
+  { id: 'sal', name: 'Salami Italiano', price: 1400, calories: 130, color: '#991B1B' },
+  { id: 'pol', name: 'Pollo Grillé', price: 1600, calories: 90, color: '#F3F4F6' },
+  
+  // Vegetales
   { id: 'cha', name: 'Champiñón Paris', price: 1000, calories: 15, color: '#D1D5DB' },
   { id: 'ace', name: 'Aceitunas Negras', price: 900, calories: 45, color: '#1F2937' },
   { id: 'tom', name: 'Tomate Cherry', price: 800, calories: 10, color: '#EF4444' },
   { id: 'rucu', name: 'Rúcula Fresca', price: 1200, calories: 5, color: '#10B981' },
-  { id: 'jam', name: 'Jamón Serrano', price: 2000, calories: 90, color: '#991B1B' },
-  { id: 'toc', name: 'Tocino Ahumado', price: 1500, calories: 150, color: '#78350F' },
   { id: 'pime', name: 'Pimentón Verde', price: 700, calories: 12, color: '#059669' },
   { id: 'ceb', name: 'Cebolla Morada', price: 600, calories: 15, color: '#7E22CE' },
+  { id: 'choc', name: 'Choclo Dulce', price: 700, calories: 30, color: '#FDE047' },
+  { id: 'palmit', name: 'Palmitos', price: 1200, calories: 25, color: '#FFFBEB' },
+  
+  // Toques Especiales
   { id: 'piña', name: 'Piña Caramelizada', price: 1000, calories: 40, color: '#FACC15' },
   { id: 'alb', name: 'Albahaca Orgánica', price: 500, calories: 2, color: '#34D399' },
+  { id: 'aji', name: 'Ají Verde', price: 600, calories: 5, color: '#4ADE80' },
 ];
 
 export const DOUGHS: Dough[] = [
@@ -45,25 +59,84 @@ export const DOUGHS: Dough[] = [
 
 export const PIZZAS: Pizza[] = [
   {
-    id: 'm1',
-    name: 'Margarita Clásica',
-    description: 'Salsa de tomate San Marzano, Mozzarella fior di latte y albahaca fresca.',
-    price: 5990,
+    id: 'p_pep',
+    name: 'Pepperoni',
+    description: 'Mozzarella, salsa artesanal de la casa y pepperoni seleccionado.',
+    price: 7190,
+    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=800&q=80',
+    type: 'traditional',
+    calories: 920,
+    ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Pepperoni']
+  },
+  {
+    id: 'p_mar',
+    name: 'Margherita',
+    description: 'Mozzarella, salsa artesanal de la casa y pesto de albahaca fresca.',
+    price: 7190,
     image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
     type: 'traditional',
     calories: 750,
-    ingredientsList: ['Pomodoro', 'Mozzarella', 'Albahaca']
+    ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Pesto Albahaca']
   },
   {
-    id: 'viv1',
-    name: 'Vivazza Especial',
-    description: 'Nuestra firma: Jamón serrano, rúcula, lascas de parmesano y aceite de oliva trufado.',
-    price: 9190,
+    id: 'p_fug',
+    name: 'Fugazza',
+    description: 'Mozzarella, salsa artesanal de la casa, cebolla caramelizada y aceitunas sevillanas.',
+    price: 7190,
+    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80',
+    type: 'traditional',
+    calories: 840,
+    ingredientsList: ['Mozzarella', 'Cebolla Caramelizada', 'Aceitunas']
+  },
+  {
+    id: 'p_veg',
+    name: 'Vegetariana',
+    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, champiñones y albahaca fresca.',
+    price: 7190,
     image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+    type: 'traditional',
+    calories: 680,
+    ingredientsList: ['Tomate Cherry', 'Champiñones', 'Albahaca']
+  },
+  {
+    id: 'p_nap',
+    name: 'Napolitana',
+    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón y orégano.',
+    price: 7190,
+    image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=800&q=80',
+    type: 'traditional',
+    calories: 880,
+    ingredientsList: ['Tomate Cherry', 'Jamón', 'Orégano']
+  },
+  {
+    id: 'p_haw',
+    name: 'Hawái',
+    description: 'Mozzarella, salsa artesanal de la casa, jamón premium y piña.',
+    price: 7190,
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+    type: 'traditional',
+    calories: 820,
+    ingredientsList: ['Jamón Premium', 'Piña', 'Mozzarella']
+  },
+  {
+    id: 'p_viv',
+    name: 'La "Vivazza"',
+    description: 'Mozzarella, salsa artesanal de la casa, tocino ahumado y piña.',
+    price: 7190,
+    image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
     type: 'special',
-    calories: 1100,
-    ingredientsList: ['Serrano', 'Rúcula', 'Parmesano', 'Trufa'],
-    history: "Creada para celebrar los 2 años de Vivazza en el corazón de Talca."
+    calories: 950,
+    ingredientsList: ['Tocino Ahumado', 'Piña', 'Salsa Artesanal']
+  },
+  {
+    id: 'p_dol',
+    name: 'Dolce Vivazza',
+    description: 'Base dulce artesanal, frutillas frescas, chocolate y toppings especiales.',
+    price: 5790,
+    image: 'https://images.unsplash.com/photo-1511688858354-297232343239?auto=format&fit=crop&w=800&q=80',
+    type: 'special',
+    calories: 1200,
+    ingredientsList: ['Frutillas', 'Chocolate', 'Toppings Especiales']
   }
 ];
 
