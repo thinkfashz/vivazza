@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -50,61 +51,22 @@
       }
     </script>
     <style>
-      /* Paper Grain Texture */
       .bg-grain {
         background-color: #FDFCF0;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
       }
-      
-      /* Smooth Scrolling */
-      html {
-        scroll-behavior: smooth;
-        -webkit-tap-highlight-color: transparent;
-      }
-      
-      body {
-        /* Disable text selection for app-like feel */
-        -webkit-user-select: none;
-        user-select: none;
-        /* Prevent elastic scrolling in some browsers */
-        overscroll-behavior-y: none;
-      }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #FDFCF0;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #A61D24;
-        border-radius: 4px;
-      }
-      
-      /* Safe Area Utilities */
-      .pb-safe-bottom {
-        padding-bottom: env(safe-area-inset-bottom, 20px);
-      }
-      .pt-safe-top {
-        padding-top: env(safe-area-inset-top, 20px);
-      }
-
-      /* Animations */
+      html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+      body { -webkit-user-select: none; user-select: none; overscroll-behavior-y: none; }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #FDFCF0; }
+      ::-webkit-scrollbar-thumb { background: #A61D24; border-radius: 4px; }
+      .pb-safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
+      .pt-safe-top { padding-top: env(safe-area-inset-top, 20px); }
       @keyframes fade-in-up {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      .animate-fade-in-up {
-        animation: fade-in-up 0.8s ease-out forwards;
-      }
-      @keyframes slide-in-right {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      .animate-slide-in-right {
-        animation: slide-in-right 0.3s ease-out forwards;
-      }
+      .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
     </style>
   <script type="importmap">
 {
@@ -118,84 +80,8 @@
   }
 }
 </script>
-<!-- SEO Schema.org JSON-LD -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Restaurant",
-  "name": "Vivazza Pizzería",
-  "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
-  "description": "Pizzería artesanal de alta gama en Talca. Especialistas en masa madre fermentada 48 horas e ingredientes premium locales.",
-  "servesCuisine": ["Pizza", "Italiana", "Artesanal"],
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Talca",
-    "addressRegion": "Maule",
-    "addressCountry": "CL"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": -35.4264,
-    "longitude": -71.6554
-  },
-  "url": "https://vivazza.cl",
-  "telephone": "+56912345678",
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-      ],
-      "opens": "12:00",
-      "closes": "23:00"
-    }
-  ],
-  "menu": "https://vivazza.cl/menu",
-  "priceRange": "$$",
-  "hasMenu": {
-    "@type": "Menu",
-    "name": "Carta Vivazza",
-    "hasMenuSection": [
-      {
-        "@type": "MenuSection",
-        "name": "Pizzas de Autor",
-        "hasMenuItem": [
-          {
-            "@type": "MenuItem",
-            "name": "La Pencahue",
-            "description": "Queso azul, peras caramelizadas, nueces y miel.",
-            "offers": { "@type": "Offer", "price": "14500", "priceCurrency": "CLP" },
-            "suitableForDiet": "http://schema.org/VegetarianDiet"
-          },
-          {
-            "@type": "MenuItem",
-            "name": "Serrano Rústica",
-            "description": "Jamón serrano reserva, rúcula fresca y parmesano reggiano."
-          }
-        ]
-      },
-      {
-        "@type": "MenuSection",
-        "name": "Pizzas Tradicionales",
-        "hasMenuItem": [
-          {
-            "@type": "MenuItem",
-            "name": "Margarita Real",
-            "description": "Salsa Pomodoro San Clemente, Mozzarella Fior di Latte y Albahaca fresca.",
-            "suitableForDiet": "http://schema.org/VegetarianDiet"
-          },
-          {
-            "@type": "MenuItem",
-            "name": "Huerta Asada",
-            "description": "Pimientos asados, berenjenas, champiñones y zapallo italiano.",
-            "suitableForDiet": ["http://schema.org/VegetarianDiet", "http://schema.org/VeganDiet"]
-          }
-        ]
-      }
-    ]
-  }
-}
-</script>
+<!-- Punto de entrada principal para React -->
+<script type="module" src="./index.tsx"></script>
 </head>
   <body class="bg-grain text-vivazza-stone font-body antialiased selection:bg-vivazza-red selection:text-white">
     <div id="root"></div>

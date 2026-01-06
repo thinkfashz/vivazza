@@ -1,5 +1,4 @@
 
-/** @type {import('next').NextConfig} */
-// Archivo desactivado: El proyecto funciona como SPA con Vite
-const nextConfig = {};
-export default nextConfig;
+// Archivo desactivado para evitar conflictos de detección de Next.js en Vercel.
+// La aplicación funciona como una SPA pura.
+export default {};
