@@ -14,6 +14,7 @@ import { ShoppingBag, UtensilsCrossed, Gamepad2, Pizza as PizzaIcon, Home } from
 type Section = 'menu' | 'lab' | 'game' | '404';
 
 function App() {
+  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<Section>('menu');
   const [selectedPizza, setSelectedPizza] = useState<Pizza | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +24,7 @@ function App() {
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const savedCart = localStorage.getItem('vivazza_cart');
     if (savedCart) {
       try {
@@ -34,8 +36,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('vivazza_cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (mounted) {
+      localStorage.setItem('vivazza_cart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, mounted]);
 
   useEffect(() => {
     const titles: Record<Section, string> = {
@@ -46,6 +50,8 @@ function App() {
     };
     document.title = titles[activeSection] || 'Vivazza Pizzería';
   }, [activeSection]);
+
+  if (!mounted) return null;
 
   const addToast = (message: string, type: ToastType = 'info') => {
     const id = Date.now().toString();
@@ -60,7 +66,7 @@ function App() {
   const specialPizzas = PIZZAS.filter(p => p.type === 'special');
 
   const vibrate = () => {
-    if (navigator.vibrate) navigator.vibrate(10);
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
   };
 
   const handleNavChange = (section: Section) => {
@@ -176,8 +182,8 @@ function App() {
             <section>
               <h3 className="font-heading text-4xl text-vivazza-stone mb-6">Firmas de Autor</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {specialPizzas.map(pizza => (
-                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={openDetails} />
+                {specialPizzas.map((pizza, index) => (
+                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={openDetails} index={index} />
                 ))}
               </div>
             </section>
@@ -185,8 +191,8 @@ function App() {
             <section>
               <h3 className="font-heading text-4xl text-vivazza-stone mb-6 mt-8">Clásicos Italianos</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {traditionalPizzas.map(pizza => (
-                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={openDetails} />
+                {traditionalPizzas.map((pizza, index) => (
+                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={openDetails} index={index + specialPizzas.length} />
                 ))}
               </div>
             </section>
