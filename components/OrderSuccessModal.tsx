@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useState } from 'react';
-// Fix: Added missing ChevronRight icon import
 import { Instagram, Star, CheckCircle2, Heart, MessageSquare, ExternalLink, X, ChevronRight } from 'lucide-react';
+import { VIVAZZA_INSTAGRAM, VIVAZZA_CATALOG_URL } from '../constants';
 
 interface OrderSuccessModalProps {
   isOpen: boolean;
@@ -15,6 +16,30 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   if (!isOpen) return null;
+
+  const playUISound = () => {
+    try {
+      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {}
+  };
+
+  const handleSocialClick = (url: string) => {
+    playUISound();
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+    window.open(url, '_blank');
+  };
 
   const handleSubmitReview = () => {
     if (rating === 0) return;
@@ -33,19 +58,15 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center">
-      {/* Fondo con desenfoque profundo */}
       <div 
         className="absolute inset-0 bg-vivazza-stone/60 backdrop-blur-xl transition-opacity animate-fade-in" 
         onClick={onClose} 
       />
       
-      {/* Native-style Sheet Container */}
       <div className="relative bg-white w-full max-w-lg rounded-t-[3rem] md:rounded-[3rem] p-8 md:p-12 text-center animate-slide-in-bottom md:animate-scale-in shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] max-h-[92vh] overflow-y-auto no-scrollbar pb-safe-bottom">
         
-        {/* Grabber para móviles */}
         <div className="w-12 h-1.5 bg-gray-100 rounded-full mx-auto mb-8 md:hidden" />
         
-        {/* Botón de cierre discreto */}
         <button onClick={onClose} className="absolute top-8 right-8 text-gray-300 hover:text-gray-600 md:block hidden">
           <X size={24} />
         </button>
@@ -68,27 +89,32 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
 
             {/* Social Connect - Estilo App */}
             <div className="bg-vivazza-cream/50 rounded-3xl p-6 mb-10 border border-vivazza-gold/10 grid grid-cols-2 gap-4">
-                <a href="#" className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+                <button 
+                  onClick={() => handleSocialClick(`https://instagram.com/${VIVAZZA_INSTAGRAM}`)}
+                  className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 text-left"
+                >
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center shadow-sm">
                     <Instagram size={20} />
                   </div>
-                  <div className="text-left">
+                  <div>
                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Síguenos</p>
                     <p className="text-xs font-bold text-vivazza-stone uppercase tracking-tighter">Instagram</p>
                   </div>
-                </a>
-                <a href="#" className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-                  <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center shadow-sm">
-                    <TikTokIcon />
+                </button>
+                <button 
+                  onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)}
+                  className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 text-left"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-green-500 text-white flex items-center justify-center shadow-sm">
+                    <MessageSquare size={20} />
                   </div>
-                  <div className="text-left">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Viral</p>
-                    <p className="text-xs font-bold text-vivazza-stone uppercase tracking-tighter">TikTok</p>
+                  <div>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Catálogo</p>
+                    <p className="text-xs font-bold text-vivazza-stone uppercase tracking-tighter">WhatsApp</p>
                   </div>
-                </a>
+                </button>
             </div>
 
-            {/* Feedback Section */}
             <div className="text-center pt-4 border-t border-gray-50">
               <h3 className="font-heading text-2xl text-vivazza-stone mb-6 uppercase flex items-center justify-center gap-2">
                 <Heart size={20} className="text-vivazza-red fill-current" /> ¿Cómo fue tu experiencia?
@@ -146,7 +172,6 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ isOpen, onClose }
         )}
       </div>
 
-      {/* Fix: Replaced styled-jsx with standard style tag and dangerouslySetInnerHTML to resolve TS property errors */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes slide-in-bottom {
           from { transform: translateY(100%); }

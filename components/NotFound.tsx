@@ -3,12 +3,38 @@
 
 import React from 'react';
 import { Pizza, Home, MessageCircle } from 'lucide-react';
+import { VIVAZZA_CATALOG_URL } from '../constants';
 
 interface NotFoundProps {
   onBack: () => void;
 }
 
 const NotFound: React.FC<NotFoundProps> = ({ onBack }) => {
+  const playUISound = () => {
+    try {
+      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {}
+  };
+
+  const handleAction = (url?: string) => {
+    playUISound();
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+    if (url) window.open(url, '_blank');
+    else onBack();
+  };
+
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 animate-fade-in-up">
       <div className="relative mb-10">
@@ -30,22 +56,20 @@ const NotFound: React.FC<NotFoundProps> = ({ onBack }) => {
 
       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
         <button 
-          onClick={onBack}
+          onClick={() => handleAction()}
           className="bg-vivazza-red text-white px-10 py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-red-700"
         >
           <Home size={24} />
           VOLVER AL MENÚ
         </button>
         
-        <a 
-          href="https://wa.me/56912345678" 
-          target="_blank" 
-          rel="noopener noreferrer"
+        <button 
+          onClick={() => handleAction(VIVAZZA_CATALOG_URL)}
           className="bg-vivazza-stone text-white px-10 py-5 rounded-2xl font-heading text-2xl flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-stone-800"
         >
           <MessageCircle size={24} />
-          SOPORTE VIVAZZA
-        </a>
+          CATÁLOGO VIVAZZA
+        </button>
       </div>
 
       <div className="mt-20 opacity-5 grayscale pointer-events-none select-none">

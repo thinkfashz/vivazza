@@ -12,31 +12,36 @@ export const formatCLP = (amount: number): string => {
 export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: any, coupon: any) => {
   const phone = VIVAZZA_PHONE; 
   
-  let message = `🍕 *NUEVO PEDIDO VIVAZZA*\n`;
-  message += `_Pizzas Artesanales Prehorneadas_\n`;
-  message += `--------------------------\n\n`;
+  let message = `🚀 *NUEVO PEDIDO VIVAZZA*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
   
-  cartItems.forEach(item => {
-    message += `*${item.quantity}x ${item.pizzaName}*\n`;
+  cartItems.forEach((item, index) => {
+    message += `${index + 1}. *${item.quantity}x ${item.pizzaName.toUpperCase()}*\n`;
     if (item.isCustom) {
-      message += `  - Ingredientes: ${item.customIngredients?.map((i: any) => i.name).join(', ')}\n`;
+      message += `   └ _Ingredientes:_ ${item.customIngredients?.map((i: any) => i.name).join(', ')}\n`;
     }
-    message += `  Subtotal: ${formatCLP(item.basePrice)}\n\n`;
+    message += `   └ _Precio:_ ${formatCLP(item.basePrice * item.quantity)}\n\n`;
   });
 
-  message += `--------------------------\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n`;
   if (coupon) {
-    message += `🎟️ *Cupón:* ${coupon.code} (-${coupon.discountPercent}%)\n`;
+    message += `🎟️ *Cupón Aplicado:* ${coupon.code} (-${coupon.discountPercent}%)\n`;
   }
   message += `💰 *TOTAL A PAGAR: ${formatCLP(total)}*\n\n`;
   
-  message += `📍 *ENTREGA:* ${delivery.method === 'delivery' ? 'Domicilio' : 'Retiro en Local'}\n`;
+  message += `🛵 *MODALIDAD:* ${delivery.method === 'delivery' ? 'DOMICILIO' : 'RETIRO LOCAL'}\n`;
   if (delivery.method === 'delivery') {
-    message += `🏠 *Dirección:* ${delivery.address}\n`;
+    message += `📍 *Dirección:* ${delivery.address}\n`;
+    if (delivery.coords) {
+      message += `🗺️ *GPS:* https://www.google.com/maps?q=${delivery.coords.lat},${delivery.coords.lng}\n`;
+    }
   }
   if (delivery.instructions) {
-    message += `📝 *Notas:* ${delivery.instructions}\n`;
+    message += `💬 *Notas:* ${delivery.instructions}\n`;
   }
+
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `⏰ _Confírmenme tiempo de entrega por favor._`;
 
   const encodedMessage = encodeURIComponent(message);
   return `https://wa.me/${phone}?text=${encodedMessage}`;

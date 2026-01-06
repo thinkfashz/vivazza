@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { PIZZAS, VIVAZZA_INSTAGRAM, VIVAZZA_PHONE } from './constants';
+
+import React, { useState, useEffect, useMemo } from 'react';
+import { PIZZAS, VIVAZZA_INSTAGRAM, VIVAZZA_PHONE, VIVAZZA_CATALOG_URL, VIVAZZA_LOCATION, REVIEWS } from './constants';
 import { Pizza, CartItem, ToastMessage, ToastType, Coupon, ExtraItem } from './types';
 import PizzaCard from './components/PizzaCard';
 import PizzaModal from './components/PizzaModal';
@@ -9,7 +10,7 @@ import Wholesale from './components/Wholesale';
 import CartSidebar from './components/CartSidebar';
 import NotFound from './components/NotFound';
 import { ToastContainer } from './components/Toast';
-import { ShoppingBag, UtensilsCrossed, Gamepad2, Pizza as PizzaIcon, Home, Instagram, MessageCircle, Building2 } from 'lucide-react';
+import { ShoppingBag, Gamepad2, Pizza as PizzaIcon, Home, Instagram, MessageCircle, Building2, MapPin, Phone, ExternalLink, Star, Quote, Clock, Truck } from 'lucide-react';
 
 type Section = 'menu' | 'lab' | 'game' | 'wholesale' | '404';
 
@@ -22,6 +23,9 @@ function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+
+  const traditionalPizzas = useMemo(() => PIZZAS.filter(p => p.type === 'traditional'), []);
+  const specialPizzas = useMemo(() => PIZZAS.filter(p => p.type === 'special'), []);
 
   useEffect(() => {
     setMounted(true);
@@ -43,6 +47,24 @@ function App() {
 
   if (!mounted) return null;
 
+  const playUISound = (freq = 880) => {
+    try {
+      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0.05, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {}
+  };
+
   const addToast = (message: string, type: ToastType = 'info') => {
     const id = Date.now().toString();
     setToasts(prev => [...prev, { id, message, type }]);
@@ -53,8 +75,14 @@ function App() {
   };
 
   const handleNavChange = (section: Section) => {
+    playUISound(660);
     setActiveSection(section);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSocialClick = (url: string) => {
+    playUISound(1000);
+    window.open(url, '_blank');
   };
 
   const addToCart = (pizza: Pizza) => {
@@ -97,85 +125,118 @@ function App() {
     <div className="min-h-screen bg-grain flex flex-col pb-24 md:pb-0">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       
-      {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-30 bg-vivazza-cream/90 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center cursor-pointer" onClick={() => handleNavChange('menu')}>
-              <h1 className="font-heading text-4xl text-vivazza-red tracking-tight">VIVAZZA</h1>
-              <span className="ml-3 text-[10px] tracking-[0.2em] text-gray-400 uppercase border-l pl-3 border-gray-300">
-                Fábrica de Pizzas Artesanales
-              </span>
-            </div>
+      {/* Navbar Minimalista */}
+      <nav className="hidden md:block sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          <div className="flex items-center cursor-pointer" onClick={() => handleNavChange('menu')}>
+            <h1 className="font-heading text-4xl text-vivazza-red tracking-tight">VIVAZZA</h1>
+            <span className="ml-3 text-[9px] font-black text-gray-400 uppercase tracking-widest border-l pl-3 border-gray-200">TALCA // MASA MADRE</span>
+          </div>
 
-            <div className="flex space-x-6">
-              <button onClick={() => handleNavChange('menu')} className={`font-heading text-lg transition-colors ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>CARTA</button>
-              <button onClick={() => handleNavChange('lab')} className={`font-heading text-lg transition-colors ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA LAB</button>
-              <button onClick={() => handleNavChange('game')} className={`font-heading text-lg transition-colors ${activeSection === 'game' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA BREAKER</button>
-              <button onClick={() => handleNavChange('wholesale')} className={`font-heading text-lg transition-colors ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>MAYORISTAS</button>
-            </div>
-
-            <div className="flex items-center gap-6">
-               <a href={`https://instagram.com/${VIVAZZA_INSTAGRAM}`} target="_blank" className="text-vivazza-stone hover:text-vivazza-red transition-colors">
-                  <Instagram size={22} />
-               </a>
-               <button onClick={() => setIsCartOpen(true)} className="relative p-2 text-vivazza-stone group">
-                <ShoppingBag size={28} className="group-hover:scale-110 transition-transform" />
-                {cartItems.length > 0 && (
-                  <span 
-                    key={cartItems.length}
-                    className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-vivazza-red rounded-full ring-2 ring-white animate-cart-pop"
-                  >
-                    {cartItems.length}
-                  </span>
-                )}
+          <div className="flex space-x-10">
+            {['menu', 'lab', 'game', 'wholesale'].map((sec) => (
+              <button key={sec} onClick={() => handleNavChange(sec as Section)} className={`font-heading text-xl uppercase tracking-tight transition-colors ${activeSection === sec ? 'text-vivazza-red underline decoration-2 underline-offset-8' : 'text-vivazza-stone hover:text-vivazza-red'}`}>
+                {sec === 'wholesale' ? 'B2B' : sec === 'game' ? 'Jugar' : sec === 'lab' ? 'Pizza Lab' : 'Carta'}
               </button>
-            </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={() => handleSocialClick(`https://instagram.com/${VIVAZZA_INSTAGRAM}`)} className="text-vivazza-stone hover:text-vivazza-red transition-all hover:scale-110"><Instagram size={24} /></button>
+            <button onClick={() => { playUISound(880); setIsCartOpen(true); }} className="relative bg-vivazza-red text-white p-3 rounded-2xl shadow-red hover:scale-105 active:scale-95 transition-all">
+              <ShoppingBag size={24} />
+              {cartItems.length > 0 && <span className="absolute -top-2 -right-2 bg-vivazza-stone text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full ring-2 ring-white animate-cart-pop">{cartItems.length}</span>}
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between px-6 h-16 bg-vivazza-cream/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20">
-         <h1 className="font-heading text-3xl text-vivazza-red tracking-tight" onClick={() => handleNavChange('menu')}>VIVAZZA</h1>
-         <div className="flex gap-4">
-            <a href={`https://wa.me/${VIVAZZA_PHONE}`} className="text-green-600"><MessageCircle size={24} /></a>
-            <a href={`https://instagram.com/${VIVAZZA_INSTAGRAM}`} className="text-vivazza-stone"><Instagram size={24} /></a>
-         </div>
-      </div>
-
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        
+      {/* Main Content */}
+      <main className="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
         {activeSection === 'menu' && (
-          <div className="space-y-12 animate-fade-in-up">
-            <div className="relative rounded-[2.5rem] overflow-hidden bg-vivazza-stone text-white p-6 md:p-16 mb-8 shadow-premium group">
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 to-transparent z-10"></div>
-              <div className="relative z-20 max-w-2xl">
-                <span className="inline-block px-3 py-1 bg-vivazza-red text-white text-[10px] font-black rounded-full mb-4 uppercase tracking-[0.2em]">Pizzas Congeladas Listas para Hornear</span>
-                <h2 className="font-heading text-6xl md:text-8xl mb-4 leading-none text-white tracking-tighter">FABRICA DE <br/><span className="text-vivazza-red">PIZZAS</span></h2>
-                <p className="font-medium text-gray-300 text-lg mb-8 max-w-md">Elaboramos pizzas artesanales prehorneadas congeladas. Ingredientes premium y receta única para disfrutar en casa con solo hornear.</p>
+          <div className="space-y-24 animate-fade-in-up">
+            {/* Hero Minimalista */}
+            <div className="relative rounded-[3.5rem] overflow-hidden bg-vivazza-stone h-[70vh] flex items-center p-8 md:p-20 shadow-premium">
+              <div className="relative z-20 max-w-3xl">
+                <span className="inline-block px-4 py-1.5 bg-vivazza-red text-white text-[10px] font-black rounded-full mb-6 uppercase tracking-widest">Artesanal & Premium</span>
+                <h2 className="font-heading text-7xl md:text-9xl mb-6 leading-none text-white tracking-tighter uppercase">EL SABOR DE <br/><span className="text-vivazza-red">LA PACIENCIA</span></h2>
+                <p className="text-gray-300 text-xl font-medium mb-12 max-w-lg leading-relaxed">Fermentamos nuestra masa por 48 horas para lograr una ligereza y crunch inigualables.</p>
                 <div className="flex flex-wrap gap-4">
-                  <button onClick={() => handleNavChange('menu')} className="bg-vivazza-red text-white px-10 py-4 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 duration-200">
-                    VER CATÁLOGO
-                  </button>
-                  <button onClick={() => handleNavChange('wholesale')} className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95 duration-200">
-                    VENTA MAYORISTA
-                  </button>
+                  <button onClick={() => document.getElementById('carta')?.scrollIntoView({behavior: 'smooth'})} className="bg-vivazza-red text-white px-12 py-5 rounded-2xl font-heading text-2xl shadow-red active:scale-95 transition-all">EXPLORAR CARTA</button>
+                  <button onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)} className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-12 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3">CATÁLOGO WA</button>
                 </div>
               </div>
-              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1950&q=80" alt="Pizza artesanal" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-1000" />
+              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1950&q=80" className="absolute inset-0 w-full h-full object-cover opacity-50" alt="Hero Vivazza" />
             </div>
 
-            <section>
-              <div className="flex justify-between items-end mb-8">
-                <h3 className="font-heading text-4xl text-vivazza-stone uppercase tracking-tight">Nuestro Catálogo</h3>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 px-4 py-1 rounded-full">Talca, Chile</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {PIZZAS.map((pizza, index) => (
-                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={index} />
+            {/* Carta */}
+            <section id="carta">
+              <h3 className="font-heading text-5xl text-vivazza-stone uppercase mb-12">Nuestras Pizzas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                {specialPizzas.concat(traditionalPizzas).map((pizza, idx) => (
+                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={idx} />
                 ))}
               </div>
+            </section>
+
+            {/* Nueva Sección de Testimonios - Valor de Marca */}
+            <section className="bg-white rounded-[4rem] p-12 md:p-24 shadow-xl border border-gray-50">
+               <div className="text-center mb-16">
+                  <div className="inline-flex items-center gap-1 text-vivazza-gold mb-4">
+                     {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="currentColor" />)}
+                  </div>
+                  <h3 className="font-heading text-6xl text-vivazza-stone uppercase leading-none">LO QUE DICEN <span className="text-vivazza-red">NUESTROS CLIENTES</span></h3>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                  {REVIEWS.slice(0, 3).map((rev) => (
+                    <div key={rev.id} className="bg-vivazza-cream p-10 rounded-[2.5rem] relative group hover:-translate-y-2 transition-transform shadow-sm">
+                       <Quote className="absolute top-8 right-8 text-vivazza-gold/20" size={48} />
+                       <p className="text-lg font-medium italic text-vivazza-stone leading-relaxed mb-6">"{rev.text}"</p>
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-vivazza-red rounded-full flex items-center justify-center text-white font-black">{rev.name[0]}</div>
+                          <div>
+                             <p className="font-bold text-vivazza-stone">{rev.name}</p>
+                             <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{rev.date}</p>
+                          </div>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+            </section>
+
+            {/* Sustitución de Mapa por Zonas y Horarios */}
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+               <div className="space-y-8">
+                  <h3 className="font-heading text-6xl text-vivazza-stone uppercase tracking-tighter">COBERTURA <br/><span className="text-vivazza-red">& HORARIOS</span></h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                     <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+                        <Clock className="text-vivazza-red mb-4" size={32} />
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Horario de Atención</p>
+                        <p className="font-bold text-xl text-vivazza-stone">{VIVAZZA_LOCATION.hours}</p>
+                     </div>
+                     <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+                        <Truck className="text-vivazza-red mb-4" size={32} />
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zonas de Entrega</p>
+                        <ul className="text-sm font-bold text-vivazza-stone space-y-1">
+                           {VIVAZZA_LOCATION.zones.map((z, i) => <li key={i}>• {z}</li>)}
+                        </ul>
+                     </div>
+                  </div>
+                  <button onClick={() => handleSocialClick(`https://www.google.com/maps/search/?api=1&query=${VIVAZZA_LOCATION.lat},${VIVAZZA_LOCATION.lng}`)} className="bg-vivazza-stone text-white px-10 py-5 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95">
+                     VER LOCAL EN GOOGLE MAPS <ExternalLink size={24} />
+                  </button>
+               </div>
+               <div className="bg-vivazza-red rounded-[4rem] p-12 md:p-20 text-white shadow-premium relative overflow-hidden group">
+                  <div className="relative z-10">
+                     <h4 className="font-heading text-5xl mb-6 uppercase leading-none">PIDE HOY MISMO</h4>
+                     <p className="text-white/80 font-medium text-lg mb-10">¿Listo para probar la mejor pizza artesanal de la región del Maule?</p>
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-4"><MapPin className="text-vivazza-gold" /> <span>{VIVAZZA_LOCATION.address}</span></div>
+                        <div className="flex items-center gap-4"><Phone className="text-vivazza-gold" /> <span>+{VIVAZZA_PHONE}</span></div>
+                     </div>
+                  </div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
+               </div>
             </section>
           </div>
         )}
@@ -184,42 +245,29 @@ function App() {
         {activeSection === 'game' && <PizzaRush onWinCoupon={(c) => {setAppliedCoupon(c); addToast("¡Descuento ganado!", "success"); setIsCartOpen(true);}} />}
         {activeSection === 'wholesale' && <Wholesale />}
         {activeSection === '404' && <NotFound onBack={() => handleNavChange('menu')} />}
-
       </main>
 
-      {/* Bottom Nav Mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-lg border-t border-gray-200 px-6 py-2 pb-safe-bottom z-40 flex justify-between items-center">
-        <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Home size={24} />
-          <span className="text-[10px] font-bold">Carta</span>
+      {/* Nav Mobile Mejorado */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-200 px-6 py-3 z-40 flex justify-between items-center shadow-lg pb-safe-bottom">
+        <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <Home size={22} />
+          <span className="text-[9px] font-black uppercase">Carta</span>
         </button>
-        <button onClick={() => handleNavChange('lab')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <PizzaIcon size={24} />
-          <span className="text-[10px] font-bold">Lab</span>
+        <button onClick={() => handleNavChange('lab')} className={`flex flex-col items-center gap-1 ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <PizzaIcon size={22} />
+          <span className="text-[9px] font-black uppercase">Lab</span>
         </button>
-        <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'game' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Gamepad2 size={24} />
-          <span className="text-[10px] font-bold">Jugar</span>
+        <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 ${activeSection === 'game' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <Gamepad2 size={22} />
+          <span className="text-[9px] font-black uppercase">Gamer</span>
         </button>
-        <button onClick={() => handleNavChange('wholesale')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Building2 size={24} />
-          <span className="text-[10px] font-bold">Venta</span>
+        <button onClick={() => { playUISound(880); setIsCartOpen(true); }} className="relative bg-vivazza-red text-white p-3 rounded-2xl -mt-8 shadow-red ring-4 ring-white active:scale-90 transition-all">
+          <ShoppingBag size={24} />
+          {cartItems.length > 0 && <span className="absolute -top-2 -right-2 bg-vivazza-stone text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full ring-2 ring-white">{cartItems.length}</span>}
         </button>
-        {/* Adición del contador en el botón de pedido del footer si fuera necesario, 
-            pero el usuario pidió header/sidebar. Mantenemos consistencia con la versión móvil. */}
-        <button onClick={() => setIsCartOpen(true)} className="flex flex-col items-center gap-1 p-2 relative text-gray-400">
-           <div className="relative">
-              <ShoppingBag size={24} />
-              {cartItems.length > 0 && (
-                <span 
-                  key={cartItems.length}
-                  className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-vivazza-red text-[9px] font-bold text-white animate-cart-pop"
-                > 
-                  {cartItems.length} 
-                </span>
-              )}
-           </div>
-           <span className="text-[10px] font-bold">Pedido</span>
+        <button onClick={() => handleNavChange('wholesale')} className={`flex flex-col items-center gap-1 ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-gray-400'}`}>
+          <Building2 size={22} />
+          <span className="text-[9px] font-black uppercase">B2B</span>
         </button>
       </div>
 

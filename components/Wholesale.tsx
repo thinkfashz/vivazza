@@ -2,10 +2,32 @@
 "use client";
 import React from 'react';
 import { Building2, CheckCircle, Package, Truck, MessageCircle, ArrowRight, Instagram } from 'lucide-react';
-import { VIVAZZA_PHONE, VIVAZZA_INSTAGRAM } from '../constants';
+import { VIVAZZA_INSTAGRAM, VIVAZZA_CATALOG_URL } from '../constants';
 
 const Wholesale: React.FC = () => {
-  const contactLink = `https://wa.me/${VIVAZZA_PHONE}?text=${encodeURIComponent('Hola Vivazza! Me interesa información sobre ventas al por mayor para mi negocio.')}`;
+  const playUISound = () => {
+    try {
+      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {}
+  };
+
+  const handleSocialClick = (url: string) => {
+    playUISound();
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+    window.open(url, '_blank');
+  };
 
   const benefits = [
     {
@@ -27,7 +49,6 @@ const Wholesale: React.FC = () => {
 
   return (
     <div className="animate-fade-in-up space-y-16 pb-20">
-      {/* Hero Section */}
       <div className="relative rounded-[3rem] overflow-hidden bg-vivazza-stone text-white p-8 md:p-20 shadow-premium">
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
         <div className="relative z-20 max-w-3xl">
@@ -39,9 +60,12 @@ const Wholesale: React.FC = () => {
             ¿Tienes un restaurante, cafetería o minimarket? Ofrece la mejor pizza artesanal prehorneada de Talca sin complicaciones técnicas.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href={contactLink} target="_blank" className="bg-vivazza-red text-white px-10 py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 transition-all">
+            <button 
+              onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)}
+              className="bg-vivazza-red text-white px-10 py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 transition-all"
+            >
                SOLICITAR CATÁLOGO B2B <ArrowRight size={24} />
-            </a>
+            </button>
           </div>
         </div>
         <img 
@@ -51,7 +75,6 @@ const Wholesale: React.FC = () => {
         />
       </div>
 
-      {/* Benefits Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {benefits.map((b, i) => (
           <div key={i} className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
@@ -64,7 +87,6 @@ const Wholesale: React.FC = () => {
         ))}
       </div>
 
-      {/* Product Display */}
       <div className="flex flex-col md:flex-row gap-12 items-center">
         <div className="md:w-1/2 space-y-6">
           <h3 className="font-heading text-5xl text-vivazza-stone uppercase leading-none tracking-tighter">
@@ -87,18 +109,23 @@ const Wholesale: React.FC = () => {
         </div>
       </div>
 
-      {/* CTA Footer */}
       <div className="bg-vivazza-cream rounded-[3rem] p-12 text-center border border-vivazza-gold/20">
          <Building2 size={48} className="text-vivazza-gold mx-auto mb-6" />
          <h2 className="font-heading text-5xl text-vivazza-stone mb-6 uppercase">¿Hablamos de negocios?</h2>
          <p className="text-gray-500 mb-10 max-w-xl mx-auto font-medium">Únete a la red de distribuidores Vivazza y eleva el estándar de tu menú.</p>
          <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <a href={contactLink} target="_blank" className="flex items-center justify-center gap-3 bg-green-600 text-white px-10 py-5 rounded-2xl font-heading text-2xl shadow-lg active:scale-95 transition-all">
+            <button 
+              onClick={() => handleSocialClick(VIVAZZA_CATALOG_URL)}
+              className="flex items-center justify-center gap-3 bg-green-600 text-white px-10 py-5 rounded-2xl font-heading text-2xl shadow-lg active:scale-95 transition-all"
+            >
               <MessageCircle size={24} /> WHATSAPP MAYORISTA
-            </a>
-            <a href={`https://instagram.com/${VIVAZZA_INSTAGRAM}`} target="_blank" className="flex items-center justify-center gap-3 bg-vivazza-stone text-white px-10 py-5 rounded-2xl font-heading text-2xl active:scale-95 transition-all">
+            </button>
+            <button 
+              onClick={() => handleSocialClick(`https://instagram.com/${VIVAZZA_INSTAGRAM}`)}
+              className="flex items-center justify-center gap-3 bg-vivazza-stone text-white px-10 py-5 rounded-2xl font-heading text-2xl active:scale-95 transition-all"
+            >
               <Instagram size={24} /> NUESTRA RED B2B
-            </a>
+            </button>
          </div>
       </div>
     </div>
