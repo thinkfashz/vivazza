@@ -28,20 +28,15 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 }) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
 
-  // Reset state when src changes
   useEffect(() => {
     setImgSrc(src);
     setIsLoading(true);
-    setHasError(false);
   }, [src]);
 
   const handleError = () => {
-    if (!hasError) {
-      setHasError(true);
-      setImgSrc(fallbackSrc);
-    }
+    setImgSrc(fallbackSrc);
+    setIsLoading(false);
   };
 
   const handleLoad = () => {
@@ -58,7 +53,6 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   return (
     <div className={`${containerStyle} ${className} overflow-hidden bg-gray-100`}>
-      {/* Skeleton / Loading Placeholder */}
       {isLoading && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
       )}
@@ -69,7 +63,6 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? "eager" : "lazy"}
-        decoding="async"
         className={`${imgStyle} transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
         style={!fill ? { width: width || '100%', height: height || 'auto' } : {}}
       />
