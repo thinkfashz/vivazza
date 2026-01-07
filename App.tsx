@@ -139,7 +139,7 @@ function App() {
           <div className="flex space-x-10">
             {['menu', 'catalog', 'wholesale', 'game'].map((sec) => (
               <button key={sec} onClick={() => handleNavChange(sec as Section)} className={`font-heading text-xl uppercase tracking-tight transition-all duration-300 ${activeSection === sec ? 'text-vivazza-red scale-110' : 'text-vivazza-stone hover:text-vivazza-red opacity-60 hover:opacity-100'}`}>
-                {sec === 'wholesale' ? 'Venta al Mayor' : sec === 'game' ? 'Jugar' : sec === 'catalog' ? 'Catálogo' : 'Inicio'}
+                {sec === 'wholesale' ? 'Distribución al Mayor' : sec === 'game' ? 'Jugar' : sec === 'catalog' ? 'Catálogo' : 'Inicio'}
               </button>
             ))}
           </div>
@@ -210,7 +210,7 @@ function App() {
           {/* Central Wholesale Button */}
           <button onClick={() => handleNavChange('wholesale')} className={`relative -mt-10 flex flex-col items-center justify-center w-16 h-16 rounded-full shadow-lg transition-all active:scale-90 ${activeSection === 'wholesale' ? 'bg-vivazza-stone text-vivazza-gold' : 'bg-vivazza-red text-white'}`}>
             <Building2 size={28} />
-            <div className={`absolute -bottom-6 text-[9px] font-black uppercase tracking-tighter ${activeSection === 'wholesale' ? 'text-vivazza-stone' : 'text-gray-400'}`}>Venta Mayor</div>
+            <div className={`absolute -bottom-6 text-[9px] font-black uppercase tracking-tighter ${activeSection === 'wholesale' ? 'text-vivazza-stone' : 'text-gray-400'}`}>Distribución</div>
           </button>
 
           <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 px-3 py-1 transition-all duration-300 ${activeSection === 'game' ? 'text-vivazza-red translate-y-[-4px]' : 'text-gray-400'}`}>

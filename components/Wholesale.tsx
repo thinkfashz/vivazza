@@ -21,7 +21,7 @@ const Wholesale: React.FC = () => {
         <div className="relative z-10 p-12 text-center border-b border-gray-100">
            <div className="w-16 h-1 bg-vivazza-red/20 mx-auto mb-6 rounded-full"></div>
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
-             MASAS Y <br/><span className="text-vivazza-red/70">VENTAS AL MAYOR</span>
+             MASAS Y <br/><span className="text-vivazza-red/70">DISTRIBUCIÓN AL MAYOR</span>
            </h2>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/30"></span>
@@ -68,7 +68,7 @@ const Wholesale: React.FC = () => {
           {/* Columna Derecha: Pizzas Congeladas */}
           <div className="space-y-10">
             <div className="flex items-center gap-4 mb-4 border-b border-gray-100 pb-4">
-               <h3 className="font-heading text-3xl text-gray-400 uppercase">Ventas al Mayor de Pizzas Congeladas</h3>
+               <h3 className="font-heading text-3xl text-gray-400 uppercase">Distribución al Mayor de Pizzas Congeladas</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 mb-10">
