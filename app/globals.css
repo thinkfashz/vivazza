@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,38 +18,49 @@
 html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none; /* Previene el pull-to-refresh en móviles */
 }
 
 body {
   -webkit-user-select: none;
   user-select: none;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--vivazza-cream);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--vivazza-red);
-  border-radius: 4px;
+  background: rgba(166, 29, 36, 0.2);
+  border-radius: 10px;
 }
 
 .pb-safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 .pt-safe-top {
-  padding-top: env(safe-area-inset-top, 20px);
+  padding-top: env(safe-area-inset-top, 16px);
+}
+
+/* No Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out forwards;
+  animation: fade-in-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes slide-in-right {
@@ -62,9 +74,18 @@ body {
 /* Cart Pop Animation */
 @keyframes cart-pop {
   0% { transform: scale(1); }
-  40% { transform: scale(1.5); }
+  40% { transform: scale(1.4); }
   100% { transform: scale(1); }
 }
 .animate-cart-pop {
   animation: cart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Native Selection Fix */
+* {
+  -webkit-touch-callout: none;
+}
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }

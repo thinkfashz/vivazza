@@ -23,6 +23,23 @@ export const REVIEWS = [
   { id: 5, name: "Pedro H.", text: "Atención por WhatsApp súper rápida. Se agradece la buena onda.", rating: 5, date: "Hace 2 semanas" }
 ];
 
+export const WHOLESALE_DATA = {
+  doughPacks: [
+    { name: "5 masas 30 cm", price: 12500 },
+    { name: "10 masas 30 cm", price: 25000 },
+    { name: "5 masas 25 cm", price: 11500 },
+    { name: "10 masas 25 cm", price: 22000 },
+  ],
+  frozenPizzas: {
+    flavors: ["Pepperoni", "Napolitana", "La \"Vivazza\"", "Margherita", "Fugazza", "Hawái"],
+    prices: [
+      { size: "Grande 32 cm", price: 6190 },
+      { size: "Mediana 25 cm", price: 4190 }
+    ],
+    minOrder: 20
+  }
+};
+
 export const INGREDIENTS: Ingredient[] = [
   // Bases y Quesos
   { id: 'moz', name: 'Mozzarella Premium', price: 1200, calories: 80, color: '#FDE68A' },
