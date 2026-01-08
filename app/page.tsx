@@ -207,7 +207,7 @@ export default function App() {
                     QUEDAN {stockCount} MASAS HOY
                   </span>
                 </div>
-                <h2 className="font-heading text-6xl md:text-8xl mb-4 leading-none text-white tracking-tighter">EL ARTE DE LA <br/><span className="text-vivazza-red">MASA MADRE</span></h2>
+                <h2 className="font-heading text-6xl md:text-8xl mb-4 leading-none text-white tracking-tighter">EL PLACER DE LO <br/><span className="text-vivazza-red">AUTÉNTICO</span></h2>
                 <p className="font-medium text-gray-300 text-lg mb-8 max-w-md">No es pizza industrial. Es fermentación lenta, ingredientes locales y pasión artesanal.</p>
                 <div className="flex flex-wrap gap-4">
                   <button onClick={() => { playUISound(880); window.scrollTo({top: 800, behavior: 'smooth'}); }} className="bg-vivazza-red text-white px-10 py-4 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 duration-200">

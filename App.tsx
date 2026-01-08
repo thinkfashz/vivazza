@@ -162,7 +162,7 @@ function App() {
             <div className="relative rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden bg-vivazza-stone h-[60vh] md:h-[70vh] flex items-center p-6 md:p-20 shadow-premium">
               <div className="relative z-20 max-w-3xl">
                 <span className="inline-block px-3 py-1 bg-vivazza-red text-white text-[9px] font-black rounded-full mb-4 uppercase tracking-widest">Artesanal & Premium</span>
-                <h2 className="font-heading text-6xl md:text-9xl mb-4 md:mb-6 leading-none text-white tracking-tighter uppercase">EL SABOR DE <br/><span className="text-vivazza-red">LA PACIENCIA</span></h2>
+                <h2 className="font-heading text-6xl md:text-9xl mb-4 md:mb-6 leading-none text-white tracking-tighter uppercase">EL PLACER DE LO <br/><span className="text-vivazza-red">AUTÉNTICO</span></h2>
                 <p className="text-gray-300 text-base md:text-xl font-medium mb-8 md:mb-12 max-w-lg leading-relaxed opacity-90">Fermentamos nuestra masa por 48 horas para lograr una ligereza y crunch inigualables.</p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button onClick={() => handleNavChange('catalog')} className="bg-vivazza-red text-white px-8 md:px-12 py-4 md:py-5 rounded-2xl font-heading text-xl md:text-2xl shadow-red active:scale-95 transition-all">VER CATÁLOGO</button>
