@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { WHOLESALE_DATA, VIVAZZA_PHONE } from '../constants';
 import { formatCLP } from '../utils';
-import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight } from 'lucide-react';
+import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
 
 const Wholesale: React.FC = () => {
   const [selectedPacks, setSelectedPacks] = useState<Record<string, number>>({});
@@ -43,16 +43,15 @@ const Wholesale: React.FC = () => {
   }, [selectedPacks, selectedFrozen]);
 
   const handleWholesaleWhatsApp = () => {
-    let message = `🤝 *COTIZACIÓN MAYORISTA VIVAZZA*\n`;
+    let message = `🤝 *INTERÉS MAYORISTA VIVAZZA - PEDIDO INMEDIATO*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-    message += `Hola! Me interesa una cotización para distribución:\n\n`;
+    message += `Hola! Quiero elevar la calidad de mi negocio con Vivazza. Mi selección:\n\n`;
 
     let hasContent = false;
 
-    // Packs de Masas
     const packs = Object.entries(selectedPacks).filter(([_, qty]) => (qty as number) > 0);
     if (packs.length > 0) {
-      message += `📦 *MASAS CONGELADAS:*\n`;
+      message += `📦 *PACKS DE MASAS:*\n`;
       packs.forEach(([name, qty]) => {
         message += `• ${qty}x ${name}\n`;
       });
@@ -60,26 +59,25 @@ const Wholesale: React.FC = () => {
       hasContent = true;
     }
 
-    // Pizzas Congeladas
     const frozen = Object.entries(selectedFrozen).filter(([_, qty]) => (qty as number) > 0);
     if (frozen.length > 0) {
-      message += `🍕 *PIZZAS CONGELADAS:*\n`;
+      message += `🍕 *PIZZAS LISTAS PARA HORNEAR:*\n`;
       frozen.forEach(([size, qty]) => {
         message += `• ${qty}x ${size}\n`;
       });
       
       if (selectedFlavors.length > 0) {
-        message += `🎨 *SABORES DE INTERÉS:* ${selectedFlavors.join(', ')}\n`;
+        message += `🎨 *SABORES PREFERIDOS:* ${selectedFlavors.join(', ')}\n`;
       }
       message += `\n`;
       hasContent = true;
     }
 
     if (!hasContent) {
-      message = `Hola! Me interesa recibir información y lista de precios para distribución mayorista de Vivazza.`;
+      message = `Hola! Me interesa conocer los precios mayoristas y convertirme en distribuidor oficial de Vivazza.`;
     } else {
       message += `━━━━━━━━━━━━━━━━━━━━\n`;
-      message += `📍 _Solicito tiempos de entrega y métodos de pago._`;
+      message += `✅ _Deseo agendar la entrega y coordinar el pago a la brevedad._`;
     }
 
     const url = `https://wa.me/${VIVAZZA_PHONE}?text=${encodeURIComponent(message)}`;
@@ -92,13 +90,13 @@ const Wholesale: React.FC = () => {
       <div className="max-w-4xl mx-auto bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative">
         <div className="absolute inset-0 opacity-50 pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
 
-        {/* Header Elegante */}
-        <div className="relative z-10 p-12 text-center border-b border-gray-100">
+        {/* Header Estratégico */}
+        <div className="relative z-10 p-12 text-center border-b border-gray-100 bg-gradient-to-b from-vivazza-cream/30 to-white">
            <div className="w-16 h-1.5 bg-vivazza-red/40 mx-auto mb-6 rounded-full"></div>
+           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Socio Estratégico para tu Negocio</p>
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
-             MASAS Y <br/><span className="text-vivazza-red">DISTRIBUCIÓN AL MAYOR</span>
+             MASAS Y PIZZAS <br/><span className="text-vivazza-red">PARA DISTRIBUCIÓN</span>
            </h2>
-           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.2em] mt-2">Valores netos + IVA</p>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/50"></span>
               <Building2 className="text-vivazza-gold" size={28} />
@@ -106,20 +104,24 @@ const Wholesale: React.FC = () => {
            </div>
         </div>
 
-        {/* Cuerpo del Menú */}
+        {/* Cuerpo del Menú con Copy Persuasivo */}
         <div className="relative z-10 p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           {/* Columna Izquierda: Packs de Masas */}
           <div className="space-y-10">
-            <div className="flex items-center gap-4 mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Packs de Masas:</h3>
+            <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
+               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Aprovisiona tu Local:</h3>
+               <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Lo más rentable</span>
             </div>
             
             <div className="space-y-8">
               {WHOLESALE_DATA.doughPacks.map((pack, idx) => (
                 <div key={idx} className="group">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-lg font-bold text-vivazza-stone">{pack.name}</span>
+                    <div>
+                      <span className="text-lg font-bold text-vivazza-stone block">{pack.name}</span>
+                      <span className="text-[10px] text-gray-400 font-medium">Ideal para hornos rápidos</span>
+                    </div>
                     <div className="text-right">
                       <span className="font-heading text-3xl text-vivazza-red block leading-none">{formatCLP(pack.price)}</span>
                       <span className="text-[9px] text-gray-400 font-bold uppercase">IVA incl.</span>
@@ -145,26 +147,33 @@ const Wholesale: React.FC = () => {
             </div>
 
             <div className="pt-8">
-              <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20">
-                <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Excelencia en Fermentación</p>
-                <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                  Masa Madre con 48h de maduración lenta, elaborada con ingredientes nobles del Maule.
-                </p>
+              <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start">
+                <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
+                <div>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Rentabilidad Garantizada</p>
+                  <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
+                    Nuestras masas selladas al vacío reducen tus tiempos de operación y garantizan una calidad constante que tus clientes amarán.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Columna Derecha: Pizzas Congeladas */}
           <div className="space-y-10">
-            <div className="flex items-center gap-4 mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Pizzas Congeladas</h3>
+            <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
+               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Solución Gourmet:</h3>
+               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para vender</span>
             </div>
 
             <div className="space-y-8">
                {WHOLESALE_DATA.frozenPizzas.prices.map((p, idx) => (
                  <div key={idx} className="group">
                     <div className="flex justify-between items-center mb-3">
-                      <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider">{p.size}</span>
+                      <div>
+                        <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider block">{p.size}</span>
+                        <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado</span>
+                      </div>
                       <div className="text-right">
                         <span className="font-heading text-4xl text-vivazza-stone block leading-none">{formatCLP(p.price)}</span>
                         <span className="text-[9px] text-gray-400 font-bold uppercase">IVA incl.</span>
@@ -190,7 +199,9 @@ const Wholesale: React.FC = () => {
             </div>
 
             <div className="pt-6">
-              <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4">Selecciona Sabores de Interés:</p>
+              <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4 flex items-center gap-2">
+                <Zap size={14} className="text-vivazza-gold" /> Sabores de alta rotación:
+              </p>
               <div className="flex flex-wrap gap-2">
                 {WHOLESALE_DATA.frozenPizzas.flavors.map((flavor, idx) => (
                   <button 
@@ -204,81 +215,88 @@ const Wholesale: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-8 text-center">
-              <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">Compra mínima {WHOLESALE_DATA.frozenPizzas.minOrder} unidades</p>
+            <div className="pt-8 text-center bg-gray-50 rounded-3xl p-6 border border-dashed border-gray-200">
+              <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">PEDIDO MÍNIMO: {WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Garantizamos stock inmediato para tu reposición</p>
             </div>
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-8">
-            <div className="max-w-xl mx-auto">
-              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">SOLICITA TU <span className="text-vivazza-gold">COTIZACIÓN</span></h4>
-              <p className="text-gray-400 text-lg font-medium leading-relaxed">
-                Únete a nuestra red de distribución. Calidad artesanal para tu negocio con los mejores precios del mercado.
+        {/* CTA Section Re-diseñado */}
+        <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-10">
+            <div className="max-w-2xl mx-auto">
+              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¿LISTO PARA <span className="text-vivazza-gold">VENDER MÁS?</span></h4>
+              <p className="text-gray-400 text-lg font-medium leading-relaxed mb-8">
+                No pierdas más ventas por falta de stock o calidad inconsistente. Asegura hoy el suministro de la mejor pizza artesanal de Talca.
               </p>
             </div>
             
-            <button 
-              onClick={handleWholesaleWhatsApp}
-              className="group relative inline-flex items-center justify-center px-12 py-6 bg-vivazza-red text-white rounded-2xl font-heading text-3xl shadow-red active:scale-95 transition-all overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-              <span className="relative flex items-center gap-4">
-                <Send size={28} /> CONTACTAR VENTAS MAYORISTA
-              </span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <button 
+                onClick={handleWholesaleWhatsApp}
+                className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 bg-vivazza-red text-white rounded-2xl font-heading text-3xl shadow-red active:scale-95 transition-all overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                <span className="relative flex items-center gap-4">
+                  <MessageCircle size={28} /> AGENDAR POR WHATSAPP
+                </span>
+              </button>
+              
+              <p className="text-white/40 text-xs font-black uppercase tracking-widest sm:max-w-[150px] leading-tight text-center sm:text-left">
+                Respuesta inmediata en horario comercial
+              </p>
+            </div>
         </div>
       </div>
 
-      {/* Floating Action Bar (Visible when selection exists) */}
-      <div className={`fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg transition-all duration-500 transform ${hasSelection ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}>
-        <div className="bg-vivazza-stone text-white rounded-[2rem] p-4 pr-6 shadow-premium border border-white/10 flex items-center justify-between gap-4 backdrop-blur-xl">
-          <div className="flex items-center gap-4 pl-2">
-            <div className="w-12 h-12 rounded-full bg-vivazza-red flex items-center justify-center shadow-red animate-pulse">
-              <Package size={24} />
+      {/* Floating Action Bar Optimizada */}
+      <div className={`fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-lg transition-all duration-700 transform ${hasSelection ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-32 opacity-0 scale-90 pointer-events-none'}`}>
+        <div className="bg-white text-vivazza-stone rounded-[2.5rem] p-5 pr-6 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 pl-3">
+            <div className="w-14 h-14 rounded-2xl bg-vivazza-red text-white flex items-center justify-center shadow-red animate-pulse">
+              <Package size={28} />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-gold">Cotización Lista</p>
-              <p className="text-lg font-heading leading-none">{totalItems} UNIDADES SELECCIONADAS</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Cotización Mayorista</p>
+              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades Seleccionadas</p>
             </div>
           </div>
           <button 
             onClick={handleWholesaleWhatsApp}
-            className="bg-white text-vivazza-stone px-6 py-3 rounded-xl font-heading text-xl flex items-center gap-2 hover:bg-vivazza-gold transition-colors active:scale-95"
+            className="bg-vivazza-stone text-white px-8 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 hover:bg-stone-800 transition-colors active:scale-95"
           >
-            ENVIAR <ArrowRight size={20} />
+            SOLICITAR <ArrowRight size={22} />
           </button>
         </div>
       </div>
 
-      {/* Footer Info Cards */}
+      {/* Footer Info Cards Persuasivas */}
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4 pt-12">
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-md transition-shadow">
-          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:scale-110 transition-transform"><ClipboardList size={32} /></div>
+        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
+          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ClipboardList size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Facturación</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight">Emitimos Factura (SII) para empresas</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Administración Fácil</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Facturamos de inmediato para tu control contable.</p>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-md transition-shadow">
-          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:scale-110 transition-transform"><Package size={32} /></div>
+        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
+          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><Zap size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Logística</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight">Despacho garantizado en Talca y alrededores</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Logística Ágil</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo a tu puerta en Talca y zonas Maule.</p>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-md transition-shadow">
-          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:scale-110 transition-transform"><CheckCircle2 size={32} /></div>
+        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
+          <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Nuestro Sello</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight">Masa Madre 48h madurada con insumos del Maule</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">El Sello de Calidad</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Garantiza el sabor único de masa madre 48h en tu menú.</p>
           </div>
         </div>
       </div>
 
       <div className="text-center mt-20 opacity-30 px-6">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Talca // Chile</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu socio gourmet en el Maule</p>
       </div>
     </div>
   );
