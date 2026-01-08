@@ -43,9 +43,9 @@ const Wholesale: React.FC = () => {
   }, [selectedPacks, selectedFrozen]);
 
   const handleWholesaleWhatsApp = () => {
-    let message = `🤝 *INTERÉS MAYORISTA VIVAZZA - PEDIDO INMEDIATO*\n`;
+    let message = `🤝 *PEDIDO MAYORISTA VIVAZZA - PRIORIDAD ALTA*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-    message += `Hola! Quiero elevar la calidad de mi negocio con Vivazza. Mi selección:\n\n`;
+    message += `Hola! Quiero asegurar el stock para mi negocio. Mi selección es la siguiente:\n\n`;
 
     let hasContent = false;
 
@@ -74,10 +74,10 @@ const Wholesale: React.FC = () => {
     }
 
     if (!hasContent) {
-      message = `Hola! Me interesa conocer los precios mayoristas y convertirme en distribuidor oficial de Vivazza.`;
+      message = `Hola! Me interesa conocer los precios mayoristas y agendar mi primer pedido para ser distribuidor de Vivazza.`;
     } else {
       message += `━━━━━━━━━━━━━━━━━━━━\n`;
-      message += `✅ _Deseo agendar la entrega y coordinar el pago a la brevedad._`;
+      message += `🚀 *Solicito agendar entrega hoy mismo si es posible.*`;
     }
 
     const url = `https://wa.me/${VIVAZZA_PHONE}?text=${encodeURIComponent(message)}`;
@@ -93,9 +93,9 @@ const Wholesale: React.FC = () => {
         {/* Header Estratégico */}
         <div className="relative z-10 p-12 text-center border-b border-gray-100 bg-gradient-to-b from-vivazza-cream/30 to-white">
            <div className="w-16 h-1.5 bg-vivazza-red/40 mx-auto mb-6 rounded-full"></div>
-           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Socio Estratégico para tu Negocio</p>
+           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Asegura hoy el suministro premium para tu negocio</p>
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
-             MASAS Y PIZZAS <br/><span className="text-vivazza-red">PARA DISTRIBUCIÓN</span>
+             MASAS Y PIZZAS <br/><span className="text-vivazza-red">DISTRIBUCIÓN INMEDIATA</span>
            </h2>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/50"></span>
@@ -120,7 +120,7 @@ const Wholesale: React.FC = () => {
                   <div className="flex justify-between items-center mb-3">
                     <div>
                       <span className="text-lg font-bold text-vivazza-stone block">{pack.name}</span>
-                      <span className="text-[10px] text-gray-400 font-medium">Ideal para hornos rápidos</span>
+                      <span className="text-[10px] text-gray-400 font-medium">Resultados profesionales en minutos</span>
                     </div>
                     <div className="text-right">
                       <span className="font-heading text-3xl text-vivazza-red block leading-none">{formatCLP(pack.price)}</span>
@@ -147,12 +147,12 @@ const Wholesale: React.FC = () => {
             </div>
 
             <div className="pt-8">
-              <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start">
+              <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start shadow-sm">
                 <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
                 <div>
-                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Calidad Premium Garantizada</p>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Máxima Rentabilidad</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                    Nuestras masas con 48h de maduración lenta reducen tus tiempos de operación y garantizan una calidad constante que tus clientes amarán.
+                    Nuestras masas con 48h de reposo artesanal garantizan una base ligera, crujiente y de fácil digestión, elevando el estándar de tu menú.
                   </p>
                 </div>
               </div>
@@ -163,7 +163,7 @@ const Wholesale: React.FC = () => {
           <div className="space-y-10">
             <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
                <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Solución Gourmet:</h3>
-               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para vender</span>
+               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listas para hornear</span>
             </div>
 
             <div className="space-y-8">
@@ -172,7 +172,7 @@ const Wholesale: React.FC = () => {
                     <div className="flex justify-between items-center mb-3">
                       <div>
                         <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider block">{p.size}</span>
-                        <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado</span>
+                        <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado premium</span>
                       </div>
                       <div className="text-right">
                         <span className="font-heading text-4xl text-vivazza-stone block leading-none">{formatCLP(p.price)}</span>
@@ -217,17 +217,17 @@ const Wholesale: React.FC = () => {
 
             <div className="pt-8 text-center bg-gray-50 rounded-3xl p-6 border border-dashed border-gray-200">
               <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">PEDIDO MÍNIMO: {WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</p>
-              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Garantizamos stock inmediato para tu reposición</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Aseguramos la reposición constante para tu local</p>
             </div>
           </div>
         </div>
 
-        {/* CTA Section Re-diseñado */}
+        {/* CTA Section Re-diseñado para Conversión Rápida */}
         <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-10">
             <div className="max-w-2xl mx-auto">
-              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¿LISTO PARA <span className="text-vivazza-gold">VENDER MÁS?</span></h4>
+              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¿LISTO PARA <span className="text-vivazza-gold">VENDER CALIDAD?</span></h4>
               <p className="text-gray-400 text-lg font-medium leading-relaxed mb-8">
-                No pierdas más ventas por falta de stock o calidad inconsistente. Asegura hoy el suministro de la mejor pizza artesanal para tu negocio.
+                No permitas que tu negocio se detenga. Asegura hoy el suministro de la pizza que todos están pidiendo en Talca.
               </p>
             </div>
             
@@ -238,13 +238,16 @@ const Wholesale: React.FC = () => {
               >
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 <span className="relative flex items-center gap-4">
-                  <MessageCircle size={28} /> AGENDAR POR WHATSAPP
+                  <MessageCircle size={28} /> PEDIR STOCK AHORA
                 </span>
               </button>
               
-              <p className="text-white/40 text-xs font-black uppercase tracking-widest sm:max-w-[150px] leading-tight text-center sm:text-left">
-                Respuesta inmediata en horario comercial
-              </p>
+              <div className="flex flex-col items-center sm:items-start text-left">
+                <p className="text-white/60 text-xs font-black uppercase tracking-widest leading-tight">
+                  Soporte B2B 24/7
+                </p>
+                <p className="text-vivazza-gold text-[10px] font-bold">Respuesta prioritaria mayorista</p>
+              </div>
             </div>
         </div>
       </div>
@@ -257,15 +260,15 @@ const Wholesale: React.FC = () => {
               <Package size={28} />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Cotización Mayorista</p>
-              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades Seleccionadas</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Confirmar Selección</p>
+              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades para mi local</p>
             </div>
           </div>
           <button 
             onClick={handleWholesaleWhatsApp}
             className="bg-vivazza-stone text-white px-8 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 hover:bg-stone-800 transition-colors active:scale-95"
           >
-            SOLICITAR <ArrowRight size={22} />
+            ENVIAR <ArrowRight size={22} />
           </button>
         </div>
       </div>
@@ -276,27 +279,27 @@ const Wholesale: React.FC = () => {
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ClipboardList size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Administración Fácil</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Facturamos de inmediato para tu control contable.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Facturación inmediata para optimizar tu flujo contable.</p>
           </div>
         </div>
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><Zap size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Logística Ágil</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo a tu puerta en Talca y zonas aledañas.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo y seguro en Talca y zonas aledañas.</p>
           </div>
         </div>
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">El Sello de Calidad</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Garantiza el sabor único de una maduración lenta de 48h en tu menú.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Sabor superior gracias al reposo artesanal de 48h en frío.</p>
           </div>
         </div>
       </div>
 
       <div className="text-center mt-20 opacity-30 px-6">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu socio gourmet</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu aliado estratégico</p>
       </div>
     </div>
   );
