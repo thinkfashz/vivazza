@@ -194,11 +194,15 @@ const Wholesale: React.FC = () => {
           </div>
 
           <div className="space-y-10">
-            <div className="flex items-center justify-between mb-4 border-b border-blue-100 pb-4">
-               <h3 className="font-heading text-4xl text-blue-600 uppercase leading-none flex items-center gap-2">
-                 <Snowflake className="animate-spin-slow text-blue-400" size={24} /> Pizzas congeladas:
-               </h3>
-               <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-100 animate-ice-glow">Ultra Congelado</span>
+            {/* Título modificado para igualar tamaño y estructura del Pack de Masas */}
+            <div className="flex flex-col mb-4 border-b border-blue-100 pb-6">
+               <div className="flex items-center justify-between mb-4">
+                 <h3 className="font-heading text-2xl text-vivazza-stone uppercase leading-none opacity-60 flex items-center gap-2">
+                   <Snowflake className="animate-spin-slow text-blue-400" size={20} /> Nuestra Selección Fría:
+                 </h3>
+                 <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-100 animate-ice-glow">Ultra Congelado</span>
+               </div>
+               <p className="text-blue-600 font-heading text-6xl md:text-7xl uppercase mt-4 tracking-tighter drop-shadow-md animate-fade-in">Pizzas congeladas</p>
             </div>
 
             <div className="space-y-8">
@@ -262,12 +266,14 @@ const Wholesale: React.FC = () => {
             {/* Pedido Mínimo Destacado */}
             <div className="pt-8 text-center bg-blue-50/50 rounded-3xl p-8 border-2 border-blue-200 shadow-inner relative group/min animate-ice-glow-intense duration-[3000ms] hover:animate-none transition-all">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-blue-200">
-                Stock Mayorista Congelado
+                Stock Mayorista
               </div>
               <p className="font-heading text-5xl md:text-6xl text-blue-600 uppercase tracking-tight leading-none mb-2">
                 PEDIDO MÍNIMO: <span className="underline decoration-blue-200 decoration-4">{WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</span>
               </p>
-              <p className="text-[11px] text-blue-400 font-black uppercase tracking-widest leading-none">Asegura la frescura gélida en tu local</p>
+              <p className="text-[11px] text-blue-400 font-black uppercase tracking-widest leading-relaxed px-4">
+                La distinción del sabor artesanal lista para servir: fideliza a tus clientes con una experiencia superior.
+              </p>
             </div>
           </div>
         </div>
