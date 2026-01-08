@@ -80,7 +80,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Pepperoni',
     description: 'Mozzarella, salsa artesanal de la casa y pepperoni seleccionado.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80',
     type: 'traditional',
     calories: 920,
     ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Pepperoni']
@@ -90,7 +90,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Margherita',
     description: 'Mozzarella, salsa artesanal de la casa y pesto de albahaca fresca.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80',
     type: 'traditional',
     calories: 750,
     ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Pesto Albahaca']
@@ -100,7 +100,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Fugazza',
     description: 'Mozzarella, salsa artesanal de la casa, cebolla y aceitunas sevillanas.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80',
     type: 'traditional',
     calories: 840,
     ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Cebolla', 'Aceitunas']
@@ -110,7 +110,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Vegetariana',
     description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, champiñones y albahaca fresca.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',
     type: 'traditional',
     calories: 680,
     ingredientsList: ['Tomate Cherry', 'Champiñones', 'Albahaca']
@@ -120,7 +120,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Napolitana',
     description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón y un toque de orégano rústico.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80',
     type: 'special',
     calories: 880,
     ingredientsList: ['Mozzarella', 'Tomate Cherry', 'Jamón', 'Orégano']
@@ -130,7 +130,7 @@ export const PIZZAS: Pizza[] = [
     name: 'Hawái',
     description: 'Mozzarella, salsa artesanal de la casa, jamón y piña.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80',
     type: 'traditional',
     calories: 820,
     ingredientsList: ['Jamón', 'Piña', 'Mozzarella']
@@ -140,7 +140,7 @@ export const PIZZAS: Pizza[] = [
     name: 'La "Vivazza"',
     description: 'Mozzarella, salsa artesanal de la casa, tocino ahumado, cebolla morada y aceitunas sevillanas.',
     price: 7190,
-    image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=80',
     type: 'special',
     calories: 950,
     ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Tocino Ahumado', 'Cebolla Morada', 'Aceitunas']
@@ -148,8 +148,8 @@ export const PIZZAS: Pizza[] = [
 ];
 
 export const EXTRAS: ExtraItem[] = [
-  { id: 'e1', name: 'Garlic Knots (4u)', price: 3500, category: 'side', image: 'https://images.unsplash.com/photo-1619531006597-827299052061?auto=format&fit=crop&w=400&q=80' },
-  { id: 'e2', name: 'Coca-Cola 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80' },
+  { id: 'e1', name: 'Garlic Knots (4u)', price: 3500, category: 'side', image: 'https://images.unsplash.com/photo-1619531006597-827299052061?auto=format&fit=crop&w=300&q=80' },
+  { id: 'e2', name: 'Coca-Cola 1.5L', price: 2500, category: 'drink', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80' },
 ];
 
 export const COUPONS: Coupon[] = [

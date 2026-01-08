@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80";
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80";
 
 interface ImageWithFallbackProps {
   src: string;
@@ -63,11 +63,13 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? "eager" : "lazy"}
-        className={`${imgStyle} transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        decoding="async"
+        fetchPriority={priority ? "high" : "auto"}
+        className={`${imgStyle} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} will-change-transform`}
         style={!fill ? { width: width || '100%', height: height || 'auto' } : {}}
       />
     </div>
   );
 };
 
-export default ImageWithFallback;
+export default React.memo(ImageWithFallback);

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Pizza } from '../types';
 import { formatCLP } from '../utils';
 import { Info, Plus, Check } from 'lucide-react';
@@ -18,7 +18,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
   const [isAdded, setIsAdded] = useState(false);
   const isPriority = index < 3;
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     onAdd(pizza);
     setIsAdded(true);
     
@@ -31,17 +31,17 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
     setTimeout(() => {
       setIsAdded(false);
     }, 1500);
-  };
+  }, [onAdd, pizza]);
 
   return (
-    <div className={`bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group flex flex-col md:flex-row border ${isAdded ? 'border-vivazza-red scale-[1.02] shadow-red' : 'border-gray-100/50'}`}>
-      <div className="md:w-2/5 relative h-56 md:h-auto overflow-hidden">
+    <div className={`bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group flex flex-col md:flex-row border will-change-transform ${isAdded ? 'border-vivazza-red scale-[1.01] shadow-red' : 'border-gray-100/50'}`}>
+      <div className="md:w-2/5 relative h-52 md:h-auto overflow-hidden">
         <ImageWithFallback 
           src={pizza.image} 
           alt={pizza.name} 
           fill
           priority={isPriority}
-          className="group-hover:scale-110 transition-transform duration-1000 ease-out" 
+          className="group-hover:scale-105 transition-transform duration-500 ease-out" 
         />
         {pizza.type === 'special' && (
           <div className="absolute top-4 left-4 bg-vivazza-gold text-vivazza-stone text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-[0.15em] shadow-xl z-10 backdrop-blur-sm">
@@ -57,12 +57,12 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
               {pizza.name}
             </h4>
           </div>
-          <p className="text-gray-500 text-sm line-clamp-3 mb-6 font-medium leading-relaxed">
+          <p className="text-gray-500 text-sm line-clamp-2 mb-4 font-medium leading-relaxed">
             {pizza.description}
           </p>
         </div>
         
-        <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Precio (IVA incl.)</span>
             <span className="font-heading text-3xl text-vivazza-red leading-none">
@@ -70,26 +70,26 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
             </span>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button 
               onClick={() => onViewDetails(pizza)}
-              className="p-3 text-vivazza-stone hover:bg-vivazza-cream rounded-2xl transition-all duration-300 border border-transparent hover:border-vivazza-gold/30 shadow-sm"
+              className="p-2.5 text-vivazza-stone hover:bg-vivazza-cream rounded-xl transition-colors border border-transparent hover:border-vivazza-gold/30"
               aria-label="Ver detalles"
             >
-              <Info size={22} />
+              <Info size={20} />
             </button>
             <button 
               onClick={handleAdd}
-              className={`${isAdded ? 'bg-green-600' : 'bg-vivazza-red'} text-white p-4 rounded-2xl shadow-red hover:opacity-90 active:scale-90 transition-all duration-300 group/btn relative overflow-hidden`}
+              className={`${isAdded ? 'bg-green-600' : 'bg-vivazza-red'} text-white p-3.5 rounded-xl shadow-red hover:opacity-95 active:scale-90 transition-all duration-200 group/btn relative overflow-hidden`}
               aria-label="Agregar al carrito"
             >
-              <div className={`transition-transform duration-300 ${isAdded ? 'scale-0' : 'scale-100'}`}>
-                <Plus size={24} className="group-hover/btn:rotate-90 transition-transform duration-300" />
+              <div className={`transition-transform duration-200 ${isAdded ? 'scale-0' : 'scale-100'}`}>
+                <Plus size={22} className="group-hover/btn:rotate-90 transition-transform duration-200" />
               </div>
               
               {isAdded && (
-                <div className="absolute inset-0 flex items-center justify-center animate-in zoom-in duration-300">
-                  <Check size={24} />
+                <div className="absolute inset-0 flex items-center justify-center animate-in zoom-in duration-200">
+                  <Check size={22} />
                 </div>
               )}
             </button>
@@ -100,4 +100,4 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
   );
 };
 
-export default PizzaCard;
+export default React.memo(PizzaCard);
