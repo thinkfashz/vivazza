@@ -42,7 +42,6 @@ export default function App() {
       }
     }
 
-    // Nivel 1: Simulación de escasez (FOMO)
     const stockTimer = setInterval(() => {
       setStockCount(prev => (prev > 3 ? prev - 1 : prev));
     }, 45000);
@@ -136,14 +135,13 @@ export default function App() {
     <div className="min-h-screen bg-grain flex flex-col pb-24 md:pb-0">
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       
-      {/* Ticker Nivel 1: Social Proof */}
       <div className="bg-vivazza-stone text-white py-2 overflow-hidden whitespace-nowrap hidden md:block border-b border-white/10">
         <div className="animate-marquee inline-block">
           <span className="mx-4 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
             <Users size={12} className="text-vivazza-red" /> +15 pedidos saliendo hoy en Talca
           </span>
           <span className="mx-4 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
-            <Flame size={12} className="text-vivazza-gold" /> Masa madre fermentada 48 horas
+            <Flame size={12} className="text-vivazza-gold" /> Receta de 48h de reposo artesanal
           </span>
           <span className="mx-4 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
             <Users size={12} className="text-vivazza-red" /> Rodrigo acaba de pedir una Margarita
@@ -151,7 +149,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Desktop Navigation */}
       <nav className="hidden md:block sticky top-0 z-30 bg-vivazza-cream/90 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -166,7 +163,7 @@ export default function App() {
               <button onClick={() => handleNavChange('menu')} className={`font-heading text-lg transition-colors ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>CARTA</button>
               <button onClick={() => handleNavChange('lab')} className={`font-heading text-lg transition-colors ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA LAB</button>
               <button onClick={() => handleNavChange('game')} className={`font-heading text-lg transition-colors ${activeSection === 'game' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA BREAKER</button>
-              <button onClick={() => handleNavChange('wholesale')} className={`font-heading text-lg transition-colors ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>B2B MAYORISTAS</button>
+              <button onClick={() => handleNavChange('wholesale')} className={`font-heading text-lg transition-colors ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>DISTRIBUIDORES</button>
             </div>
 
             <div className="flex items-center gap-6">
@@ -185,7 +182,6 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between px-6 h-16 bg-vivazza-cream/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20">
          <h1 className="font-heading text-3xl text-vivazza-red tracking-tight" onClick={() => handleNavChange('menu')}>VIVAZZA</h1>
          <div className="flex gap-4">
@@ -198,7 +194,6 @@ export default function App() {
         
         {activeSection === 'menu' && (
           <div className="space-y-12 animate-fade-in-up">
-            {/* Hero Nivel 1: Urgencia (FOMO) */}
             <div className="relative rounded-[2.5rem] overflow-hidden bg-vivazza-stone text-white p-6 md:p-16 mb-8 shadow-premium group">
               <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/40 to-transparent z-10"></div>
               <div className="relative z-20 max-w-2xl">
@@ -208,7 +203,7 @@ export default function App() {
                   </span>
                 </div>
                 <h2 className="font-heading text-6xl md:text-8xl mb-4 leading-none text-white tracking-tighter uppercase">EL ARTE DE UNA <br/><span className="text-vivazza-red">BUENA PIZZA</span></h2>
-                <p className="font-medium text-gray-300 text-lg mb-8 max-w-md">El equilibrio perfecto entre textura, aroma y sabor.</p>
+                <p className="font-medium text-gray-300 text-lg mb-8 max-w-md">El equilibrio perfecto entre textura, aroma y sabor artesanal.</p>
                 <div className="flex flex-wrap gap-4">
                   <button onClick={() => { playUISound(880); window.scrollTo({top: 800, behavior: 'smooth'}); }} className="bg-vivazza-red text-white px-10 py-4 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 duration-200">
                     HACER MI PEDIDO
@@ -221,7 +216,6 @@ export default function App() {
               <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1950&q=80" alt="Pizza artesanal" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" />
             </div>
 
-            {/* Menu Grid */}
             <section id="carta">
               <h3 className="font-heading text-4xl text-vivazza-stone uppercase tracking-tight mb-8">Selección Artesanal</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -234,7 +228,6 @@ export default function App() {
               </div>
             </section>
 
-            {/* Nivel 3: Geolocalización y Confianza */}
             <section className="pt-12 border-t border-gray-100">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div className="bg-vivazza-cream p-8 md:p-12 rounded-[3rem] border border-vivazza-gold/20 shadow-sm animate-fade-in-up">
@@ -286,7 +279,6 @@ export default function App() {
 
       </main>
 
-      {/* Bottom Nav Mobile */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-lg border-t border-gray-200 px-6 py-2 pb-safe-bottom z-40 flex justify-between items-center shadow-lg">
         <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
           <Home size={22} />

@@ -7,13 +7,13 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Vivazza | Pizzería Artesanal Talca",
-  description: "La mejor pizza artesanal de Talca. Especialistas en masa madre fermentada 48 horas e ingredientes premium locales del Maule.",
-  keywords: ["pizza talca", "delivery pizza talca", "pizza artesanal", "masa madre talca", "pizzería maule"],
+  description: "La mejor pizza artesanal de Talca. Especialistas en reposo artesanal de 48 horas e ingredientes premium seleccionados.",
+  keywords: ["pizza talca", "delivery pizza talca", "pizza artesanal", "reposo artesanal talca", "pizzería maule"],
   manifest: "/manifest.json",
   authors: [{ name: "Vivazza Team" }],
   openGraph: {
     title: "Vivazza | Pizzería Artesanal Talca",
-    description: "Masa madre, ingredientes premium y delivery de alta gama.",
+    description: "Reposo artesanal, ingredientes premium y delivery de alta gama.",
     url: "https://vivazza.cl",
     siteName: "Vivazza",
     images: [
@@ -54,7 +54,7 @@ export default function RootLayout({
     "@type": "Restaurant",
     "name": "Vivazza Pizzería",
     "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
-    "description": "Pizzería artesanal de alta gama en Talca. Especialistas en masa madre fermentada 48 horas e ingredientes premium locales.",
+    "description": "Pizzería artesanal de alta gama en Talca. Especialistas en reposo artesanal de 48 horas e ingredientes premium seleccionados.",
     "servesCuisine": ["Pizza", "Italiana", "Artesanal"],
     "address": {
       "@type": "PostalAddress",

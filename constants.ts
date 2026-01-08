@@ -16,7 +16,7 @@ export const VIVAZZA_LOCATION = {
 };
 
 export const REVIEWS = [
-  { id: 1, name: "Carolina M.", text: "La mejor masa madre de Talca, por lejos. Se nota el levado de 48h porque es súper ligera.", rating: 5, date: "Hace 2 días" },
+  { id: 1, name: "Carolina M.", text: "La mejor pizza de Talca, por lejos. Se nota el reposo artesanal porque es súper ligera.", rating: 5, date: "Hace 2 días" },
   { id: 2, name: "Juan Pablo S.", text: "El envío a Las Rastras llegó perfecto. La Margarita es un 10/10.", rating: 5, date: "Hace 1 semana" },
   { id: 3, name: "Ignacio R.", text: "Pedí por el Pizza Lab y fue genial armarla a mi pinta. Ingredientes muy frescos.", rating: 4, date: "Hace 3 días" },
   { id: 4, name: "Valentina D.", text: "Adicta a los Garlic Knots. Es mi pedido fijo de todos los viernes.", rating: 5, date: "Ayer" },
@@ -70,7 +70,7 @@ export const INGREDIENTS: Ingredient[] = [
 ];
 
 export const DOUGHS: Dough[] = [
-  { id: 'trad', name: 'Masa Madre 48h', price: 0, calories: 250, description: 'Borde alveolado, centro delgado. El estándar napolitano.' },
+  { id: 'trad', name: 'Reposo Artesanal 48h', price: 0, calories: 250, description: 'Borde alveolado, centro delgado. El estándar napolitano.' },
   { id: 'inte', name: 'Masa Integral', price: 1000, calories: 210, description: 'Mezcla de granos seleccionados para un sabor más rústico.' },
 ];
 

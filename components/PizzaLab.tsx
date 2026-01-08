@@ -47,7 +47,7 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
       <div className="bg-white rounded-[3rem] p-8 md:p-12 mb-12 shadow-xl border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8">
         <div>
           <h2 className="font-heading text-5xl md:text-7xl mb-2 text-vivazza-stone uppercase leading-none">PIZZA <span className="text-vivazza-red">LAB</span></h2>
-          <p className="text-gray-500 font-medium max-w-md">Diseña tu obra maestra. Masa madre estirada a mano e ingredientes premium.</p>
+          <p className="text-gray-500 font-medium max-w-md">Diseña tu obra maestra. Masa estirada a mano e ingredientes premium.</p>
         </div>
         <div className="bg-vivazza-cream border border-vivazza-gold/20 rounded-[2.5rem] p-8 text-center min-w-[280px] shadow-inner">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total (IVA incluido)</p>
@@ -59,19 +59,12 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Simulador Realista */}
         <div className="lg:col-span-5 flex flex-col items-center">
           <div className="sticky top-24 w-full max-w-md">
             <div className="relative w-full aspect-square bg-gray-50 rounded-[3rem] border border-gray-100 shadow-inner flex items-center justify-center p-8 overflow-hidden">
-               {/* Sombra de la pizza */}
                <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(0,0,0,0.05)_0%,transparent_70%)] pointer-events-none" />
-               
-               {/* Masa (Dough) */}
                <div className="relative w-full h-full rounded-full bg-[#E5BA73] border-[12px] border-[#C69749] shadow-2xl transition-all duration-500 transform group hover:rotate-6">
-                  {/* Salsa de Tomate */}
                   <div className="absolute inset-4 rounded-full bg-[#A61D24] opacity-90 border-4 border-[#8B151A]" />
-                  
-                  {/* Renderizado de Ingredientes "Realistas" */}
                   <div className="absolute inset-6">
                     {selectedIngredients.map((ing, idx) => (
                       <div key={ing.id} className="absolute w-full h-full">
@@ -92,24 +85,19 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
                       </div>
                     ))}
                   </div>
-                  
-                  {/* Queso Fundido (Simulado) */}
                   <div className="absolute inset-6 rounded-full bg-[#FDE68A]/30 mix-blend-overlay" />
                </div>
-               
                <div className="absolute bottom-10 bg-vivazza-stone text-white text-[10px] font-black px-6 py-2 rounded-full uppercase tracking-widest">
                  Masa: {selectedDough.name}
                </div>
             </div>
-            
             <div className="mt-8 bg-blue-50 p-6 rounded-3xl border border-blue-100 flex gap-4 items-start">
               <span className="text-blue-500 flex-shrink-0"><Info size={20} /></span>
-              <p className="text-xs text-blue-700 font-medium leading-relaxed">Cada pizza es preparada artesanalmente. El aspecto final puede variar ligeramente, pero el sabor es siempre premium.</p>
+              <p className="text-xs text-blue-700 font-medium leading-relaxed">Cada pizza es preparada artesanalmente con reposo de 48h. El aspecto final puede variar, el sabor es siempre premium.</p>
             </div>
           </div>
         </div>
 
-        {/* Opciones de Selección */}
         <div className="lg:col-span-7 space-y-12">
           <section>
             <div className="flex items-center gap-3 mb-6">

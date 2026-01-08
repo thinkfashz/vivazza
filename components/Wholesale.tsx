@@ -43,15 +43,15 @@ const Wholesale: React.FC = () => {
   }, [selectedPacks, selectedFrozen]);
 
   const handleWholesaleWhatsApp = () => {
-    let message = `🤝 *PEDIDO MAYORISTA VIVAZZA - PRIORIDAD ALTA*\n`;
+    let message = `🤝 *INTERÉS DISTRIBUIDOR VIVAZZA - PEDIDO PRIORITARIO*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-    message += `Hola! Quiero asegurar el stock para mi negocio. Mi selección es la siguiente:\n\n`;
+    message += `Hola! Quiero convertirme en distribuidor y asegurar stock. Mi selección:\n\n`;
 
     let hasContent = false;
 
     const packs = Object.entries(selectedPacks).filter(([_, qty]) => (qty as number) > 0);
     if (packs.length > 0) {
-      message += `📦 *PACKS DE MASAS:*\n`;
+      message += `📦 *PACKS DE MASAS (Con Pomodoro):*\n`;
       packs.forEach(([name, qty]) => {
         message += `• ${qty}x ${name}\n`;
       });
@@ -74,10 +74,10 @@ const Wholesale: React.FC = () => {
     }
 
     if (!hasContent) {
-      message = `Hola! Me interesa conocer los precios mayoristas y agendar mi primer pedido para ser distribuidor de Vivazza.`;
+      message = `Hola! Quiero recibir la lista de precios mayorista y convertirme en distribuidor oficial de Vivazza.`;
     } else {
       message += `━━━━━━━━━━━━━━━━━━━━\n`;
-      message += `🚀 *Solicito agendar entrega hoy mismo si es posible.*`;
+      message += `🚀 *Solicito agendar entrega y coordinar pago de inmediato.*`;
     }
 
     const url = `https://wa.me/${VIVAZZA_PHONE}?text=${encodeURIComponent(message)}`;
@@ -86,16 +86,14 @@ const Wholesale: React.FC = () => {
 
   return (
     <div className="animate-fade-in-up space-y-12 pb-32">
-      {/* Carta Digital al Estilo Menú Físico */}
       <div className="max-w-4xl mx-auto bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative">
         <div className="absolute inset-0 opacity-50 pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
 
-        {/* Header Estratégico */}
         <div className="relative z-10 p-12 text-center border-b border-gray-100 bg-gradient-to-b from-vivazza-cream/30 to-white">
            <div className="w-16 h-1.5 bg-vivazza-red/40 mx-auto mb-6 rounded-full"></div>
-           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Asegura hoy el suministro premium para tu negocio</p>
+           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Aumenta tus ingresos con un producto premium</p>
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
-             MASAS Y PIZZAS <br/><span className="text-vivazza-red">DISTRIBUCIÓN INMEDIATA</span>
+             MASAS Y PIZZAS <br/><span className="text-vivazza-red">PARA DISTRIBUIDORES</span>
            </h2>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/50"></span>
@@ -104,14 +102,12 @@ const Wholesale: React.FC = () => {
            </div>
         </div>
 
-        {/* Cuerpo del Menú con Copy Persuasivo */}
         <div className="relative z-10 p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
           
-          {/* Columna Izquierda: Packs de Masas */}
           <div className="space-y-10">
             <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Aprovisiona tu Local:</h3>
-               <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Lo más rentable</span>
+               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Conviértete en distribuidor Vivazza:</h3>
+               <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Alta Rentabilidad</span>
             </div>
             
             <div className="space-y-8">
@@ -120,7 +116,7 @@ const Wholesale: React.FC = () => {
                   <div className="flex justify-between items-center mb-3">
                     <div>
                       <span className="text-lg font-bold text-vivazza-stone block">{pack.name}</span>
-                      <span className="text-[10px] text-gray-400 font-medium">Resultados profesionales en minutos</span>
+                      <span className="text-[10px] text-vivazza-red font-bold uppercase tracking-tight">Incluye salsa Pomodoro de la casa</span>
                     </div>
                     <div className="text-right">
                       <span className="font-heading text-3xl text-vivazza-red block leading-none">{formatCLP(pack.price)}</span>
@@ -150,20 +146,19 @@ const Wholesale: React.FC = () => {
               <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start shadow-sm">
                 <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
                 <div>
-                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Máxima Rentabilidad</p>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Garantía de Sabor</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                    Nuestras masas con 48h de reposo artesanal garantizan una base ligera, crujiente y de fácil digestión, elevando el estándar de tu menú.
+                    Nuestras masas con 48h de reposo artesanal te permiten ofrecer una pizza ligera y crujiente con el mínimo esfuerzo operativo.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha: Pizzas Congeladas */}
           <div className="space-y-10">
             <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
                <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Solución Gourmet:</h3>
-               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listas para hornear</span>
+               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para servir</span>
             </div>
 
             <div className="space-y-8">
@@ -217,17 +212,16 @@ const Wholesale: React.FC = () => {
 
             <div className="pt-8 text-center bg-gray-50 rounded-3xl p-6 border border-dashed border-gray-200">
               <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">PEDIDO MÍNIMO: {WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</p>
-              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Aseguramos la reposición constante para tu local</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Garantiza el abastecimiento de tu negocio hoy</p>
             </div>
           </div>
         </div>
 
-        {/* CTA Section Re-diseñado para Conversión Rápida */}
         <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-10">
             <div className="max-w-2xl mx-auto">
-              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¿LISTO PARA <span className="text-vivazza-gold">VENDER CALIDAD?</span></h4>
+              <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¡IMPULSA <span className="text-vivazza-gold">TU NEGOCIO!</span></h4>
               <p className="text-gray-400 text-lg font-medium leading-relaxed mb-8">
-                No permitas que tu negocio se detenga. Asegura hoy el suministro de la pizza que todos están pidiendo en Talca.
+                No pierdas más clientes. Asegura hoy el suministro de la pizza artesanal preferida por su calidad y sabor inigualable.
               </p>
             </div>
             
@@ -238,21 +232,20 @@ const Wholesale: React.FC = () => {
               >
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 <span className="relative flex items-center gap-4">
-                  <MessageCircle size={28} /> PEDIR STOCK AHORA
+                  <MessageCircle size={28} /> QUIERO SER DISTRIBUIDOR
                 </span>
               </button>
               
               <div className="flex flex-col items-center sm:items-start text-left">
                 <p className="text-white/60 text-xs font-black uppercase tracking-widest leading-tight">
-                  Soporte B2B 24/7
+                  Atención B2B Prioritaria
                 </p>
-                <p className="text-vivazza-gold text-[10px] font-bold">Respuesta prioritaria mayorista</p>
+                <p className="text-vivazza-gold text-[10px] font-bold">Respuesta inmediata por WhatsApp</p>
               </div>
             </div>
         </div>
       </div>
 
-      {/* Floating Action Bar Optimizada */}
       <div className={`fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-lg transition-all duration-700 transform ${hasSelection ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-32 opacity-0 scale-90 pointer-events-none'}`}>
         <div className="bg-white text-vivazza-stone rounded-[2.5rem] p-5 pr-6 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 pl-3">
@@ -260,46 +253,45 @@ const Wholesale: React.FC = () => {
               <Package size={28} />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Confirmar Selección</p>
-              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades para mi local</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Confirmar Pedido</p>
+              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades Seleccionadas</p>
             </div>
           </div>
           <button 
             onClick={handleWholesaleWhatsApp}
             className="bg-vivazza-stone text-white px-8 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 hover:bg-stone-800 transition-colors active:scale-95"
           >
-            ENVIAR <ArrowRight size={22} />
+            SOLICITAR <ArrowRight size={22} />
           </button>
         </div>
       </div>
 
-      {/* Footer Info Cards Persuasivas */}
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4 pt-12">
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ClipboardList size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Administración Fácil</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Facturación inmediata para optimizar tu flujo contable.</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Proceso Ágil</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Facturación inmediata para tu empresa.</p>
           </div>
         </div>
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><Zap size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Logística Ágil</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo y seguro en Talca y zonas aledañas.</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Despacho Veloz</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Entrega directa en tu local comercial.</p>
           </div>
         </div>
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">El Sello de Calidad</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Sabor superior gracias al reposo artesanal de 48h en frío.</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Calidad Inigualable</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">48h de reposo artesanal en frío para un sabor superior.</p>
           </div>
         </div>
       </div>
 
       <div className="text-center mt-20 opacity-30 px-6">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu aliado estratégico</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu aliado comercial</p>
       </div>
     </div>
   );

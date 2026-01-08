@@ -21,7 +21,7 @@ const PizzaCatalog: React.FC<PizzaCatalogProps> = ({ onAdd, onViewDetails }) => 
           CATÁLOGO <span className="text-vivazza-red">COMPLETO</span>
         </h2>
         <p className="text-gray-500 font-medium text-lg">
-          Explora toda nuestra variedad de pizzas artesanales, preparadas con masa madre y los mejores ingredientes del Maule.
+          Explora toda nuestra variedad de pizzas artesanales, preparadas con reposo artesanal de 48h y los mejores ingredientes seleccionados.
         </p>
         <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.3em] mt-4">Todos los precios incluyen IVA</p>
       </div>
