@@ -70,7 +70,7 @@ export const INGREDIENTS: Ingredient[] = [
 ];
 
 export const DOUGHS: Dough[] = [
-  { id: 'trad', name: 'Reposo Artesanal 48h', price: 0, calories: 250, description: 'Borde alveolado, centro delgado. El estándar napolitano.' },
+  { id: 'trad', name: 'Reposo Artesanal', price: 0, calories: 250, description: 'Borde alveolado, centro delgado. El estándar napolitano.' },
   { id: 'inte', name: 'Masa Integral', price: 1000, calories: 210, description: 'Mezcla de granos seleccionados para un sabor más rústico.' },
 ];
 

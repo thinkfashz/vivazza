@@ -93,7 +93,7 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
             </div>
             <div className="mt-8 bg-blue-50 p-6 rounded-3xl border border-blue-100 flex gap-4 items-start">
               <span className="text-blue-500 flex-shrink-0"><Info size={20} /></span>
-              <p className="text-xs text-blue-700 font-medium leading-relaxed">Cada pizza es preparada artesanalmente con reposo de 48h. El aspecto final puede variar, el sabor es siempre premium.</p>
+              <p className="text-xs text-blue-700 font-medium leading-relaxed">Cada pizza es preparada artesanalmente con reposo artesanal. El aspecto final puede variar, el sabor es siempre premium.</p>
             </div>
           </div>
         </div>

@@ -61,7 +61,7 @@ const Wholesale: React.FC = () => {
 
     const frozen = Object.entries(selectedFrozen).filter(([_, qty]) => (qty as number) > 0);
     if (frozen.length > 0) {
-      message += `🍕 *PIZZAS LISTAS PARA HORNEAR:*\n`;
+      message += `🍕 *PIZZAS CONGELADAS:*\n`;
       frozen.forEach(([size, qty]) => {
         message += `• ${qty}x ${size}\n`;
       });
@@ -105,18 +105,29 @@ const Wholesale: React.FC = () => {
         <div className="relative z-10 p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           <div className="space-y-10">
-            <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Conviértete en distribuidor Vivazza:</h3>
-               <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Alta Rentabilidad</span>
+            <div className="flex flex-col mb-4 border-b border-vivazza-gold/10 pb-4">
+               <div className="flex items-center justify-between">
+                 <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Conviértete en distribuidor Vivazza:</h3>
+                 <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Alta Rentabilidad</span>
+               </div>
+               <p className="text-vivazza-red font-heading text-xl uppercase mt-1">Pack de Masas</p>
             </div>
             
             <div className="space-y-8">
               {WHOLESALE_DATA.doughPacks.map((pack, idx) => (
                 <div key={idx} className="group">
                   <div className="flex justify-between items-center mb-3">
-                    <div>
-                      <span className="text-lg font-bold text-vivazza-stone block">{pack.name}</span>
-                      <span className="text-[10px] text-vivazza-red font-bold uppercase tracking-tight">Incluye salsa Pomodoro de la casa</span>
+                    <div className="flex items-center gap-4">
+                      {/* Animación Pizza Chica visual de tamaño */}
+                      <div className="relative flex items-center justify-center">
+                        <div className={`rounded-full bg-vivazza-gold/20 border-2 border-vivazza-gold/40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 ${pack.name.includes('30 cm') ? 'w-10 h-10' : 'w-8 h-8'}`}>
+                          <div className="w-1/2 h-1/2 bg-vivazza-red/20 rounded-full" />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-lg font-bold text-vivazza-stone block">{pack.name}</span>
+                        <span className="text-[10px] text-vivazza-red font-bold uppercase tracking-tight">Incluye salsa Pomodoro de la casa</span>
+                      </div>
                     </div>
                     <div className="text-right">
                       <span className="font-heading text-3xl text-vivazza-red block leading-none">{formatCLP(pack.price)}</span>
@@ -148,7 +159,7 @@ const Wholesale: React.FC = () => {
                 <div>
                   <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Garantía de Sabor</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                    Nuestras masas con 48h de reposo artesanal te permiten ofrecer una pizza ligera y crujiente con el mínimo esfuerzo operativo.
+                    Nuestras masas con reposo artesanal te permiten ofrecer una pizza ligera y crujiente con el mínimo esfuerzo operativo.
                   </p>
                 </div>
               </div>
@@ -157,7 +168,7 @@ const Wholesale: React.FC = () => {
 
           <div className="space-y-10">
             <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase">Solución Gourmet:</h3>
+               <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Pizza Congelada:</h3>
                <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para servir</span>
             </div>
 
@@ -165,9 +176,19 @@ const Wholesale: React.FC = () => {
                {WHOLESALE_DATA.frozenPizzas.prices.map((p, idx) => (
                  <div key={idx} className="group">
                     <div className="flex justify-between items-center mb-3">
-                      <div>
-                        <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider block">{p.size}</span>
-                        <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado premium</span>
+                      <div className="flex items-center gap-4">
+                        {/* Animación Pizza Chica visual de tamaño */}
+                        <div className="relative flex items-center justify-center">
+                          <div className={`rounded-full bg-vivazza-stone/5 border-2 border-vivazza-stone/10 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12 ${p.size.includes('32 cm') ? 'w-12 h-12' : 'w-9 h-9'}`}>
+                             <div className="w-2/3 h-2/3 border-2 border-dashed border-vivazza-red/30 rounded-full flex items-center justify-center">
+                               <div className="w-1/2 h-1/2 bg-vivazza-gold/20 rounded-full" />
+                             </div>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider block">{p.size}</span>
+                          <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado premium</span>
+                        </div>
                       </div>
                       <div className="text-right">
                         <span className="font-heading text-4xl text-vivazza-stone block leading-none">{formatCLP(p.price)}</span>
@@ -212,7 +233,7 @@ const Wholesale: React.FC = () => {
 
             <div className="pt-8 text-center bg-gray-50 rounded-3xl p-6 border border-dashed border-gray-200">
               <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">PEDIDO MÍNIMO: {WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</p>
-              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Garantiza el abastecimiento de tu negocio hoy</p>
+              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Asegura el abastecimiento de tu negocio hoy</p>
             </div>
           </div>
         </div>
@@ -285,7 +306,7 @@ const Wholesale: React.FC = () => {
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Calidad Inigualable</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">48h de reposo artesanal en frío para un sabor superior.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Reposo artesanal en frío para un sabor superior.</p>
           </div>
         </div>
       </div>

@@ -141,7 +141,7 @@ export default function App() {
             <Users size={12} className="text-vivazza-red" /> +15 pedidos saliendo hoy en Talca
           </span>
           <span className="mx-4 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
-            <Flame size={12} className="text-vivazza-gold" /> Receta de 48h de reposo artesanal
+            <Flame size={12} className="text-vivazza-gold" /> Receta de reposo artesanal
           </span>
           <span className="mx-4 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
             <Users size={12} className="text-vivazza-red" /> Rodrigo acaba de pedir una Margarita
