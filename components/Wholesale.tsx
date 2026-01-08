@@ -135,7 +135,7 @@ const Wholesale: React.FC = () => {
           <div className="space-y-10">
             <div className="flex flex-col mb-4 border-b border-vivazza-gold/10 pb-4">
                <div className="flex items-center justify-between">
-                 <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Conviértete en distribuidor Vivazza:</h3>
+                 <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Nuestra Selección Premium:</h3>
                  <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Alta Rentabilidad</span>
                </div>
                <p className="text-vivazza-red font-heading text-xl uppercase mt-1">Pack de Masas</p>
@@ -184,7 +184,7 @@ const Wholesale: React.FC = () => {
               <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start shadow-sm">
                 <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
                 <div>
-                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Conviértete en distribuidor de Vivazza</p>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Máximo estándar artesanal</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
                     Nuestras masas con reposo artesanal te permiten ofrecer una pizza ligera y crujiente con el mínimo esfuerzo operativo.
                   </p>
@@ -397,7 +397,7 @@ const Wholesale: React.FC = () => {
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Conviértete en distribuidor de Vivazza</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Calidad Inigualable</p>
             <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Reposo artesanal en frío para un sabor superior.</p>
           </div>
         </div>
