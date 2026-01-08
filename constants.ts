@@ -118,12 +118,12 @@ export const PIZZAS: Pizza[] = [
   {
     id: 'p_nap',
     name: 'Napolitana',
-    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón y orégano.',
+    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón premium y un toque de orégano rústico.',
     price: 7190,
     image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=800&q=80',
-    type: 'traditional',
+    type: 'special',
     calories: 880,
-    ingredientsList: ['Tomate Cherry', 'Jamón', 'Orégano']
+    ingredientsList: ['Mozzarella', 'Tomate Cherry', 'Jamón Premium', 'Orégano']
   },
   {
     id: 'p_haw',
@@ -144,16 +144,6 @@ export const PIZZAS: Pizza[] = [
     type: 'special',
     calories: 950,
     ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Tocino Ahumado', 'Cebolla Morada', 'Aceitunas']
-  },
-  {
-    id: 'p_dol',
-    name: 'Dolce Vivazza',
-    description: 'Base dulce artesanal, chocolate, frutillas y toppings especiales.',
-    price: 5790,
-    image: 'https://images.unsplash.com/photo-1511688858354-297232343239?auto=format&fit=crop&w=800&q=80',
-    type: 'special',
-    calories: 1200,
-    ingredientsList: ['Base Dulce', 'Chocolate', 'Frutillas', 'Toppings Especiales']
   }
 ];
 
