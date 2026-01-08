@@ -3,12 +3,21 @@
 import React, { useState, useMemo } from 'react';
 import { WHOLESALE_DATA, VIVAZZA_PHONE } from '../constants';
 import { formatCLP } from '../utils';
-import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight, TrendingUp, ShieldCheck, Zap, User, Store, MapPin, Phone } from 'lucide-react';
 
 const Wholesale: React.FC = () => {
   const [selectedPacks, setSelectedPacks] = useState<Record<string, number>>({});
   const [selectedFrozen, setSelectedFrozen] = useState<Record<string, number>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
+  
+  // Nuevo estado para el formulario de contacto
+  const [formData, setFormData] = useState({
+    businessName: '',
+    contactName: '',
+    phone: '',
+    city: '',
+    notes: ''
+  });
 
   const updatePack = (name: string, delta: number) => {
     setSelectedPacks(prev => ({
@@ -30,6 +39,11 @@ const Wholesale: React.FC = () => {
     );
   };
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const hasSelection = useMemo(() => {
     const packsCount = (Object.values(selectedPacks) as number[]).reduce((a, b) => a + b, 0);
     const frozenCount = (Object.values(selectedFrozen) as number[]).reduce((a, b) => a + b, 0);
@@ -43,15 +57,27 @@ const Wholesale: React.FC = () => {
   }, [selectedPacks, selectedFrozen]);
 
   const handleWholesaleWhatsApp = () => {
-    let message = `🤝 *INTERÉS DISTRIBUIDOR VIVAZZA - PEDIDO PRIORITARIO*\n`;
+    // Validación básica si se usa el formulario
+    if (!formData.contactName || !formData.businessName || !formData.phone) {
+      alert("Por favor, completa los campos obligatorios del formulario (Nombre, Negocio y Teléfono).");
+      return;
+    }
+
+    let message = `🤝 *NUEVA SOLICITUD DISTRIBUIDOR VIVAZZA*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-    message += `Hola! Quiero convertirme en distribuidor y asegurar stock. Mi selección:\n\n`;
+    
+    message += `🏢 *DATOS DE CONTACTO:*\n`;
+    message += `• Negocio: ${formData.businessName}\n`;
+    message += `• Contacto: ${formData.contactName}\n`;
+    message += `• Teléfono: ${formData.phone}\n`;
+    if (formData.city) message += `• Ciudad: ${formData.city}\n`;
+    if (formData.notes) message += `• Notas: ${formData.notes}\n\n`;
 
     let hasContent = false;
 
     const packs = Object.entries(selectedPacks).filter(([_, qty]) => (qty as number) > 0);
     if (packs.length > 0) {
-      message += `📦 *PACKS DE MASAS (Con Pomodoro):*\n`;
+      message += `📦 *PEDIDO INICIAL MASAS:*\n`;
       packs.forEach(([name, qty]) => {
         message += `• ${qty}x ${name}\n`;
       });
@@ -61,24 +87,24 @@ const Wholesale: React.FC = () => {
 
     const frozen = Object.entries(selectedFrozen).filter(([_, qty]) => (qty as number) > 0);
     if (frozen.length > 0) {
-      message += `🍕 *PIZZAS CONGELADAS:*\n`;
+      message += `🍕 *PEDIDO INICIAL CONGELADAS:*\n`;
       frozen.forEach(([size, qty]) => {
         message += `• ${qty}x ${size}\n`;
       });
       
       if (selectedFlavors.length > 0) {
-        message += `🎨 *SABORES PREFERIDOS:* ${selectedFlavors.join(', ')}\n`;
+        message += `🎨 *SABORES:* ${selectedFlavors.join(', ')}\n`;
       }
       message += `\n`;
       hasContent = true;
     }
 
     if (!hasContent) {
-      message = `Hola! Quiero recibir la lista de precios mayorista y convertirme en distribuidor oficial de Vivazza.`;
-    } else {
-      message += `━━━━━━━━━━━━━━━━━━━━\n`;
-      message += `🚀 *Solicito agendar entrega y coordinar pago de inmediato.*`;
+      message += `_Deseo recibir el catálogo mayorista y lista de precios oficial._\n`;
     }
+
+    message += `━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `🚀 *Solicito contacto para coordinar distribución.*`;
 
     const url = `https://wa.me/${VIVAZZA_PHONE}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
@@ -89,6 +115,7 @@ const Wholesale: React.FC = () => {
       <div className="max-w-4xl mx-auto bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative">
         <div className="absolute inset-0 opacity-50 pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
 
+        {/* Header */}
         <div className="relative z-10 p-12 text-center border-b border-gray-100 bg-gradient-to-b from-vivazza-cream/30 to-white">
            <div className="w-16 h-1.5 bg-vivazza-red/40 mx-auto mb-6 rounded-full"></div>
            <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Aumenta tus ingresos con un producto premium</p>
@@ -102,6 +129,7 @@ const Wholesale: React.FC = () => {
            </div>
         </div>
 
+        {/* Cuerpo del Menú */}
         <div className="relative z-10 p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           <div className="space-y-10">
@@ -118,7 +146,6 @@ const Wholesale: React.FC = () => {
                 <div key={idx} className="group">
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-4">
-                      {/* Animación Pizza Chica visual de tamaño */}
                       <div className="relative flex items-center justify-center">
                         <div className={`rounded-full bg-vivazza-gold/20 border-2 border-vivazza-gold/40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 ${pack.name.includes('30 cm') ? 'w-10 h-10' : 'w-8 h-8'}`}>
                           <div className="w-1/2 h-1/2 bg-vivazza-red/20 rounded-full" />
@@ -157,7 +184,7 @@ const Wholesale: React.FC = () => {
               <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start shadow-sm">
                 <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
                 <div>
-                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Garantía de Sabor</p>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Conviértete en distribuidor de Vivazza</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
                     Nuestras masas con reposo artesanal te permiten ofrecer una pizza ligera y crujiente con el mínimo esfuerzo operativo.
                   </p>
@@ -177,7 +204,6 @@ const Wholesale: React.FC = () => {
                  <div key={idx} className="group">
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center gap-4">
-                        {/* Animación Pizza Chica visual de tamaño */}
                         <div className="relative flex items-center justify-center">
                           <div className={`rounded-full bg-vivazza-stone/5 border-2 border-vivazza-stone/10 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12 ${p.size.includes('32 cm') ? 'w-12 h-12' : 'w-9 h-9'}`}>
                              <div className="w-2/3 h-2/3 border-2 border-dashed border-vivazza-red/30 rounded-full flex items-center justify-center">
@@ -238,6 +264,72 @@ const Wholesale: React.FC = () => {
           </div>
         </div>
 
+        {/* Formulario de Contacto */}
+        <div className="relative z-10 bg-vivazza-cream/30 p-8 md:p-16 border-t border-gray-100">
+          <div className="max-w-2xl mx-auto text-center mb-10">
+             <h4 className="font-heading text-4xl md:text-5xl text-vivazza-stone uppercase leading-none mb-4">DATOS DE <span className="text-vivazza-red">CONTACTO</span></h4>
+             <p className="text-gray-500 font-medium text-sm">Completa tus datos para recibir atención personalizada y agendar tu distribución.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div className="relative">
+              <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-vivazza-red/40" size={18} />
+              <input 
+                type="text" 
+                name="businessName"
+                placeholder="Nombre del Negocio / Empresa *" 
+                value={formData.businessName}
+                onChange={handleFormChange}
+                className="w-full bg-white border border-gray-200 rounded-2xl p-4 pl-12 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm"
+              />
+            </div>
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-vivazza-red/40" size={18} />
+              <input 
+                type="text" 
+                name="contactName"
+                placeholder="Nombre de Contacto *" 
+                value={formData.contactName}
+                onChange={handleFormChange}
+                className="w-full bg-white border border-gray-200 rounded-2xl p-4 pl-12 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm"
+              />
+            </div>
+            <div className="relative">
+              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-vivazza-red/40" size={18} />
+              <input 
+                type="tel" 
+                name="phone"
+                placeholder="WhatsApp / Teléfono *" 
+                value={formData.phone}
+                onChange={handleFormChange}
+                className="w-full bg-white border border-gray-200 rounded-2xl p-4 pl-12 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm"
+              />
+            </div>
+            <div className="relative">
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-vivazza-red/40" size={18} />
+              <input 
+                type="text" 
+                name="city"
+                placeholder="Ciudad / Comuna" 
+                value={formData.city}
+                onChange={handleFormChange}
+                className="w-full bg-white border border-gray-200 rounded-2xl p-4 pl-12 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm"
+              />
+            </div>
+            <div className="md:col-span-2 relative">
+              <textarea 
+                name="notes"
+                placeholder="Alguna nota o requerimiento especial (ej: fecha estimada de entrega)" 
+                value={formData.notes}
+                onChange={handleFormChange}
+                rows={2}
+                className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm resize-none"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
         <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-10">
             <div className="max-w-2xl mx-auto">
               <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¡IMPULSA <span className="text-vivazza-gold">TU NEGOCIO!</span></h4>
@@ -253,7 +345,7 @@ const Wholesale: React.FC = () => {
               >
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 <span className="relative flex items-center gap-4">
-                  <MessageCircle size={28} /> QUIERO SER DISTRIBUIDOR
+                  <MessageCircle size={28} /> ENVIAR DATOS A WHATSAPP
                 </span>
               </button>
               
@@ -274,15 +366,15 @@ const Wholesale: React.FC = () => {
               <Package size={28} />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Confirmar Pedido</p>
-              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades Seleccionadas</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Pedido Seleccionado</p>
+              <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades para mi local</p>
             </div>
           </div>
           <button 
-            onClick={handleWholesaleWhatsApp}
+            onClick={() => document.querySelector('input[name="businessName"]')?.scrollIntoView({ behavior: 'smooth' })}
             className="bg-vivazza-stone text-white px-8 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 hover:bg-stone-800 transition-colors active:scale-95"
           >
-            SOLICITAR <ArrowRight size={22} />
+            FINALIZAR <ArrowRight size={22} />
           </button>
         </div>
       </div>
@@ -305,7 +397,7 @@ const Wholesale: React.FC = () => {
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Calidad Inigualable</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Conviértete en distribuidor de Vivazza</p>
             <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Reposo artesanal en frío para un sabor superior.</p>
           </div>
         </div>
