@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { WHOLESALE_DATA, VIVAZZA_PHONE } from '../constants';
 import { formatCLP } from '../utils';
-import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight, TrendingUp, ShieldCheck, Zap, User, Store, MapPin, Phone } from 'lucide-react';
+import { Building2, Package, CheckCircle2, Plus, Minus, ClipboardList, Send, MessageCircle, ArrowRight, TrendingUp, ShieldCheck, Zap, User, Store, MapPin, Phone, Snowflake } from 'lucide-react';
 
 const Wholesale: React.FC = () => {
   const [selectedPacks, setSelectedPacks] = useState<Record<string, number>>({});
@@ -194,9 +194,11 @@ const Wholesale: React.FC = () => {
           </div>
 
           <div className="space-y-10">
-            <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-4xl text-vivazza-stone uppercase leading-none">Pizzas congeladas:</h3>
-               <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para servir</span>
+            <div className="flex items-center justify-between mb-4 border-b border-blue-100 pb-4">
+               <h3 className="font-heading text-4xl text-blue-600 uppercase leading-none flex items-center gap-2">
+                 <Snowflake className="animate-spin-slow text-blue-400" size={24} /> Pizzas congeladas:
+               </h3>
+               <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-100 animate-ice-glow">Ultra Congelado</span>
             </div>
 
             <div className="space-y-8">
@@ -205,33 +207,33 @@ const Wholesale: React.FC = () => {
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center gap-4">
                         <div className="relative flex items-center justify-center">
-                          <div className={`rounded-full bg-vivazza-stone/5 border-2 border-vivazza-stone/10 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12 ${p.size.includes('32 cm') ? 'w-12 h-12' : 'w-9 h-9'}`}>
-                             <div className="w-2/3 h-2/3 border-2 border-dashed border-vivazza-red/30 rounded-full flex items-center justify-center">
-                               <div className="w-1/2 h-1/2 bg-vivazza-gold/20 rounded-full" />
+                          <div className={`rounded-full bg-blue-50 border-2 border-blue-200 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12 animate-ice-pulse ${p.size.includes('32 cm') ? 'w-12 h-12' : 'w-9 h-9'}`}>
+                             <div className="w-2/3 h-2/3 border-2 border-dashed border-blue-300 rounded-full flex items-center justify-center">
+                               <div className="w-1/2 h-1/2 bg-blue-400/20 rounded-full" />
                              </div>
                           </div>
                         </div>
                         <div>
                           <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider block">{p.size}</span>
-                          <span className="text-[10px] text-gray-400 font-medium">Formato ultra-congelado premium</span>
+                          <span className="text-[10px] text-blue-400 font-bold">Calidad bajo cero conservada</span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="font-heading text-4xl text-vivazza-stone block leading-none">{formatCLP(p.price)}</span>
+                        <span className="font-heading text-4xl text-blue-600 block leading-none">{formatCLP(p.price)}</span>
                         <span className="text-[9px] text-gray-400 font-bold uppercase">IVA incl.</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-end gap-4">
                       <button 
                         onClick={() => updateFrozen(p.size, -1)}
-                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:scale-90 transition-all text-gray-400"
+                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-blue-50 active:scale-90 transition-all text-gray-400 hover:text-blue-400"
                       >
                         <Minus size={20} />
                       </button>
-                      <span className="font-heading text-3xl w-8 text-center">{selectedFrozen[p.size] || 0}</span>
+                      <span className="font-heading text-3xl w-8 text-center text-blue-700">{selectedFrozen[p.size] || 0}</span>
                       <button 
                         onClick={() => updateFrozen(p.size, 1)}
-                        className="w-10 h-10 rounded-full bg-vivazza-stone text-white flex items-center justify-center hover:bg-stone-800 active:scale-90 transition-all shadow-md"
+                        className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 active:scale-90 transition-all shadow-md shadow-blue-200"
                       >
                         <Plus size={20} />
                       </button>
@@ -241,15 +243,15 @@ const Wholesale: React.FC = () => {
             </div>
 
             <div className="pt-6">
-              <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-4 flex items-center gap-2">
-                <Zap size={14} className="text-vivazza-gold" /> Sabores de alta rotación:
+              <p className="text-[10px] font-black uppercase text-blue-400 tracking-widest mb-4 flex items-center gap-2">
+                <Snowflake size={14} className="animate-pulse" /> Sabores de alta rotación (frío):
               </p>
               <div className="flex flex-wrap gap-2">
                 {WHOLESALE_DATA.frozenPizzas.flavors.map((flavor, idx) => (
                   <button 
                     key={idx}
                     onClick={() => toggleFlavor(flavor)}
-                    className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all border ${selectedFlavors.includes(flavor) ? 'bg-vivazza-red border-vivazza-red text-white shadow-md' : 'bg-white border-gray-200 text-gray-400 hover:border-vivazza-red/30'}`}
+                    className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-tighter transition-all border ${selectedFlavors.includes(flavor) ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200' : 'bg-white border-blue-100 text-blue-400 hover:border-blue-300'}`}
                   >
                     {flavor}
                   </button>
@@ -258,14 +260,14 @@ const Wholesale: React.FC = () => {
             </div>
 
             {/* Pedido Mínimo Destacado */}
-            <div className="pt-8 text-center bg-vivazza-red/5 rounded-3xl p-8 border-2 border-vivazza-red/20 shadow-inner relative group/min animate-pulse duration-[2000ms] hover:animate-none transition-all">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-vivazza-red text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-red">
-                Información Crítica
+            <div className="pt-8 text-center bg-blue-50/50 rounded-3xl p-8 border-2 border-blue-200 shadow-inner relative group/min animate-ice-glow-intense duration-[3000ms] hover:animate-none transition-all">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-blue-200">
+                Stock Mayorista Congelado
               </div>
-              <p className="font-heading text-5xl md:text-6xl text-vivazza-red uppercase tracking-tight leading-none mb-2">
-                PEDIDO MÍNIMO: <span className="underline decoration-vivazza-gold decoration-4">{WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</span>
+              <p className="font-heading text-5xl md:text-6xl text-blue-600 uppercase tracking-tight leading-none mb-2">
+                PEDIDO MÍNIMO: <span className="underline decoration-blue-200 decoration-4">{WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</span>
               </p>
-              <p className="text-[11px] text-vivazza-stone font-black uppercase tracking-widest leading-none">Asegura la rentabilidad de tu negocio hoy</p>
+              <p className="text-[11px] text-blue-400 font-black uppercase tracking-widest leading-none">Asegura la frescura gélida en tu local</p>
             </div>
           </div>
         </div>
@@ -421,11 +423,39 @@ const Wholesale: React.FC = () => {
           0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -5px rgba(166, 29, 36, 0.4); }
           50% { transform: scale(1.02); box-shadow: 0 15px 35px -5px rgba(166, 29, 36, 0.6); }
         }
+        @keyframes ice-glow {
+          0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); background-color: rgba(239, 246, 255, 1); }
+          50% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); background-color: rgba(219, 234, 254, 1); }
+        }
+        @keyframes ice-glow-intense {
+          0%, 100% { box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.1); border-color: rgba(191, 219, 254, 0.5); }
+          50% { box-shadow: inset 0 0 25px rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.5); }
+        }
+        @keyframes ice-pulse {
+          0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+          50% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
         .animate-shimmer {
           animation: shimmer 2s infinite ease-in-out;
         }
         .animate-pulse-subtle {
           animation: pulse-subtle 3s infinite ease-in-out;
+        }
+        .animate-ice-glow {
+          animation: ice-glow 2s infinite ease-in-out;
+        }
+        .animate-ice-glow-intense {
+          animation: ice-glow-intense 4s infinite ease-in-out;
+        }
+        .animate-ice-pulse {
+          animation: ice-pulse 3s infinite ease-in-out;
+        }
+        .animate-spin-slow {
+          animation: spin-slow 12s linear infinite;
         }
       `}</style>
 
