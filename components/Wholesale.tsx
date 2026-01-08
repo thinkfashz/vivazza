@@ -150,9 +150,9 @@ const Wholesale: React.FC = () => {
               <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20 flex gap-4 items-start">
                 <TrendingUp className="text-vivazza-red flex-shrink-0" size={24} />
                 <div>
-                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Rentabilidad Garantizada</p>
+                  <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Calidad Premium Garantizada</p>
                   <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                    Nuestras masas selladas al vacío reducen tus tiempos de operación y garantizan una calidad constante que tus clientes amarán.
+                    Nuestras masas con 48h de maduración lenta reducen tus tiempos de operación y garantizan una calidad constante que tus clientes amarán.
                   </p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ const Wholesale: React.FC = () => {
             <div className="max-w-2xl mx-auto">
               <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¿LISTO PARA <span className="text-vivazza-gold">VENDER MÁS?</span></h4>
               <p className="text-gray-400 text-lg font-medium leading-relaxed mb-8">
-                No pierdas más ventas por falta de stock o calidad inconsistente. Asegura hoy el suministro de la mejor pizza artesanal de Talca.
+                No pierdas más ventas por falta de stock o calidad inconsistente. Asegura hoy el suministro de la mejor pizza artesanal para tu negocio.
               </p>
             </div>
             
@@ -283,20 +283,20 @@ const Wholesale: React.FC = () => {
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><Zap size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Logística Ágil</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo a tu puerta en Talca y zonas Maule.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Despacho directo a tu puerta en Talca y zonas aledañas.</p>
           </div>
         </div>
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-xl transition-all duration-500">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:bg-vivazza-red group-hover:text-white transition-colors duration-500"><ShieldCheck size={32} /></div>
           <div>
             <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">El Sello de Calidad</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Garantiza el sabor único de masa madre 48h en tu menú.</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight italic">Garantiza el sabor único de una maduración lenta de 48h en tu menú.</p>
           </div>
         </div>
       </div>
 
       <div className="text-center mt-20 opacity-30 px-6">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu socio gourmet en el Maule</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu socio gourmet</p>
       </div>
     </div>
   );
