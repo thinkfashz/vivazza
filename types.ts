@@ -50,6 +50,7 @@ export interface CartItem {
 
 export interface DeliveryDetails {
   method: 'delivery' | 'pickup';
+  name: string;
   address: string;
   instructions: string;
   coords?: {

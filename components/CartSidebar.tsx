@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CartItem, ExtraItem, Coupon, DeliveryDetails, ToastType } from '../types';
 import { EXTRAS, COUPONS, FREE_DELIVERY_THRESHOLD } from '../constants';
 import { formatCLP, generateWhatsAppLink } from '../utils';
-import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, Store, AlertCircle, Loader2, Gift } from 'lucide-react';
+import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, Store, AlertCircle, Loader2, Gift, User } from 'lucide-react';
 import OrderSuccessModal from './OrderSuccessModal';
 import LocationMap from './LocationMap';
 
@@ -34,6 +34,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const [step, setStep] = useState<CheckoutStep>('cart');
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetails>({
     method: 'delivery',
+    name: '',
     address: '',
     instructions: ''
   });
@@ -42,6 +43,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchingAddress, setIsSearchingAddress] = useState(false);
   const [addressError, setAddressError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [couponInput, setCouponInput] = useState('');
@@ -52,7 +54,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const discount = useMemo(() => appliedCoupon ? (subtotal * appliedCoupon.discountPercent / 100) : 0, [subtotal, appliedCoupon]);
   const total = subtotal - discount;
 
-  // Nivel 2: Cálculo de envío gratis
   const freeDeliveryProgress = Math.min((subtotal / FREE_DELIVERY_THRESHOLD) * 100, 100);
   const remainingForFreeDelivery = Math.max(FREE_DELIVERY_THRESHOLD - subtotal, 0);
 
@@ -60,6 +61,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
     if (!isOpen) {
       setShowSuggestions(false);
       setAddressError(null);
+      setNameError(null);
       setStep('cart');
     }
   }, [isOpen]);
@@ -89,6 +91,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   };
 
   const handleCheckout = () => {
+    if (!deliveryDetails.name || deliveryDetails.name.length < 2) {
+      setNameError('Ingresa tu nombre');
+      showToast('Por favor, ingresa tu nombre', 'error');
+      return;
+    }
+
     if (deliveryDetails.method === 'delivery' && (!deliveryDetails.address || deliveryDetails.address.length < 5)) {
         setAddressError('Ingresa una dirección válida');
         showToast('Por favor, indica tu dirección de despacho', 'error');
@@ -109,7 +117,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             <button onClick={() => setStep('cart')} className="p-2 -ml-2 mr-2 hover:bg-gray-100 rounded-full"><ChevronLeft size={24} /></button>
           )}
           <h2 className="font-heading text-2xl uppercase tracking-tight flex-grow">
-            {step === 'cart' ? '🛒 Mi Pedido' : '🛵 Detalles de Entrega'}
+            {step === 'cart' ? '🛒 Mi Pedido' : '🛵 Datos de Pedido'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} /></button>
         </div>
@@ -117,10 +125,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
         <div className="flex-grow overflow-hidden relative">
           <div className={`absolute inset-0 flex transition-transform duration-500 ${step === 'delivery' ? '-translate-x-full' : 'translate-x-0'}`}>
             
-            {/* Step 1: Cart & Upselling */}
             <div className="w-full h-full flex-shrink-0 flex flex-col overflow-y-auto p-6 space-y-6 no-scrollbar">
               
-              {/* Nivel 2: Barra Envío Gratis */}
               {cartItems.length > 0 && (
                 <div className="bg-vivazza-cream p-5 rounded-3xl border border-vivazza-gold/20 animate-fade-in-up">
                   <div className="flex justify-between items-center mb-3">
@@ -148,14 +154,13 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                       <div key={item.id} className="flex justify-between items-start gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
                         <div className="flex-grow">
                           <h4 className="font-bold text-sm uppercase truncate">{item.pizzaName}</h4>
-                          <p className="text-vivazza-red font-bold text-sm">{formatCLP(item.basePrice)}</p>
+                          <p className="text-vivazza-red font-bold text-sm">{formatCLP(item.basePrice)} <span className="text-[9px] text-gray-400 font-medium">IVA incl.</span></p>
                         </div>
                         <button onClick={() => onRemoveItem(item.id)} className="text-gray-300 hover:text-red-500 p-2"><Trash2 size={18} /></button>
                       </div>
                     ))}
                   </div>
 
-                  {/* Nivel 2: Upselling Agresivo */}
                   <div className="bg-vivazza-stone text-white rounded-[2rem] p-6 shadow-xl">
                     <h4 className="font-heading text-xl mb-4 flex items-center gap-2 uppercase">
                       <Tag size={18} className="text-vivazza-gold" /> ¿Algo más?
@@ -176,9 +181,25 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               )}
             </div>
 
-            {/* Step 2: Delivery */}
             <div className="w-full h-full flex-shrink-0 overflow-y-auto p-6 space-y-6 no-scrollbar">
-              <h4 className="font-heading text-xl uppercase mb-4">¿Dónde entregamos?</h4>
+              <h4 className="font-heading text-xl uppercase mb-4">Información de Entrega</h4>
+              
+              <div className="space-y-4 animate-fade-in-up">
+                <div className="relative">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tu Nombre</label>
+                  <div className="relative mt-1">
+                    <input 
+                      type="text" 
+                      placeholder="Ej: Juan Pérez" 
+                      value={deliveryDetails.name} 
+                      onChange={(e) => {setDeliveryDetails(d => ({ ...d, name: e.target.value })); setNameError(null);}} 
+                      className={`w-full bg-gray-50 border ${nameError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm font-medium pl-12`} 
+                    />
+                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3 bg-gray-100 p-1.5 rounded-2xl mb-6">
                 <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'delivery' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'delivery' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>DELIVERY</button>
                 <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'pickup' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'pickup' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>RETIRO LOCAL</button>
@@ -193,14 +214,19 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                       <button onClick={() => setIsMapOpen(true)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-vivazza-red text-white p-2 rounded-xl"><MapPin size={18} /></button>
                     </div>
                   </div>
-                  <input type="text" placeholder="Instrucciones para el repartidor..." value={deliveryDetails.instructions} onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium" />
                 </div>
               )}
+              
+              <div className="space-y-4 animate-fade-in-up">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Instrucciones Adicionales</label>
+                <input type="text" placeholder="Departamento, timbre, casa color..." value={deliveryDetails.instructions} onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium" />
+              </div>
               
               <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 space-y-3">
                  <div className="flex justify-between text-xs font-bold text-gray-400"><span>SUBTOTAL</span><span>{formatCLP(subtotal)}</span></div>
                  <div className="flex justify-between text-xs font-bold text-gray-400"><span>DESCUENTO</span><span>{formatCLP(discount)}</span></div>
                  <div className="flex justify-between text-lg font-black text-vivazza-stone border-t pt-3 uppercase"><span>Total aprox</span><span>{formatCLP(total)}</span></div>
+                 <p className="text-[9px] text-gray-400 font-bold text-right uppercase tracking-widest">IVA INCLUIDO EN TODOS LOS PRECIOS</p>
               </div>
               <p className="text-[10px] text-gray-400 font-medium text-center px-4 leading-relaxed italic">
                 El total final será confirmado por nuestro personal vía WhatsApp incluyendo el costo de envío según tu zona.
@@ -214,7 +240,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           <div className="p-6 bg-white border-t border-gray-50 z-30">
              {step === 'cart' ? (
                 <button onClick={() => setStep('delivery')} className="w-full bg-vivazza-red text-white py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center justify-center gap-3 active:scale-95 transition-all">
-                  CONTINUAR CON LA ENTREGA <ChevronRight size={24} />
+                  CONTINUAR CON EL PEDIDO <ChevronRight size={24} />
                 </button>
              ) : (
                 <button onClick={handleCheckout} className="w-full bg-green-600 text-white py-5 rounded-2xl font-heading text-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-all">

@@ -86,7 +86,7 @@ const PizzaModal: React.FC<PizzaModalProps> = ({ pizza, isOpen, onClose, onAdd }
 
           <div className="mt-12 pt-10 border-t border-gray-100 flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Precio Unitario</p>
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Precio (IVA incluido)</p>
               <p className="font-heading text-5xl text-vivazza-red leading-none">{formatCLP(pizza.price)}</p>
             </div>
             <button 

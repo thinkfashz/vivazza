@@ -23,6 +23,7 @@ const PizzaCatalog: React.FC<PizzaCatalogProps> = ({ onAdd, onViewDetails }) => 
         <p className="text-gray-500 font-medium text-lg">
           Explora toda nuestra variedad de pizzas artesanales, preparadas con masa madre y los mejores ingredientes del Maule.
         </p>
+        <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.3em] mt-4">Todos los precios incluyen IVA</p>
       </div>
 
       <div className="grid grid-cols-1 gap-12">
@@ -51,9 +52,12 @@ const PizzaCatalog: React.FC<PizzaCatalogProps> = ({ onAdd, onViewDetails }) => 
                   <h3 className="font-heading text-5xl text-vivazza-stone uppercase leading-none tracking-tight">
                     {pizza.name}
                   </h3>
-                  <span className="font-heading text-4xl text-vivazza-red">
-                    {formatCLP(pizza.price)}
-                  </span>
+                  <div className="text-right">
+                    <span className="font-heading text-4xl text-vivazza-red block leading-none">
+                      {formatCLP(pizza.price)}
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">IVA incluido</span>
+                  </div>
                 </div>
                 
                 <p className="text-gray-500 text-lg mb-8 leading-relaxed font-medium">

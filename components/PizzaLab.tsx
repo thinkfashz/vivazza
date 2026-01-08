@@ -50,7 +50,7 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
           <p className="text-gray-500 font-medium max-w-md">Diseña tu obra maestra. Masa madre estirada a mano e ingredientes premium.</p>
         </div>
         <div className="bg-vivazza-cream border border-vivazza-gold/20 rounded-[2.5rem] p-8 text-center min-w-[280px] shadow-inner">
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total a Pagar</p>
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total (IVA incluido)</p>
           <p className="font-heading text-6xl text-vivazza-red leading-none">{formatCLP(totalPrice)}</p>
           <button onClick={handleAddToCart} className="mt-6 w-full bg-vivazza-red text-white py-4 rounded-2xl font-heading text-2xl shadow-red active:scale-95 transition-all flex items-center justify-center gap-3">
             <ShoppingBag size={22} /> PEDIR MI CREACIÓN
@@ -97,13 +97,13 @@ const PizzaLab: React.FC<PizzaLabProps> = ({ onAddToCart, showToast }) => {
                   <div className="absolute inset-6 rounded-full bg-[#FDE68A]/30 mix-blend-overlay" />
                </div>
                
-               <div className="absolute bottom-10 bg-vivazza-stone text-white text-[10px] font-black px-6 py-2 rounded-full uppercase tracking-widest shadow-xl">
+               <div className="absolute bottom-10 bg-vivazza-stone text-white text-[10px] font-black px-6 py-2 rounded-full uppercase tracking-widest">
                  Masa: {selectedDough.name}
                </div>
             </div>
             
             <div className="mt-8 bg-blue-50 p-6 rounded-3xl border border-blue-100 flex gap-4 items-start">
-              <Info className="text-blue-500 flex-shrink-0" size={20} />
+              <span className="text-blue-500 flex-shrink-0"><Info size={20} /></span>
               <p className="text-xs text-blue-700 font-medium leading-relaxed">Cada pizza es preparada artesanalmente. El aspecto final puede variar ligeramente, pero el sabor es siempre premium.</p>
             </div>
           </div>

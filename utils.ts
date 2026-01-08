@@ -15,6 +15,8 @@ export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: 
   let message = `🚀 *NUEVO PEDIDO VIVAZZA*\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
   
+  message += `👤 *CLIENTE:* ${delivery.name.toUpperCase()}\n\n`;
+
   cartItems.forEach((item, index) => {
     message += `${index + 1}. *${item.quantity}x ${item.pizzaName.toUpperCase()}*\n`;
     if (item.isCustom) {
@@ -27,7 +29,7 @@ export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: 
   if (coupon) {
     message += `🎟️ *Cupón Aplicado:* ${coupon.code} (-${coupon.discountPercent}%)\n`;
   }
-  message += `💰 *TOTAL A PAGAR: ${formatCLP(total)}*\n\n`;
+  message += `💰 *TOTAL A PAGAR: ${formatCLP(total)} (IVA incl.)*\n\n`;
   
   message += `🛵 *MODALIDAD:* ${delivery.method === 'delivery' ? 'DOMICILIO' : 'RETIRO LOCAL'}\n`;
   if (delivery.method === 'delivery') {

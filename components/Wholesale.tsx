@@ -98,6 +98,7 @@ const Wholesale: React.FC = () => {
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
              MASAS Y <br/><span className="text-vivazza-red">DISTRIBUCIÓN AL MAYOR</span>
            </h2>
+           <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.2em] mt-2">Valores netos + IVA</p>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/50"></span>
               <Building2 className="text-vivazza-gold" size={28} />
@@ -119,7 +120,10 @@ const Wholesale: React.FC = () => {
                 <div key={idx} className="group">
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-lg font-bold text-vivazza-stone">{pack.name}</span>
-                    <span className="font-heading text-3xl text-vivazza-red">{formatCLP(pack.price)}</span>
+                    <div className="text-right">
+                      <span className="font-heading text-3xl text-vivazza-red block leading-none">{formatCLP(pack.price)}</span>
+                      <span className="text-[9px] text-gray-400 font-bold uppercase">IVA incl.</span>
+                    </div>
                   </div>
                   <div className="flex items-center justify-end gap-4">
                     <button 
@@ -142,9 +146,9 @@ const Wholesale: React.FC = () => {
 
             <div className="pt-8">
               <div className="bg-vivazza-cream/50 p-6 rounded-3xl border border-vivazza-gold/20">
-                <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Producción Artesanal</p>
+                <p className="text-[11px] font-black text-vivazza-stone uppercase tracking-widest mb-2">Excelencia en Fermentación</p>
                 <p className="text-sm italic text-vivazza-stone/80 font-medium leading-relaxed">
-                  Selladas al vacío para máxima frescura. Ideal para negocios que buscan calidad premium.
+                  Masa Madre con 48h de maduración lenta, elaborada con ingredientes nobles del Maule.
                 </p>
               </div>
             </div>
@@ -161,7 +165,10 @@ const Wholesale: React.FC = () => {
                  <div key={idx} className="group">
                     <div className="flex justify-between items-center mb-3">
                       <span className="font-black text-vivazza-stone uppercase text-[11px] tracking-wider">{p.size}</span>
-                      <span className="font-heading text-4xl text-vivazza-stone">{formatCLP(p.price)}</span>
+                      <div className="text-right">
+                        <span className="font-heading text-4xl text-vivazza-stone block leading-none">{formatCLP(p.price)}</span>
+                        <span className="text-[9px] text-gray-400 font-bold uppercase">IVA incl.</span>
+                      </div>
                     </div>
                     <div className="flex items-center justify-end gap-4">
                       <button 
@@ -264,8 +271,8 @@ const Wholesale: React.FC = () => {
         <div className="bg-white p-8 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center gap-4 shadow-sm group hover:shadow-md transition-shadow">
           <div className="p-4 bg-vivazza-cream rounded-2xl text-vivazza-red group-hover:scale-110 transition-transform"><CheckCircle2 size={32} /></div>
           <div>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Compromiso</p>
-            <p className="text-lg font-bold text-vivazza-stone leading-tight">Masa Madre 48h con ingredientes locales</p>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Nuestro Sello</p>
+            <p className="text-lg font-bold text-vivazza-stone leading-tight">Masa Madre 48h madurada con insumos del Maule</p>
           </div>
         </div>
       </div>

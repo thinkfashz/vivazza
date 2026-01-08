@@ -64,7 +64,7 @@ const PizzaCard: React.FC<PizzaCardProps> = ({ pizza, onAdd, onViewDetails, inde
         
         <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Precio</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Precio (IVA incl.)</span>
             <span className="font-heading text-3xl text-vivazza-red leading-none">
               {formatCLP(pizza.price)}
             </span>
