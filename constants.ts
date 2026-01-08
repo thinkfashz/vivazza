@@ -118,22 +118,22 @@ export const PIZZAS: Pizza[] = [
   {
     id: 'p_nap',
     name: 'Napolitana',
-    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón premium y un toque de orégano rústico.',
+    description: 'Mozzarella, salsa artesanal de la casa, tomate cherry, jamón y un toque de orégano rústico.',
     price: 7190,
     image: 'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=800&q=80',
     type: 'special',
     calories: 880,
-    ingredientsList: ['Mozzarella', 'Tomate Cherry', 'Jamón Premium', 'Orégano']
+    ingredientsList: ['Mozzarella', 'Tomate Cherry', 'Jamón', 'Orégano']
   },
   {
     id: 'p_haw',
     name: 'Hawái',
-    description: 'Mozzarella, salsa artesanal de la casa, jamón premium y piña.',
+    description: 'Mozzarella, salsa artesanal de la casa, jamón y piña.',
     price: 7190,
     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
     type: 'traditional',
     calories: 820,
-    ingredientsList: ['Jamón Premium', 'Piña', 'Mozzarella']
+    ingredientsList: ['Jamón', 'Piña', 'Mozzarella']
   },
   {
     id: 'p_viv',
