@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -279,7 +278,7 @@ export default function App() {
 
       </main>
 
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-lg border-t border-gray-200 px-6 py-2 pb-safe-bottom z-40 flex justify-between items-center shadow-lg">
+      <div className="md:hidden flex items-center justify-between px-6 h-16 bg-vivazza-cream/95 backdrop-blur-lg border-b border-gray-200 px-6 py-2 pb-safe-bottom z-40 flex justify-between items-center shadow-lg">
         <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 p-2 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
           <Home size={22} />
           <span className="text-[9px] font-black uppercase">Carta</span>
@@ -312,7 +311,8 @@ export default function App() {
       <PizzaModal pizza={selectedPizza} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={addToCart} />
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cartItems={cartItems} onRemoveItem={removeFromCart} onAddExtra={addExtraToCart} showToast={addToast} appliedCoupon={appliedCoupon} onApplyCoupon={setAppliedCoupon} />
       
-      <style jsx global>{`
+      {/* Fix: Replaced styled-jsx with dangerouslySetInnerHTML to resolve TypeScript errors on style tag */}
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes marquee {
           0% { transform: translateX(100%); }
           100% { transform: translateX(-100%); }
@@ -320,7 +320,7 @@ export default function App() {
         .animate-marquee {
           animation: marquee 25s linear infinite;
         }
-      `}</style>
+      ` }} />
     </div>
   );
 }

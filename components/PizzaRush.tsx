@@ -139,11 +139,35 @@ const PizzaRush: React.FC<PizzaRushProps> = ({ onWinCoupon }) => {
       ctx.stroke();
       ctx.closePath();
 
-      // Paddle
+      // Barquito Blanco (Pala)
+      const px = paddleRef.current.x;
+      const py = height - 25;
+      const pw = paddleRef.current.width;
+      const ph = paddleRef.current.height;
+
+      // Dibujar Casco del Barco
       ctx.beginPath();
-      ctx.roundRect(paddleRef.current.x, height - 25, paddleRef.current.width, paddleRef.current.height, 6);
-      ctx.fillStyle = "#1c1917";
+      ctx.moveTo(px, py);
+      ctx.lineTo(px + pw, py);
+      ctx.lineTo(px + pw - 10, py + ph);
+      ctx.lineTo(px + 10, py + ph);
+      ctx.closePath();
+      ctx.fillStyle = "#FFFFFF"; // Blanco
       ctx.fill();
+      ctx.strokeStyle = "#1c1917";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Dibujar Mástil y Vela
+      ctx.beginPath();
+      ctx.moveTo(px + pw / 2, py);
+      ctx.lineTo(px + pw / 2, py - 15); // Mástil
+      ctx.lineTo(px + pw / 2 + 12, py - 8); // Vela
+      ctx.lineTo(px + pw / 2, py - 2);
+      ctx.fillStyle = "#FFFFFF"; // Vela blanca
+      ctx.fill();
+      ctx.strokeStyle = "#A61D24";
+      ctx.stroke();
       ctx.closePath();
 
       // Ball Physics
@@ -232,7 +256,7 @@ const PizzaRush: React.FC<PizzaRushProps> = ({ onWinCoupon }) => {
             PIZZA <span className="text-vivazza-red">BREAKER</span>
           </h2>
           <p className="text-gray-500 text-sm font-medium mb-6">
-            Usa el dedo o mouse para mover la pala. ¡Elimina todos los ingredientes y gana un cupón!
+            Usa el dedo o mouse para mover el barquito. ¡Elimina todos los ingredientes y gana un cupón!
           </p>
         </div>
 
