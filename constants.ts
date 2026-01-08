@@ -98,12 +98,12 @@ export const PIZZAS: Pizza[] = [
   {
     id: 'p_fug',
     name: 'Fugazza',
-    description: 'Mozzarella, salsa artesanal de la casa, cebolla caramelizada y aceitunas sevillanas.',
+    description: 'Mozzarella, salsa artesanal de la casa, cebolla y aceitunas sevillanas.',
     price: 7190,
     image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80',
     type: 'traditional',
     calories: 840,
-    ingredientsList: ['Mozzarella', 'Cebolla Caramelizada', 'Aceitunas']
+    ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Cebolla', 'Aceitunas']
   },
   {
     id: 'p_veg',
@@ -138,22 +138,22 @@ export const PIZZAS: Pizza[] = [
   {
     id: 'p_viv',
     name: 'La "Vivazza"',
-    description: 'Mozzarella, salsa artesanal de la casa, tocino ahumado y piña.',
+    description: 'Mozzarella, salsa artesanal de la casa, tocino ahumado, cebolla morada y aceitunas sevillanas.',
     price: 7190,
     image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
     type: 'special',
     calories: 950,
-    ingredientsList: ['Tocino Ahumado', 'Piña', 'Salsa Artesanal']
+    ingredientsList: ['Mozzarella', 'Salsa Artesanal', 'Tocino Ahumado', 'Cebolla Morada', 'Aceitunas']
   },
   {
     id: 'p_dol',
     name: 'Dolce Vivazza',
-    description: 'Base dulce artesanal, frutillas frescas, chocolate y toppings especiales.',
+    description: 'Base dulce artesanal, chocolate, frutillas y toppings especiales.',
     price: 5790,
     image: 'https://images.unsplash.com/photo-1511688858354-297232343239?auto=format&fit=crop&w=800&q=80',
     type: 'special',
     calories: 1200,
-    ingredientsList: ['Frutillas', 'Chocolate', 'Toppings Especiales']
+    ingredientsList: ['Base Dulce', 'Chocolate', 'Frutillas', 'Toppings Especiales']
   }
 ];
 
