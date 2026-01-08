@@ -133,12 +133,12 @@ const Wholesale: React.FC = () => {
         <div className="relative z-10 p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           <div className="space-y-10">
-            <div className="flex flex-col mb-4 border-b border-vivazza-gold/10 pb-4">
-               <div className="flex items-center justify-between">
-                 <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Nuestra Selección Premium:</h3>
+            <div className="flex flex-col mb-4 border-b border-vivazza-gold/10 pb-6">
+               <div className="flex items-center justify-between mb-4">
+                 <h3 className="font-heading text-2xl text-vivazza-stone uppercase leading-none opacity-60">Nuestra Selección Premium:</h3>
                  <span className="bg-vivazza-red/10 text-vivazza-red px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Alta Rentabilidad</span>
                </div>
-               <p className="text-vivazza-red font-heading text-xl uppercase mt-1">Pack de Masas</p>
+               <p className="text-vivazza-red font-heading text-6xl md:text-7xl uppercase mt-4 tracking-tighter drop-shadow-md animate-fade-in">Pack de Masas</p>
             </div>
             
             <div className="space-y-8">
@@ -195,7 +195,7 @@ const Wholesale: React.FC = () => {
 
           <div className="space-y-10">
             <div className="flex items-center justify-between mb-4 border-b border-vivazza-gold/10 pb-4">
-               <h3 className="font-heading text-3xl text-vivazza-stone uppercase leading-none">Pizza Congelada:</h3>
+               <h3 className="font-heading text-4xl text-vivazza-stone uppercase leading-none">Pizzas congeladas:</h3>
                <span className="bg-vivazza-gold/10 text-vivazza-gold px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">Listo para servir</span>
             </div>
 
@@ -257,9 +257,15 @@ const Wholesale: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-8 text-center bg-gray-50 rounded-3xl p-6 border border-dashed border-gray-200">
-              <p className="font-heading text-2xl text-vivazza-red uppercase tracking-tight">PEDIDO MÍNIMO: {WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</p>
-              <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Asegura el abastecimiento de tu negocio hoy</p>
+            {/* Pedido Mínimo Destacado */}
+            <div className="pt-8 text-center bg-vivazza-red/5 rounded-3xl p-8 border-2 border-vivazza-red/20 shadow-inner relative group/min animate-pulse duration-[2000ms] hover:animate-none transition-all">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-vivazza-red text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-red">
+                Información Crítica
+              </div>
+              <p className="font-heading text-5xl md:text-6xl text-vivazza-red uppercase tracking-tight leading-none mb-2">
+                PEDIDO MÍNIMO: <span className="underline decoration-vivazza-gold decoration-4">{WHOLESALE_DATA.frozenPizzas.minOrder} UNIDADES</span>
+              </p>
+              <p className="text-[11px] text-vivazza-stone font-black uppercase tracking-widest leading-none">Asegura la rentabilidad de tu negocio hoy</p>
             </div>
           </div>
         </div>
@@ -323,13 +329,13 @@ const Wholesale: React.FC = () => {
                 value={formData.notes}
                 onChange={handleFormChange}
                 rows={2}
-                className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm resize-none"
+                className="w-full bg-white border border-gray-100 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-vivazza-red/20 focus:border-vivazza-red outline-none transition-all shadow-sm resize-none"
               ></textarea>
             </div>
           </div>
         </div>
 
-        {/* CTA Section */}
+        {/* CTA Section con Botón Animado */}
         <div className="relative z-10 bg-vivazza-stone p-8 md:p-16 border-t border-white/10 text-center space-y-10">
             <div className="max-w-2xl mx-auto">
               <h4 className="font-heading text-5xl md:text-7xl text-white uppercase leading-none mb-4">¡IMPULSA <span className="text-vivazza-gold">TU NEGOCIO!</span></h4>
@@ -341,11 +347,14 @@ const Wholesale: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <button 
                 onClick={handleWholesaleWhatsApp}
-                className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 bg-vivazza-red text-white rounded-2xl font-heading text-3xl shadow-red active:scale-95 transition-all overflow-hidden"
+                className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 bg-vivazza-red text-white rounded-2xl font-heading text-2xl md:text-3xl shadow-red active:scale-95 transition-all overflow-hidden animate-pulse-subtle"
               >
-                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                {/* Brillo animado overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></div>
+                <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                
                 <span className="relative flex items-center gap-4">
-                  <MessageCircle size={28} /> ENVIAR DATOS A WHATSAPP
+                  <MessageCircle size={32} /> CONVIÉRTETE EN DISTRIBUIDOR VIVAZZA
                 </span>
               </button>
               
@@ -402,6 +411,23 @@ const Wholesale: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        @keyframes pulse-subtle {
+          0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -5px rgba(166, 29, 36, 0.4); }
+          50% { transform: scale(1.02); box-shadow: 0 15px 35px -5px rgba(166, 29, 36, 0.6); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite ease-in-out;
+        }
+        .animate-pulse-subtle {
+          animation: pulse-subtle 3s infinite ease-in-out;
+        }
+      `}</style>
 
       <div className="text-center mt-20 opacity-30 px-6">
         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu aliado comercial</p>
