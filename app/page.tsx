@@ -1,23 +1,21 @@
 
 "use client";
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { PIZZAS, VIVAZZA_INSTAGRAM, VIVAZZA_CATALOG_URL, VIVAZZA_LOCATION, VIVAZZA_PHONE } from '../constants';
+import React, { useState, useEffect, useMemo, useTransition, useCallback } from 'react';
+import { PIZZAS, VIVAZZA_INSTAGRAM, VIVAZZA_PHONE, VIVAZZA_CATALOG_URL, VIVAZZA_LOCATION } from '../constants';
 import { Pizza, CartItem, ToastMessage, ToastType, Coupon, ExtraItem } from '../types';
 import PizzaCard from '../components/PizzaCard';
 import PizzaModal from '../components/PizzaModal';
-import PizzaLab from '../components/PizzaLab';
 import PizzaRush from '../components/PizzaRush';
 import Wholesale from '../components/Wholesale';
+import PizzaCatalog from '../components/PizzaCatalog';
 import CartSidebar from '../components/CartSidebar';
 import NotFound from '../components/NotFound';
-import LocationMap from '../components/LocationMap';
 import { ToastContainer } from '../components/Toast';
-import { ShoppingBag, UtensilsCrossed, Gamepad2, Pizza as PizzaIcon, Home, Instagram, MessageCircle, Building2, MapPin, Phone, ExternalLink, Flame, Users } from 'lucide-react';
+import { ShoppingBag, Gamepad2, Home, Instagram, MessageCircle, Building2, MapPin, Phone, ExternalLink, List, ChevronRight, Zap, Flame } from 'lucide-react';
 
-type Section = 'menu' | 'lab' | 'game' | 'wholesale' | '404';
+type Section = 'menu' | 'catalog' | 'wholesale' | 'game' | '404';
 
-// Gestor de Audio Singleton para evitar latencia al crear contextos
 class AudioManager {
   private static ctx: AudioContext | null = null;
   static getContext() {
@@ -32,16 +30,13 @@ class AudioManager {
 export default function App() {
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<Section>('menu');
+  const [isPending, startTransition] = useTransition();
   const [selectedPizza, setSelectedPizza] = useState<Pizza | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const [stockCount, setStockCount] = useState(12);
-
-  const traditionalPizzas = useMemo(() => PIZZAS.filter(p => p.type === 'traditional'), []);
-  const specialPizzas = useMemo(() => PIZZAS.filter(p => p.type === 'special'), []);
 
   useEffect(() => {
     setMounted(true);
@@ -51,11 +46,6 @@ export default function App() {
         setCartItems(JSON.parse(savedCart));
       } catch (e) {}
     }
-
-    const stockTimer = setInterval(() => {
-      setStockCount(prev => (prev > 3 ? prev - 1 : prev));
-    }, 45000);
-    return () => clearInterval(stockTimer);
   }, []);
 
   useEffect(() => {
@@ -63,6 +53,12 @@ export default function App() {
       localStorage.setItem('vivazza_cart', JSON.stringify(cartItems));
     }
   }, [cartItems, mounted]);
+
+  const hapticFeedback = useCallback(() => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(5);
+    }
+  }, []);
 
   const playUISound = useCallback((freq = 880) => {
     try {
@@ -73,8 +69,8 @@ export default function App() {
       const gain = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.02, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -82,22 +78,17 @@ export default function App() {
     } catch (e) {}
   }, []);
 
-  const addToast = useCallback((message: string, type: ToastType = 'info') => {
-    const id = Date.now().toString();
-    setToasts(prev => [...prev, { id, message, type }]);
-  }, []);
-
-  const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
-  }, []);
-
   const handleNavChange = useCallback((section: Section) => {
+    hapticFeedback();
     playUISound(660);
-    setActiveSection(section);
-    window.scrollTo({ top: 0, behavior: 'instant' }); // 'instant' para móviles evita lag de scroll suave
-  }, [playUISound]);
+    startTransition(() => {
+      setActiveSection(section);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  }, [hapticFeedback, playUISound]);
 
   const addToCart = useCallback((pizza: Pizza) => {
+    hapticFeedback();
     setCartItems(prev => [...prev, {
       id: Date.now().toString(),
       pizzaName: pizza.name,
@@ -105,221 +96,190 @@ export default function App() {
       quantity: 1,
       isCustom: false
     }]);
-    addToast(`${pizza.name} agregada al carrito`, 'success');
-  }, [addToast]);
-
-  const addCustomToCart = useCallback((item: CartItem) => {
-    setCartItems(prev => [...prev, item]);
-    setIsCartOpen(true);
-    setActiveSection('menu');
-  }, []);
-
-  const addExtraToCart = useCallback((extra: ExtraItem) => {
-    setCartItems(prev => [...prev, {
-      id: Date.now().toString(),
-      pizzaName: extra.name,
-      basePrice: extra.price,
-      quantity: 1,
-      isCustom: false,
-      isExtra: true
-    }]);
-    addToast(`${extra.name} agregado`, 'success');
-  }, [addToast]);
+    
+    const id = Date.now().toString();
+    setToasts(prev => [...prev, { id, message: `${pizza.name} agregada`, type: 'success' }]);
+  }, [hapticFeedback]);
 
   const removeFromCart = useCallback((id: string) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
-    addToast('Producto eliminado', 'info');
-  }, [addToast]);
+  }, []);
 
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-grain flex flex-col pb-24 md:pb-0">
-      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    <div className="min-h-screen bg-grain flex flex-col pb-24 md:pb-0 select-none overflow-x-hidden">
+      {isPending && <div className="turbo-bar" style={{ width: '40%' }} />}
       
-      <div className="bg-vivazza-stone text-white py-2 overflow-hidden whitespace-nowrap hidden md:block border-b border-white/10">
-        <div className="animate-marquee inline-block">
-          <span className="mx-8 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
-            <Users size={12} className="text-vivazza-red" /> +15 pedidos saliendo hoy en Talca
-          </span>
-          <span className="mx-8 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
-            <Flame size={12} className="text-vivazza-gold" /> Receta de reposo artesanal
-          </span>
-          <span className="mx-8 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 inline-flex">
-            <Users size={12} className="text-vivazza-red" /> Rodrigo acaba de pedir una Margarita
-          </span>
-        </div>
-      </div>
+      <ToastContainer toasts={toasts} removeToast={(id) => setToasts(prev => prev.filter(t => t.id !== id))} />
+      
+      <nav className="hidden md:block sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm gpu-accel">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          <div className="flex items-center cursor-pointer" onClick={() => handleNavChange('menu')}>
+            <h1 className="font-heading text-4xl text-vivazza-red tracking-tight">VIVAZZA</h1>
+            <span className="ml-3 text-[9px] font-black text-gray-400 uppercase tracking-widest border-l pl-3 border-gray-200">TALCA · ARTESANAL</span>
+          </div>
 
-      <nav className="hidden md:block sticky top-0 z-30 bg-vivazza-cream/90 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center cursor-pointer" onClick={() => handleNavChange('menu')}>
-              <h1 className="font-heading text-4xl text-vivazza-red tracking-tight">VIVAZZA</h1>
-              <span className="ml-3 text-[10px] tracking-[0.2em] text-gray-400 uppercase border-l pl-3 border-gray-300">
-                Talca · Artesanal
-              </span>
-            </div>
-
-            <div className="flex space-x-6">
-              <button onClick={() => handleNavChange('menu')} className={`font-heading text-lg transition-colors ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>CARTA</button>
-              <button onClick={() => handleNavChange('lab')} className={`font-heading text-lg transition-colors ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA LAB</button>
-              <button onClick={() => handleNavChange('game')} className={`font-heading text-lg transition-colors ${activeSection === 'game' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>PIZZA BREAKER</button>
-              <button onClick={() => handleNavChange('wholesale')} className={`font-heading text-lg transition-colors ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-vivazza-stone hover:text-vivazza-red'}`}>DISTRIBUIDORES</button>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <button onClick={() => window.open(`https://instagram.com/${VIVAZZA_INSTAGRAM}`, '_blank')} className="text-vivazza-stone hover:text-vivazza-red p-2 transition-colors"><Instagram size={22} /></button>
-              <button onClick={() => window.open(VIVAZZA_CATALOG_URL, '_blank')} className="text-vivazza-stone hover:text-green-600 p-2 transition-colors"><MessageCircle size={22} /></button>
-              <button onClick={() => { playUISound(880); setIsCartOpen(true); }} className="relative p-2 text-vivazza-stone group">
-                <ShoppingBag size={28} className="group-hover:scale-110 transition-transform" />
-                {cartItems.length > 0 && (
-                  <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-vivazza-red rounded-full ring-2 ring-white animate-cart-pop">
-                    {cartItems.length}
-                  </span>
-                )}
+          <div className="flex space-x-10">
+            {['menu', 'catalog', 'wholesale', 'game'].map((sec) => (
+              <button 
+                key={sec} 
+                onClick={() => handleNavChange(sec as Section)} 
+                className={`font-heading text-xl uppercase tracking-tight transition-all duration-200 ${activeSection === sec ? 'text-vivazza-red scale-105' : 'text-vivazza-stone hover:text-vivazza-red opacity-60'}`}
+              >
+                {sec === 'wholesale' ? 'Distribución' : sec === 'game' ? 'Jugar' : sec === 'catalog' ? 'Carta' : 'Inicio'}
               </button>
-            </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={() => window.open(`https://instagram.com/${VIVAZZA_INSTAGRAM}`, '_blank')} className="text-vivazza-stone hover:text-vivazza-red transition-all hover:scale-110"><Instagram size={22} /></button>
+            <button onClick={() => { playUISound(880); setIsCartOpen(true); hapticFeedback(); }} className="relative bg-vivazza-red text-white p-3 rounded-2xl shadow-red active:scale-95 transition-all">
+              <ShoppingBag size={24} />
+              {cartItems.length > 0 && <span className="absolute -top-2 -right-2 bg-vivazza-stone text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full ring-2 ring-white animate-cart-pop">{cartItems.length}</span>}
+            </button>
           </div>
         </div>
       </nav>
 
-      <div className="md:hidden flex items-center justify-between px-6 h-16 bg-vivazza-cream/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20">
-         <h1 className="font-heading text-3xl text-vivazza-red tracking-tight" onClick={() => handleNavChange('menu')}>VIVAZZA</h1>
-         <div className="flex gap-4">
-            <button onClick={() => window.open(VIVAZZA_CATALOG_URL, '_blank')} className="text-green-600 p-2"><MessageCircle size={24} /></button>
-            <button onClick={() => window.open(`https://instagram.com/${VIVAZZA_INSTAGRAM}`, '_blank')} className="text-vivazza-stone p-2"><Instagram size={24} /></button>
-         </div>
-      </div>
-
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        {activeSection === 'menu' && (
-          <div className="space-y-12 animate-fade-in-up">
-            <div className="relative rounded-[2.5rem] overflow-hidden bg-vivazza-stone text-white p-6 md:p-16 mb-8 shadow-premium group min-h-[400px]">
-              <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/40 to-transparent z-10"></div>
-              <div className="relative z-20 max-w-2xl">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 bg-vivazza-red text-white text-[10px] font-black rounded-full uppercase tracking-widest animate-pulse">
-                    QUEDAN {stockCount} MASAS HOY
-                  </span>
+      <main className={`flex-grow max-w-7xl mx-auto w-full px-2 md:px-6 py-2 md:py-8 transition-opacity duration-200 ${isPending ? 'opacity-50' : 'opacity-100'}`}>
+        <div className="animate-turbo gpu-accel">
+          {activeSection === 'menu' && (
+            <div className="space-y-12">
+              {/* Flyer Principal Premium */}
+              <div className="relative rounded-[2.8rem] md:rounded-[4rem] overflow-hidden bg-vivazza-stone h-[85vh] md:h-[80vh] flex flex-col items-center justify-center p-6 md:p-20 shadow-premium group text-center mb-8">
+                {/* Overlay gradiente radial para enfoque central */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_50%,rgba(0,0,0,0.85)_100%)] z-10"></div>
+                
+                <div className="relative z-20 w-full max-w-2xl flex flex-col h-full justify-between py-10">
+                  <div className="flex flex-col items-center">
+                    <div className="inline-flex items-center gap-2 px-6 py-2 bg-vivazza-red text-white text-[11px] font-black rounded-full mb-10 uppercase tracking-[0.3em] shadow-xl animate-fade-in-up">
+                      ARTESANAL & PREMIUM
+                    </div>
+                    
+                    <h2 className="font-heading text-[18vw] md:text-[10rem] mb-2 leading-[0.8] text-white tracking-tighter uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                      EL ARTE DE UNA <br/>
+                      <span className="text-vivazza-red inline-block transform -rotate-1 md:-rotate-2">BUENA PIZZA</span>
+                    </h2>
+                    
+                    <div className="w-16 h-1 bg-vivazza-red/50 my-8 rounded-full"></div>
+                    
+                    <p className="text-white text-xl md:text-2xl font-medium opacity-90 leading-relaxed px-8 max-w-lg mx-auto drop-shadow-md italic">
+                      "El equilibrio perfecto entre textura, aroma y sabor."
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
+                    <button 
+                      onClick={() => handleNavChange('catalog')} 
+                      className="group relative overflow-hidden bg-vivazza-red text-white w-full py-5 rounded-[1.5rem] font-heading text-3xl shadow-[0_20px_40px_-10px_rgba(166,29,36,0.5)] active:scale-95 transition-all"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                      VER CATÁLOGO
+                    </button>
+                    <button 
+                      onClick={() => window.open(VIVAZZA_CATALOG_URL, '_blank')} 
+                      className="bg-white/10 backdrop-blur-2xl text-white border border-white/20 w-full py-5 rounded-[1.5rem] font-heading text-3xl flex items-center justify-center gap-4 active:scale-95 transition-all shadow-2xl hover:bg-white/20"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30">
+                        <MessageCircle size={24} className="text-green-400 fill-current/20" />
+                      </div>
+                      PEDIR POR WHATSAPP
+                    </button>
+                  </div>
                 </div>
-                <h2 className="font-heading text-6xl md:text-8xl mb-4 leading-none text-white tracking-tighter uppercase">EL ARTE DE UNA <br/><span className="text-vivazza-red">BUENA PIZZA</span></h2>
-                <p className="font-medium text-gray-300 text-lg mb-8 max-w-md">El equilibrio perfecto entre textura, aroma y sabor artesanal.</p>
-                <div className="flex flex-wrap gap-4">
-                  <button onClick={() => { playUISound(880); document.getElementById('carta')?.scrollIntoView({behavior: 'smooth'}); }} className="bg-vivazza-red text-white px-10 py-4 rounded-2xl font-heading text-2xl shadow-red flex items-center gap-3 active:scale-95 duration-200">
-                    HACER MI PEDIDO
-                  </button>
-                  <button onClick={() => window.open(VIVAZZA_CATALOG_URL, '_blank')} className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-4 rounded-2xl font-heading text-2xl flex items-center gap-3 active:scale-95 duration-200">
-                    <MessageCircle size={24} /> CATÁLOGO DIRECTO
-                  </button>
-                </div>
+                
+                {/* Imagen de fondo con efecto Ken Burns */}
+                <img 
+                  src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1200&q=80" 
+                  className="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[15000ms] ease-linear" 
+                  alt="Vivazza Hero" 
+                  loading="eager" 
+                />
+                
+                {/* Textura de grano fina específica para el hero */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")' }}></div>
               </div>
-              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1200&q=80" alt="Pizza artesanal" fetchPriority="high" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" />
+
+              <section className="section-visible px-4">
+                <div className="flex justify-between items-end mb-10">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-vivazza-red uppercase tracking-[0.4em] ml-1">Favoritos de la casa</p>
+                    <h3 className="font-heading text-6xl text-vivazza-stone uppercase leading-none tracking-tighter">LO <span className="text-vivazza-red">MÁS PEDIDO</span></h3>
+                  </div>
+                  <button onClick={() => handleNavChange('catalog')} className="text-[10px] font-black uppercase text-vivazza-red tracking-widest flex items-center gap-2 mb-2 group">
+                    VER CARTA <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {PIZZAS.slice(0, 3).map((pizza, idx) => (
+                    <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={idx} />
+                  ))}
+                </div>
+              </section>
             </div>
+          )}
 
-            <section id="carta" className="section-visible">
-              <h3 className="font-heading text-4xl text-vivazza-stone uppercase tracking-tight mb-8">Selección Artesanal</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {specialPizzas.map((pizza, index) => (
-                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={index} />
-                ))}
-                {traditionalPizzas.map((pizza, index) => (
-                  <PizzaCard key={pizza.id} pizza={pizza} onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} index={index + specialPizzas.length} />
-                ))}
-              </div>
-            </section>
-
-            <section className="pt-12 border-t border-gray-100 section-visible">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div className="bg-vivazza-cream p-8 md:p-12 rounded-[3rem] border border-vivazza-gold/20 shadow-sm">
-                   <h3 className="font-heading text-5xl text-vivazza-stone uppercase tracking-tighter mb-8">PUNTO DE <br/><span className="text-vivazza-red">RETIRO EN TALCA</span></h3>
-                   <div className="space-y-6">
-                      <div className="flex items-start gap-4">
-                         <div className="bg-vivazza-red text-white p-3 rounded-2xl"><MapPin size={24} /></div>
-                         <div>
-                            <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Dirección Física</p>
-                            <p className="text-xl font-bold text-vivazza-stone">{VIVAZZA_LOCATION.address}</p>
-                         </div>
-                      </div>
-                      <div className="flex items-start gap-4">
-                         <div className="bg-green-600 text-white p-3 rounded-2xl"><Phone size={24} /></div>
-                         <div>
-                            <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Ventas WhatsApp</p>
-                            <p className="text-xl font-bold text-vivazza-stone">+{VIVAZZA_PHONE}</p>
-                         </div>
-                      </div>
-                   </div>
-                   <div className="mt-10 flex flex-wrap gap-4">
-                      <button onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${VIVAZZA_LOCATION.lat},${VIVAZZA_LOCATION.lng}`, '_blank')} className="bg-vivazza-stone text-white px-8 py-4 rounded-2xl font-heading text-xl flex items-center gap-3 shadow-xl">
-                        CÓMO LLEGAR <ExternalLink size={20} />
-                      </button>
-                      <button onClick={() => window.open(VIVAZZA_CATALOG_URL, '_blank')} className="bg-green-600 text-white px-8 py-4 rounded-2xl font-heading text-xl flex items-center gap-3 shadow-xl">
-                        WHATSAPP <MessageCircle size={20} />
-                      </button>
-                   </div>
-                </div>
-                <div className="h-[400px] rounded-[3.5rem] overflow-hidden shadow-2xl border-8 border-white group relative">
-                    <LocationMap 
-                      isOpen={true} 
-                      onClose={() => {}} 
-                      onConfirm={() => {}} 
-                      initialCoords={{lat: VIVAZZA_LOCATION.lat, lng: VIVAZZA_LOCATION.lng}}
-                      isStatic={true}
-                    />
-                    <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors pointer-events-none" />
-                </div>
-              </div>
-            </section>
-          </div>
-        )}
-
-        {activeSection === 'lab' && <PizzaLab onAddToCart={addCustomToCart} showToast={addToast} />}
-        {activeSection === 'game' && <PizzaRush onWinCoupon={(c) => {setAppliedCoupon(c); addToast("¡Descuento ganado!", "success"); setIsCartOpen(true);}} />}
-        {activeSection === 'wholesale' && <Wholesale />}
-        {activeSection === '404' && <NotFound onBack={() => handleNavChange('menu')} />}
+          {activeSection === 'catalog' && <PizzaCatalog onAdd={addToCart} onViewDetails={(p) => {setSelectedPizza(p); setIsModalOpen(true);}} />}
+          {activeSection === 'wholesale' && <Wholesale />}
+          {activeSection === 'game' && <PizzaRush onWinCoupon={(c) => {setAppliedCoupon(c); setIsCartOpen(true);}} />}
+          {activeSection === '404' && <NotFound onBack={() => handleNavChange('menu')} />}
+        </div>
       </main>
 
-      <div className="md:hidden flex items-center justify-between px-6 h-16 bg-vivazza-cream/95 backdrop-blur-lg border-b border-gray-200 px-6 py-2 pb-safe-bottom z-40 flex justify-between items-center shadow-lg">
-        <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1 p-2 transition-all duration-200 ${activeSection === 'menu' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Home size={22} />
-          <span className="text-[9px] font-black uppercase">Carta</span>
-        </button>
-        <button onClick={() => handleNavChange('lab')} className={`flex flex-col items-center gap-1 p-2 transition-all duration-200 ${activeSection === 'lab' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <PizzaIcon size={22} />
-          <span className="text-[9px] font-black uppercase">Lab</span>
-        </button>
-        <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1 p-2 transition-all duration-200 ${activeSection === 'game' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Gamepad2 size={22} />
-          <span className="text-[9px] font-black uppercase">Jugar</span>
-        </button>
-        <button onClick={() => handleNavChange('wholesale')} className={`flex flex-col items-center gap-1 p-2 transition-all duration-200 ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-gray-400'}`}>
-          <Building2 size={22} />
-          <span className="text-[9px] font-black uppercase">B2B</span>
-        </button>
-        <button onClick={() => { playUISound(880); setIsCartOpen(true); }} className="flex flex-col items-center gap-1 p-2 relative text-gray-400">
-           <div className="relative">
-              <ShoppingBag size={22} />
+      {/* Barra Móvil Estilizada */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-3xl border-t border-gray-100 z-50 shadow-[0_-15px_40px_rgba(0,0,0,0.08)] gpu-accel">
+        <div className="flex justify-around items-end px-3 py-4 pb-safe-bottom relative">
+          <button onClick={() => handleNavChange('menu')} className={`flex flex-col items-center gap-1.5 px-4 transition-all duration-300 ${activeSection === 'menu' ? 'text-vivazza-red scale-110' : 'text-gray-400 opacity-60'}`}>
+            <Home size={26} strokeWidth={activeSection === 'menu' ? 2.5 : 2} />
+            <span className="text-[10px] font-black uppercase tracking-tighter">INICIO</span>
+          </button>
+          
+          <button onClick={() => handleNavChange('catalog')} className={`flex flex-col items-center gap-1.5 px-4 transition-all duration-300 ${activeSection === 'catalog' ? 'text-vivazza-red scale-110' : 'text-gray-400 opacity-60'}`}>
+            <List size={26} strokeWidth={activeSection === 'catalog' ? 2.5 : 2} />
+            <span className="text-[10px] font-black uppercase tracking-tighter">CARTA</span>
+          </button>
+          
+          <div className="flex flex-col items-center gap-1 relative -top-6">
+            <button 
+              onClick={() => handleNavChange('wholesale')} 
+              className={`flex items-center justify-center w-20 h-20 rounded-full shadow-[0_15px_30px_-5px_rgba(166,29,36,0.4)] transition-all active:scale-90 bg-vivazza-red text-white mb-1 border-[6px] border-white`}
+            >
+              <Building2 size={32} />
+            </button>
+            <span className={`text-[10px] font-black uppercase tracking-tighter ${activeSection === 'wholesale' ? 'text-vivazza-red' : 'text-gray-400 opacity-60'}`}>DISTRIBUCIÓN</span>
+          </div>
+
+          <button onClick={() => handleNavChange('game')} className={`flex flex-col items-center gap-1.5 px-4 transition-all duration-300 ${activeSection === 'game' ? 'text-vivazza-red scale-110' : 'text-gray-400 opacity-60'}`}>
+            <Gamepad2 size={26} strokeWidth={activeSection === 'game' ? 2.5 : 2} />
+            <span className="text-[10px] font-black uppercase tracking-tighter">JUGAR</span>
+          </button>
+          
+          <button onClick={() => { hapticFeedback(); setIsCartOpen(true); }} className={`flex flex-col items-center gap-1.5 px-4 text-gray-400 relative transition-all active:scale-90`}>
+            <div className="relative">
+              <ShoppingBag size={26} />
               {cartItems.length > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-vivazza-red text-[8px] font-bold text-white"> 
-                  {cartItems.length} 
+                <span className="absolute -top-2 -right-2 bg-vivazza-red text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center rounded-full ring-2 ring-white animate-cart-pop">
+                  {cartItems.length}
                 </span>
               )}
-           </div>
-           <span className="text-[9px] font-black uppercase tracking-tighter">Pedido</span>
-        </button>
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-tighter">PEDIDO</span>
+          </button>
+        </div>
       </div>
 
       <PizzaModal pizza={selectedPizza} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={addToCart} />
-      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cartItems={cartItems} onRemoveItem={removeFromCart} onAddExtra={addExtraToCart} showToast={addToast} appliedCoupon={appliedCoupon} onApplyCoupon={setAppliedCoupon} />
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cartItems={cartItems} onRemoveItem={removeFromCart} onAddExtra={(extra) => addToCart({ ...PIZZAS[0], name: extra.name, price: extra.price, id: extra.id } as Pizza)} showToast={() => {}} appliedCoupon={appliedCoupon} onApplyCoupon={setAppliedCoupon} />
       
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes marquee {
-          0% { transform: translate3d(100%, 0, 0); }
-          100% { transform: translate3d(-100%, 0, 0); }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
         }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-          will-change: transform;
+        .animate-shimmer {
+          animation: shimmer 2.5s infinite linear;
         }
       ` }} />
     </div>
