@@ -1,11 +1,13 @@
 
 import { Pizza, Dough, Ingredient, Coupon, ExtraItem } from './types';
 
-export const BASE_CUSTOM_PRICE = 6000;
 export const VIVAZZA_PHONE = "56932665490";
 export const VIVAZZA_INSTAGRAM = "vivazzafabricadepizzas";
 export const VIVAZZA_CATALOG_URL = `https://wa.me/c/${VIVAZZA_PHONE}`;
 export const FREE_DELIVERY_THRESHOLD = 18000;
+
+// Added BASE_CUSTOM_PRICE to resolve import error in PizzaLab.tsx
+export const BASE_CUSTOM_PRICE = 5990;
 
 export const VIVAZZA_LOCATION = {
   lat: -35.4264,
@@ -85,7 +87,7 @@ export const TESTIMONIALS = [
 export const REVIEWS = [
   { id: 1, name: "Carolina M.", text: "La mejor pizza de Talca, por lejos. Se nota el reposo sagrado porque es súper ligera.", rating: 5, date: "Hace 2 días" },
   { id: 2, name: "Juan Pablo S.", text: "El envío a Las Rastras llegó perfecto. La Margarita es un 10/10.", rating: 5, date: "Hace 1 semana" },
-  { id: 3, name: "Ignacio R.", text: "Pedí por el Pizza Lab y fue genial armarla a mi pinta. Ingredientes muy frescos.", rating: 4, date: "Hace 3 días" },
+  { id: 3, name: "Ignacio R.", text: "Pedí por el catálogo y fue genial. Ingredientes muy frescos.", rating: 4, date: "Hace 3 días" },
   { id: 4, name: "Valentina D.", text: "Adicta a los Garlic Knots. Es mi pedido fijo de todos los viernes.", rating: 5, date: "Ayer" },
   { id: 5, name: "Pedro H.", text: "Atención por WhatsApp súper rápida. Se agradece la buena onda.", rating: 5, date: "Hace 2 semanas" }
 ];
@@ -108,37 +110,30 @@ export const WHOLESALE_DATA = {
 };
 
 export const INGREDIENTS: Ingredient[] = [
-  // Bases y Quesos
-  { id: 'moz', name: 'Mozzarella Premium', price: 1200, calories: 80, color: '#FDE68A' },
-  { id: 'par', name: 'Parmesano', price: 1300, calories: 110, color: '#FEF3C7' },
-  { id: 'azu', name: 'Queso Azul', price: 1800, calories: 100, color: '#D1FAE5' },
-  
-  // Carnes
-  { id: 'pep', name: 'Pepperoni Americano', price: 1500, calories: 120, color: '#B91C1C' },
-  { id: 'jam', name: 'Jamón Serrano', price: 2000, calories: 90, color: '#991B1B' },
-  { id: 'toc', name: 'Tocino Ahumado', price: 1500, calories: 150, color: '#78350F' },
-  { id: 'sal', name: 'Salami Italiano', price: 1400, calories: 130, color: '#991B1B' },
-  { id: 'pol', name: 'Pollo Grillé', price: 1600, calories: 90, color: '#F3F4F6' },
-  
-  // Vegetales
-  { id: 'cha', name: 'Champiñón Paris', price: 1000, calories: 15, color: '#D1D5DB' },
-  { id: 'ace', name: 'Aceitunas Negras', price: 900, calories: 45, color: '#1F2937' },
-  { id: 'tom', name: 'Tomate Cherry', price: 800, calories: 10, color: '#EF4444' },
-  { id: 'rucu', name: 'Rúcula Fresca', price: 1200, calories: 5, color: '#10B981' },
-  { id: 'pime', name: 'Pimentón Verde', price: 700, calories: 12, color: '#059669' },
-  { id: 'ceb', name: 'Cebolla Morada', price: 600, calories: 15, color: '#7E22CE' },
-  { id: 'choc', name: 'Choclo Dulce', price: 700, calories: 30, color: '#FDE047' },
-  { id: 'palmit', name: 'Palmitos', price: 1200, calories: 25, color: '#FFFBEB' },
-  
-  // Toques Especiales
-  { id: 'piña', name: 'Piña Caramelizada', price: 1000, calories: 40, color: '#FACC15' },
-  { id: 'alb', name: 'Albahaca Orgánica', price: 500, calories: 2, color: '#34D399' },
-  { id: 'aji', name: 'Ají Verde', price: 600, calories: 5, color: '#4ADE80' },
+  // Added color property to ingredients to fix error in PizzaLab.tsx visualization
+  { id: 'moz', name: 'Mozzarella Premium', price: 1200, calories: 80, color: '#FEF9E7' },
+  { id: 'par', name: 'Parmesano', price: 1300, calories: 110, color: '#FDF2E9' },
+  { id: 'azu', name: 'Queso Azul', price: 1800, calories: 100, color: '#D6EAF8' },
+  { id: 'pep', name: 'Pepperoni Americano', price: 1500, calories: 120, color: '#E74C3C' },
+  { id: 'jam', name: 'Jamón Serrano', price: 2000, calories: 90, color: '#943126' },
+  { id: 'toc', name: 'Tocino Ahumado', price: 1500, calories: 150, color: '#641E16' },
+  { id: 'sal', name: 'Salami Italiano', price: 1400, calories: 130, color: '#7B241C' },
+  { id: 'pol', name: 'Pollo Grillé', price: 1600, calories: 90, color: '#FAD7A0' },
+  { id: 'cha', name: 'Champiñón Paris', price: 1000, calories: 15, color: '#EBEDEF' },
+  { id: 'ace', name: 'Aceitunas Negras', price: 900, calories: 45, color: '#1C2833' },
+  { id: 'tom', name: 'Tomate Cherry', price: 800, calories: 10, color: '#EC7063' },
+  { id: 'rucu', name: 'Rúcula Fresca', price: 1200, calories: 5, color: '#229954' },
+  { id: 'pime', name: 'Pimentón Verde', price: 700, calories: 12, color: '#1E8449' },
+  { id: 'ceb', name: 'Cebolla Morada', price: 600, calories: 15, color: '#7D3C98' },
+  { id: 'choc', name: 'Choclo Dulce', price: 700, calories: 30, color: '#F4D03F' },
+  { id: 'palmit', name: 'Palmitos', price: 1200, calories: 25, color: '#FEF9E7' },
+  { id: 'piña', name: 'Piña Caramelizada', price: 1000, calories: 40, color: '#F7DC6F' },
+  { id: 'alb', name: 'Albahaca Orgánica', price: 500, calories: 2, color: '#28B463' },
+  { id: 'aji', name: 'Ají Verde', price: 600, calories: 5, color: '#1D8348' },
 ];
 
 export const DOUGHS: Dough[] = [
   { id: 'trad', name: 'Reposo Sagrado', price: 0, calories: 250, description: '72 horas de maduración lenta. El estándar napolitano.' },
-  { id: 'inte', name: 'Masa Integral', price: 1000, calories: 210, description: 'Mezcla de granos seleccionados para un sabor más rústico.' },
 ];
 
 export const PIZZAS: Pizza[] = [

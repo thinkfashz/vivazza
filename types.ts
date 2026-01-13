@@ -1,12 +1,13 @@
 
-export type PizzaType = 'traditional' | 'special' | 'custom';
+export type PizzaType = 'traditional' | 'special';
 
 export interface Ingredient {
   id: string;
   name: string;
   price: number;
   calories: number;
-  color?: string; // For visual builder
+  // Added color property to support visualization in PizzaLab
+  color: string;
 }
 
 export interface Dough {
@@ -43,9 +44,10 @@ export interface CartItem {
   basePrice: number;
   quantity: number;
   isCustom: boolean;
+  isExtra?: boolean;
+  // Added optional fields for custom pizzas from PizzaLab
   dough?: Dough;
   customIngredients?: Ingredient[];
-  isExtra?: boolean; // Flag to identify upsell items
 }
 
 export interface DeliveryDetails {

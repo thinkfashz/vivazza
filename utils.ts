@@ -19,9 +19,6 @@ export const generateWhatsAppLink = (cartItems: any[], total: number, delivery: 
 
   cartItems.forEach((item, index) => {
     message += `${index + 1}. *${item.quantity}x ${item.pizzaName.toUpperCase()}*\n`;
-    if (item.isCustom) {
-      message += `   └ _Ingredientes:_ ${item.customIngredients?.map((i: any) => i.name).join(', ')}\n`;
-    }
     message += `   └ _Precio:_ ${formatCLP(item.basePrice * item.quantity)}\n\n`;
   });
 

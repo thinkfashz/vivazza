@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +8,13 @@
   --vivazza-red: #A61D24;
   --vivazza-stone: #1c1917;
   --vivazza-gold: #D4AF37;
+  --primary: #cf1736;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700&display=swap');
+
+.font-display {
+  font-family: 'Epilogue', sans-serif;
 }
 
 .bg-grain {
@@ -24,7 +32,10 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
-/* EFECTOS DE RETROILUMINACIÓN Y BOTONES PREMIUM */
+.soft-ui-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 @keyframes glow-red {
   0%, 100% { box-shadow: 0 0 20px rgba(166, 29, 36, 0.4); }
   50% { box-shadow: 0 0 40px rgba(166, 29, 36, 0.7); }
@@ -67,12 +78,6 @@
   transition: all 0.3s ease;
 }
 
-.btn-glass-modern:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
 @keyframes ken-burns {
   0% { transform: scale(1); }
   100% { transform: scale(1.1); }
@@ -87,3 +92,10 @@
 }
 
 .pb-safe-bottom { padding-bottom: env(safe-area-inset-bottom, 20px); }
+
+/* Material Symbols Integration */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+}
