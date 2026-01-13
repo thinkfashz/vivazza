@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80";
 
@@ -30,14 +30,27 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 }) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
+  const imgRef = useRef<HTMLImageElement>(null);
 
+  // Sincronizar imgSrc cuando cambia la prop src
   useEffect(() => {
-    setImgSrc(src);
-    setIsLoading(true);
-  }, [src]);
+    if (src !== imgSrc) {
+      setImgSrc(src);
+      setIsLoading(true);
+    }
+  }, [src, imgSrc]);
+
+  // Verificar si la imagen ya está cargada (útil para caché)
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setIsLoading(false);
+    }
+  }, [imgSrc]);
 
   const handleError = () => {
-    setImgSrc(fallbackSrc);
+    if (imgSrc !== fallbackSrc) {
+      setImgSrc(fallbackSrc);
+    }
     setIsLoading(false);
   };
 
@@ -62,14 +75,16 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
       )}
       
       <img
+        ref={imgRef}
         src={imgSrc}
         alt={alt}
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
+        // @ts-ignore - fetchPriority is supported in modern browsers/React 19
         fetchPriority={priority ? "high" : "auto"}
-        className={`${imgStyle} transition-all duration-700 ease-out ${isLoading ? 'opacity-0 scale-110' : 'opacity-100 scale-100'} ${blur && isLoading ? 'blur-2xl' : 'blur-0'}`}
+        className={`${imgStyle} transition-all duration-700 ease-out ${isLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'} ${blur && isLoading ? 'blur-2xl' : 'blur-0'}`}
         style={!fill ? { width: width || '100%', height: height || 'auto' } : {}}
       />
     </div>
