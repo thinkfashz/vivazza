@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CartItem, ExtraItem, Coupon, DeliveryDetails, ToastType } from '../types';
 import { EXTRAS, COUPONS, FREE_DELIVERY_THRESHOLD } from '../constants';
 import { formatCLP, generateWhatsAppLink } from '../utils';
-import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, Store, AlertCircle, Loader2, Gift, User } from 'lucide-react';
+import { X, ShoppingBag, Trash2, ChevronRight, ChevronLeft, Tag, Truck, MapPin, MessageCircle, Store, AlertCircle, Loader2, Gift, User, ArrowLeft, Check } from 'lucide-react';
 import OrderSuccessModal from './OrderSuccessModal';
 import LocationMap from './LocationMap';
 
@@ -39,16 +39,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
     instructions: ''
   });
   
-  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isSearchingAddress, setIsSearchingAddress] = useState(false);
-  const [addressError, setAddressError] = useState<string | null>(null);
-  const [nameError, setNameError] = useState<string | null>(null);
-  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [couponInput, setCouponInput] = useState('');
-  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
+  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [addressError, setAddressError] = useState<string | null>(null);
 
   const subtotal = useMemo(() => cartItems.reduce((sum, item) => sum + (item.basePrice * item.quantity), 0), [cartItems]);
   const discount = useMemo(() => appliedCoupon ? (subtotal * appliedCoupon.discountPercent / 100) : 0, [subtotal, appliedCoupon]);
@@ -59,47 +53,22 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setShowSuggestions(false);
-      setAddressError(null);
-      setNameError(null);
-      setStep('cart');
+      setTimeout(() => {
+        setStep('cart');
+        setAddressError(null);
+        setNameError(null);
+      }, 300);
     }
   }, [isOpen]);
 
-  const fetchAddressSuggestions = async (query: string) => {
-    if (query.length < 3) return;
-    setIsSearchingAddress(true);
-    try {
-      const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lat=-35.4264&lon=-71.6554`);
-      const data = await response.json();
-      const suggestions = data.features.map((f: any) => ({
-        label: [f.properties.name, f.properties.street, f.properties.housenumber, f.properties.city].filter(Boolean).join(', '),
-        coords: { lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] }
-      }));
-      setAddressSuggestions(suggestions);
-      setShowSuggestions(suggestions.length > 0);
-    } catch (e) { console.error(e); } finally { setIsSearchingAddress(false); }
-  };
-
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDeliveryDetails(d => ({ ...d, address: value }));
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    if (value.length >= 3) {
-      searchTimeoutRef.current = setTimeout(() => fetchAddressSuggestions(value), 500);
-    }
-  };
-
   const handleCheckout = () => {
     if (!deliveryDetails.name || deliveryDetails.name.length < 2) {
-      setNameError('Ingresa tu nombre');
-      showToast('Por favor, ingresa tu nombre', 'error');
+      setNameError('Tu nombre es necesario');
       return;
     }
 
     if (deliveryDetails.method === 'delivery' && (!deliveryDetails.address || deliveryDetails.address.length < 5)) {
-        setAddressError('Ingresa una dirección válida');
-        showToast('Por favor, indica tu dirección de despacho', 'error');
+        setAddressError('Dirección incompleta');
         return;
     }
     const whatsappUrl = generateWhatsAppLink(cartItems, total, deliveryDetails, appliedCoupon);
@@ -109,70 +78,116 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
   return (
     <>
-      <div className={`fixed inset-0 z-50 bg-vivazza-stone/40 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
-      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white z-[60] shadow-2xl transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
-        
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center bg-white sticky top-0 z-20">
-          {step === 'delivery' && (
-            <button onClick={() => setStep('cart')} className="p-2 -ml-2 mr-2 hover:bg-gray-100 rounded-full"><ChevronLeft size={24} /></button>
-          )}
-          <h2 className="font-heading text-2xl uppercase tracking-tight flex-grow">
-            {step === 'cart' ? '🛒 Mi Pedido' : '🛵 Datos de Pedido'}
-          </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full"><X size={24} /></button>
-        </div>
+      {/* Backdrop */}
+      <div 
+        className={`fixed inset-0 z-50 bg-vivazza-stone/60 backdrop-blur-md transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+        onClick={onClose} 
+      />
 
-        <div className="flex-grow overflow-hidden relative">
-          <div className={`absolute inset-0 flex transition-transform duration-500 ${step === 'delivery' ? '-translate-x-full' : 'translate-x-0'}`}>
-            
-            <div className="w-full h-full flex-shrink-0 flex flex-col overflow-y-auto p-6 space-y-6 no-scrollbar">
-              
-              {cartItems.length > 0 && (
-                <div className="bg-vivazza-cream p-5 rounded-3xl border border-vivazza-gold/20 animate-fade-in-up">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-[10px] font-black uppercase text-gray-500 flex items-center gap-2">
-                      <Truck size={14} className="text-vivazza-red" /> 
-                      {remainingForFreeDelivery > 0 ? `Faltan ${formatCLP(remainingForFreeDelivery)} para envío gratis` : '¡ENVÍO GRATIS CONSEGUIDO!'}
-                    </span>
-                    <Gift size={16} className={remainingForFreeDelivery === 0 ? "text-vivazza-gold animate-bounce" : "text-gray-300"} />
-                  </div>
-                  <div className="h-2 bg-white rounded-full overflow-hidden shadow-inner">
-                    <div className="h-full bg-vivazza-red transition-all duration-1000" style={{ width: `${freeDeliveryProgress}%` }} />
-                  </div>
-                </div>
-              )}
+      {/* Sidebar / Full-screen Mobile */}
+      <div 
+        className={`fixed right-0 top-0 h-full w-full md:max-w-md bg-white z-[60] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col pt-safe-top`}
+      >
+        {/* Mobile Handle Bar */}
+        <div className="w-12 h-1.5 bg-gray-100 rounded-full mx-auto mt-4 mb-2 md:hidden" />
 
+        {/* Header Dinámico */}
+        <header className="px-6 py-4 flex items-center justify-between bg-white sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            {step === 'delivery' && (
+              <button 
+                onClick={() => setStep('cart')} 
+                className="p-2 -ml-2 hover:bg-gray-100 rounded-xl transition-colors text-vivazza-stone"
+                aria-label="Volver al carrito"
+              >
+                <ArrowLeft size={24} />
+              </button>
+            )}
+            <h2 className="font-heading text-3xl uppercase tracking-tighter text-vivazza-stone">
+              {step === 'cart' ? 'Mi Pedido' : 'Despacho'}
+            </h2>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
+            aria-label="Cerrar"
+          >
+            <X size={24} />
+          </button>
+        </header>
+
+        {/* Contenedor con Transición Lateral */}
+        <div className="flex-grow relative overflow-hidden">
+          <div 
+            className={`absolute inset-0 flex transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${step === 'delivery' ? '-translate-x-full' : 'translate-x-0'}`}
+          >
+            {/* VISTA 1: CARRITO */}
+            <div className="w-full h-full flex-shrink-0 flex flex-col overflow-y-auto no-scrollbar p-6 space-y-8">
               {cartItems.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center opacity-30 py-20">
-                  <ShoppingBag size={64} className="mb-4" />
-                  <p className="font-heading text-2xl uppercase">Tu carrito está vacío</p>
+                <div className="flex-grow flex flex-col items-center justify-center text-center opacity-20 py-20">
+                  <ShoppingBag size={80} strokeWidth={1} />
+                  <p className="font-heading text-3xl uppercase mt-4">Carrito vacío</p>
                 </div>
               ) : (
                 <>
+                  {/* Progress Bar Premium */}
+                  <div className="bg-vivazza-cream p-6 rounded-[2.5rem] border border-vivazza-gold/10 shadow-sm space-y-3">
+                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                      <span className="flex items-center gap-2">
+                        <Truck size={14} className="text-vivazza-red" /> 
+                        {remainingForFreeDelivery > 0 ? 'Falta poco...' : '¡ENVÍO GRATIS!'}
+                      </span>
+                      <span className="text-vivazza-red">{formatCLP(remainingForFreeDelivery)}</span>
+                    </div>
+                    <div className="h-3 bg-white rounded-full overflow-hidden shadow-inner p-0.5">
+                      <div 
+                        className="h-full bg-vivazza-red rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(166,29,36,0.3)]" 
+                        style={{ width: `${freeDeliveryProgress}%` }} 
+                      />
+                    </div>
+                  </div>
+
+                  {/* Lista de Items */}
                   <div className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex justify-between items-start gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                        <div className="flex-grow">
-                          <h4 className="font-bold text-sm uppercase truncate">{item.pizzaName}</h4>
-                          <p className="text-vivazza-red font-bold text-sm">{formatCLP(item.basePrice)} <span className="text-[9px] text-gray-400 font-medium">IVA incl.</span></p>
+                      <div key={item.id} className="group flex items-center gap-4 p-4 bg-gray-50/50 rounded-3xl border border-gray-100 hover:border-vivazza-red/10 transition-all">
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-vivazza-red shadow-sm border border-gray-50 flex-shrink-0">
+                          <ShoppingBag size={24} />
                         </div>
-                        <button onClick={() => onRemoveItem(item.id)} className="text-gray-300 hover:text-red-500 p-2"><Trash2 size={18} /></button>
+                        <div className="flex-grow">
+                          <h4 className="font-bold text-sm uppercase tracking-tight text-vivazza-stone truncate">{item.pizzaName}</h4>
+                          <p className="text-vivazza-red font-black text-sm">{formatCLP(item.basePrice * item.quantity)}</p>
+                        </div>
+                        <button 
+                          onClick={() => onRemoveItem(item.id)} 
+                          className="p-3 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                          aria-label="Quitar item"
+                        >
+                          <Trash2 size={20} />
+                        </button>
                       </div>
                     ))}
                   </div>
 
-                  <div className="bg-vivazza-stone text-white rounded-[2rem] p-6 shadow-xl">
-                    <h4 className="font-heading text-xl mb-4 flex items-center gap-2 uppercase">
-                      <Tag size={18} className="text-vivazza-gold" /> ¿Algo más?
+                  {/* Upsell: EXTRAS */}
+                  <div className="pt-4">
+                    <h4 className="font-heading text-2xl uppercase mb-6 flex items-center gap-2">
+                      <Tag size={18} className="text-vivazza-gold" /> ¿Para acompañar?
                     </h4>
-                    <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                    <div className="grid grid-cols-2 gap-4">
                       {EXTRAS.map(extra => (
-                        <button key={extra.id} onClick={() => onAddExtra(extra)} className="flex-shrink-0 w-24 group active:scale-95 transition-all">
-                          <div className="w-full aspect-square rounded-2xl bg-white/10 mb-2 overflow-hidden border border-white/10 group-hover:border-vivazza-red">
-                            <img src={extra.image} alt={extra.name} className="w-full h-full object-cover" />
+                        <button 
+                          key={extra.id} 
+                          onClick={() => onAddExtra(extra)} 
+                          className="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-2xl hover:border-vivazza-red transition-all active:scale-95 text-left group shadow-sm"
+                        >
+                          <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src={extra.image} alt={extra.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                           </div>
-                          <p className="text-[9px] font-black uppercase truncate mb-1">{extra.name}</p>
-                          <span className="text-[10px] text-vivazza-gold font-black">{formatCLP(extra.price)}</span>
+                          <div className="min-w-0">
+                            <p className="text-[9px] font-black uppercase truncate text-gray-400">{extra.name}</p>
+                            <p className="text-xs font-bold text-vivazza-red">{formatCLP(extra.price)}</p>
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -181,70 +196,115 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               )}
             </div>
 
-            <div className="w-full h-full flex-shrink-0 overflow-y-auto p-6 space-y-6 no-scrollbar">
-              <h4 className="font-heading text-xl uppercase mb-4">Información de Entrega</h4>
-              
-              <div className="space-y-4 animate-fade-in-up">
-                <div className="relative">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tu Nombre</label>
-                  <div className="relative mt-1">
+            {/* VISTA 2: DATOS ENTREGA */}
+            <div className="w-full h-full flex-shrink-0 flex flex-col overflow-y-auto no-scrollbar p-6 space-y-8">
+              {/* Selector de Método */}
+              <div className="flex p-1.5 bg-gray-100 rounded-3xl">
+                <button 
+                  onClick={() => setDeliveryDetails(d => ({ ...d, method: 'delivery' }))} 
+                  className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black tracking-widest transition-all ${deliveryDetails.method === 'delivery' ? 'bg-white shadow-xl text-vivazza-red scale-105' : 'text-gray-400'}`}
+                >
+                  <Truck size={16} /> DELIVERY
+                </button>
+                <button 
+                  onClick={() => setDeliveryDetails(d => ({ ...d, method: 'pickup' }))} 
+                  className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black tracking-widest transition-all ${deliveryDetails.method === 'pickup' ? 'bg-white shadow-xl text-vivazza-red scale-105' : 'text-gray-400'}`}
+                >
+                  <Store size={16} /> RETIRO
+                </button>
+              </div>
+
+              {/* Formulario Mobile-Optimized */}
+              <div className="space-y-6">
+                {/* Nombre */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tu Nombre Completo</label>
+                  <div className="relative group">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-vivazza-red transition-colors" size={20} />
                     <input 
                       type="text" 
-                      placeholder="Ej: Juan Pérez" 
+                      placeholder="Ej: Pedro Pascal" 
                       value={deliveryDetails.name} 
                       onChange={(e) => {setDeliveryDetails(d => ({ ...d, name: e.target.value })); setNameError(null);}} 
-                      className={`w-full bg-gray-50 border ${nameError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm font-medium pl-12`} 
+                      className={`w-full h-16 bg-gray-50/50 border-2 ${nameError ? 'border-red-500' : 'border-gray-100'} rounded-3xl pl-12 pr-4 text-sm font-bold focus:bg-white focus:border-vivazza-red outline-none transition-all shadow-inner`} 
                     />
-                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3 bg-gray-100 p-1.5 rounded-2xl mb-6">
-                <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'delivery' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'delivery' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>DELIVERY</button>
-                <button onClick={() => setDeliveryDetails(d => ({ ...d, method: 'pickup' }))} className={`py-3 rounded-xl text-xs font-black transition-all ${deliveryDetails.method === 'pickup' ? 'bg-white shadow-md text-vivazza-red' : 'text-gray-400'}`}>RETIRO LOCAL</button>
-              </div>
-
-              {deliveryDetails.method === 'delivery' && (
-                <div className="space-y-4 animate-fade-in-up">
-                  <div className="relative">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tu Dirección en Talca</label>
-                    <div className="relative mt-1">
-                      <input type="text" placeholder="Calle, N°, Población..." value={deliveryDetails.address} onChange={handleAddressChange} className={`w-full bg-gray-50 border ${addressError ? 'border-red-500' : 'border-gray-100'} rounded-2xl p-4 text-sm font-medium pr-12`} />
-                      <button onClick={() => setIsMapOpen(true)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-vivazza-red text-white p-2 rounded-xl"><MapPin size={18} /></button>
+                {/* Dirección / Mapa */}
+                {deliveryDetails.method === 'delivery' && (
+                  <div className="space-y-2 animate-fade-in-up">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Dirección en Talca</label>
+                    <div className="relative group">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-vivazza-red transition-colors" size={20} />
+                      <input 
+                        type="text" 
+                        readOnly
+                        placeholder="Usa el mapa para marcar..." 
+                        value={deliveryDetails.address} 
+                        onClick={() => setIsMapOpen(true)}
+                        className={`w-full h-16 bg-gray-50/50 border-2 ${addressError ? 'border-red-500' : 'border-gray-100'} rounded-3xl pl-12 pr-16 text-sm font-bold focus:bg-white cursor-pointer outline-none shadow-inner`} 
+                      />
+                      <button 
+                        onClick={() => setIsMapOpen(true)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-vivazza-red text-white p-3 rounded-2xl shadow-red active:scale-90 transition-all"
+                      >
+                        <MapPin size={20} />
+                      </button>
                     </div>
                   </div>
-                </div>
-              )}
-              
-              <div className="space-y-4 animate-fade-in-up">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Instrucciones Adicionales</label>
-                <input type="text" placeholder="Departamento, timbre, casa color..." value={deliveryDetails.instructions} onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm font-medium" />
-              </div>
-              
-              <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 space-y-3">
-                 <div className="flex justify-between text-xs font-bold text-gray-400"><span>SUBTOTAL</span><span>{formatCLP(subtotal)}</span></div>
-                 <div className="flex justify-between text-xs font-bold text-gray-400"><span>DESCUENTO</span><span>{formatCLP(discount)}</span></div>
-                 <div className="flex justify-between text-lg font-black text-vivazza-stone border-t pt-3 uppercase"><span>Total aprox</span><span>{formatCLP(total)}</span></div>
-                 <p className="text-[9px] text-gray-400 font-bold text-right uppercase tracking-widest">IVA INCLUIDO EN TODOS LOS PRECIOS</p>
-              </div>
-              <p className="text-[10px] text-gray-400 font-medium text-center px-4 leading-relaxed italic">
-                El total final será confirmado por nuestro personal vía WhatsApp incluyendo el costo de envío según tu zona.
-              </p>
-            </div>
+                )}
 
+                {/* Instrucciones */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Instrucciones (Opcional)</label>
+                  <div className="relative group">
+                    <MessageCircle className="absolute left-4 top-5 text-gray-300 group-focus-within:text-vivazza-red transition-colors" size={20} />
+                    <textarea 
+                      placeholder="Portón negro, dejar en conserjería..." 
+                      value={deliveryDetails.instructions} 
+                      onChange={(e) => setDeliveryDetails(d => ({ ...d, instructions: e.target.value }))} 
+                      className="w-full bg-gray-50/50 border-2 border-gray-100 rounded-3xl pl-12 pr-4 pt-5 pb-5 text-sm font-bold focus:bg-white focus:border-vivazza-red outline-none transition-all shadow-inner resize-none h-32" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Resumen Final */}
+              <div className="bg-vivazza-stone text-white rounded-[2.5rem] p-8 space-y-4 shadow-xl">
+                 <div className="flex justify-between items-center text-xs opacity-60">
+                   <span>SUBTOTAL</span>
+                   <span className="font-bold">{formatCLP(subtotal)}</span>
+                 </div>
+                 <div className="flex justify-between items-center text-xs opacity-60">
+                   <span>DESCUENTO</span>
+                   <span className="font-bold text-vivazza-gold">-{formatCLP(discount)}</span>
+                 </div>
+                 <div className="pt-4 border-t border-white/10 flex justify-between items-end">
+                    <span className="font-heading text-3xl uppercase tracking-tighter">TOTAL</span>
+                    <span className="font-heading text-5xl text-vivazza-gold leading-none">{formatCLP(total)}</span>
+                 </div>
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Footer de Acciones (Fixed Bottom) */}
         {cartItems.length > 0 && (
-          <div className="p-6 bg-white border-t border-gray-50 z-30">
+          <div className="p-6 bg-white border-t border-gray-100 pb-safe-bottom z-40">
              {step === 'cart' ? (
-                <button onClick={() => setStep('delivery')} className="w-full bg-vivazza-red text-white py-5 rounded-2xl font-heading text-2xl shadow-red flex items-center justify-center gap-3 active:scale-95 transition-all">
-                  CONTINUAR CON EL PEDIDO <ChevronRight size={24} />
+                <button 
+                  onClick={() => setStep('delivery')} 
+                  className="w-full h-18 bg-vivazza-red text-white rounded-2xl font-heading text-2xl shadow-red flex items-center justify-center gap-3 active:scale-95 transition-all group"
+                >
+                  CONTINUAR AL DESPACHO <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
                 </button>
              ) : (
-                <button onClick={handleCheckout} className="w-full bg-green-600 text-white py-5 rounded-2xl font-heading text-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-all">
-                  FINALIZAR EN WHATSAPP <MessageCircle size={24} />
+                <button 
+                  onClick={handleCheckout} 
+                  className="w-full h-18 bg-green-600 text-white rounded-2xl font-heading text-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all"
+                >
+                  CONFIRMAR EN WHATSAPP <MessageCircle size={24} />
                 </button>
              )}
           </div>

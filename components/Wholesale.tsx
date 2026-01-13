@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useMemo } from 'react';
 import { WHOLESALE_DATA, VIVAZZA_PHONE } from '../constants';
@@ -9,7 +10,6 @@ const Wholesale: React.FC = () => {
   const [selectedFrozen, setSelectedFrozen] = useState<Record<string, number>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   
-  // Nuevo estado para el formulario de contacto
   const [formData, setFormData] = useState({
     businessName: '',
     contactName: '',
@@ -56,7 +56,6 @@ const Wholesale: React.FC = () => {
   }, [selectedPacks, selectedFrozen]);
 
   const handleWholesaleWhatsApp = () => {
-    // Validación básica si se usa el formulario
     if (!formData.contactName || !formData.businessName || !formData.phone) {
       alert("Por favor, completa los campos obligatorios del formulario (Nombre, Negocio y Teléfono).");
       return;
@@ -119,7 +118,7 @@ const Wholesale: React.FC = () => {
            <div className="w-16 h-1.5 bg-vivazza-red/40 mx-auto mb-6 rounded-full"></div>
            <p className="text-[10px] font-black uppercase text-vivazza-red tracking-[0.4em] mb-4">Aumenta tus ingresos con un producto premium</p>
            <h2 className="font-heading text-6xl md:text-8xl text-vivazza-stone uppercase leading-none mb-2 tracking-tight">
-             MASAS Y PIZZAS <br/><span className="text-vivazza-red">PARA DISTRIBUIDORES</span>
+             ALIANZAS Y <br/><span className="text-vivazza-red">DISTRIBUCIÓN</span>
            </h2>
            <div className="flex justify-center items-center gap-4 mt-6">
               <span className="h-px w-12 bg-vivazza-gold/50"></span>
@@ -274,7 +273,7 @@ const Wholesale: React.FC = () => {
         {/* Formulario de Contacto */}
         <div className="relative z-10 bg-vivazza-cream/30 p-8 md:p-16 border-t border-gray-100">
           <div className="max-w-2xl mx-auto text-center mb-10">
-             <h4 className="font-heading text-4xl md:text-5xl text-vivazza-stone uppercase leading-none mb-4">DATOS DE <span className="text-vivazza-red">CONTACTO</span></h4>
+             <h4 className="font-heading text-4xl md:text-5xl text-vivazza-stone uppercase leading-none mb-4">SOLICITAR <span className="text-vivazza-red">COTIZACIÓN</span></h4>
              <p className="text-gray-500 font-medium text-sm">Completa tus datos para recibir atención personalizada y agendar tu distribución.</p>
           </div>
 
@@ -350,7 +349,6 @@ const Wholesale: React.FC = () => {
                 onClick={handleWholesaleWhatsApp}
                 className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-6 bg-vivazza-red text-white rounded-2xl font-heading text-2xl md:text-3xl shadow-red active:scale-95 transition-all overflow-hidden animate-pulse-subtle"
               >
-                {/* Brillo animado overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></div>
                 <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 
@@ -361,7 +359,7 @@ const Wholesale: React.FC = () => {
               
               <div className="flex flex-col items-center sm:items-start text-left">
                 <p className="text-white/60 text-xs font-black uppercase tracking-widest leading-tight">
-                  Atención B2B Prioritaria
+                  Atención Mayorista Prioritaria
                 </p>
                 <p className="text-vivazza-gold text-[10px] font-bold">Respuesta inmediata por WhatsApp</p>
               </div>
@@ -376,7 +374,7 @@ const Wholesale: React.FC = () => {
               <Package size={28} />
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Pedido Seleccionado</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-vivazza-red">Solicitud Seleccionada</p>
               <p className="text-xl font-heading leading-none uppercase">{totalItems} Unidades para mi local</p>
             </div>
           </div>
@@ -417,7 +415,6 @@ const Wholesale: React.FC = () => {
         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-vivazza-stone">Vivazza Fábrica de Pizzas Artesanales // Tu aliado comercial</p>
       </div>
 
-      {/* Fix: Replaced styled-jsx with dangerouslySetInnerHTML to resolve TypeScript errors on style tag */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes shimmer {
           0% { transform: translateX(-100%); }

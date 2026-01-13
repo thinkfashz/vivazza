@@ -15,8 +15,75 @@ export const VIVAZZA_LOCATION = {
   hours: "Mar - Dom: 18:30 a 23:30"
 };
 
+export const TESTIMONIALS = [
+  {
+    id: 1,
+    name: "Don Humberto",
+    role: "Panadero Senior",
+    text: "Llevo 40 años en hornos y nunca vi una masa así en Talca. Esas 72 horas no son marketing, es pura maestría técnica. Es aire puro.",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 2,
+    name: "Valentina Rossi",
+    role: "Sommelier & Foodie",
+    text: "La 'Vivazza' es un viaje sensorial. La ligereza de la masa permite que el vino se luzca. Simplemente la mejor pizza que he comido en el país.",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 3,
+    name: "Marcos 'Torito' Silva",
+    role: "Atleta de Alto Rendimiento",
+    text: "Lo que más valoro es que no me siento pesado después de comer. Es mi 'cheat meal' oficial porque la digestión es increíble gracias al reposo.",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 4,
+    name: "Elena de las Mercedes",
+    role: "Abuela & Crítica de Cocina",
+    text: "Me recuerda a la pizza que hacían en el campo, con paciencia. Los cherrys explotan de sabor. No pido en otro lado, mis nietos la aman.",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 5,
+    name: "Lucas P.",
+    role: "Arquitecto",
+    text: "La estructura de la masa es arquitectura pura. Esos alveolos internos solo se logran con el reposo sagrado. Estética y sabor 10/10.",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 6,
+    name: "Sofía Arancibia",
+    role: "Chef Ejecutiva",
+    text: "Como profesional, busco trazabilidad en los ingredientes. Vivazza usa productos de primer nivel. Es el estándar de oro del delivery en el Maule.",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 7,
+    name: "Raúl G.",
+    role: "Turista Gastronómico",
+    text: "He probado pizza en Nápoles y Nueva York. Vivazza no tiene nada que envidiarles. La Fugazza es una locura de cebollas caramelizadas.",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  },
+  {
+    id: 8,
+    name: "Camila V.",
+    role: "Organizadora de Eventos",
+    text: "Siempre que pido para reuniones quedo como reina. Llega caliente, la presentación es de lujo y todos preguntan dónde la compramos.",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80",
+    rating: 5
+  }
+];
+
 export const REVIEWS = [
-  { id: 1, name: "Carolina M.", text: "La mejor pizza de Talca, por lejos. Se nota el reposo artesanal porque es súper ligera.", rating: 5, date: "Hace 2 días" },
+  { id: 1, name: "Carolina M.", text: "La mejor pizza de Talca, por lejos. Se nota el reposo sagrado porque es súper ligera.", rating: 5, date: "Hace 2 días" },
   { id: 2, name: "Juan Pablo S.", text: "El envío a Las Rastras llegó perfecto. La Margarita es un 10/10.", rating: 5, date: "Hace 1 semana" },
   { id: 3, name: "Ignacio R.", text: "Pedí por el Pizza Lab y fue genial armarla a mi pinta. Ingredientes muy frescos.", rating: 4, date: "Hace 3 días" },
   { id: 4, name: "Valentina D.", text: "Adicta a los Garlic Knots. Es mi pedido fijo de todos los viernes.", rating: 5, date: "Ayer" },
@@ -70,7 +137,7 @@ export const INGREDIENTS: Ingredient[] = [
 ];
 
 export const DOUGHS: Dough[] = [
-  { id: 'trad', name: 'Reposo Artesanal', price: 0, calories: 250, description: 'Borde alveolado, centro delgado. El estándar napolitano.' },
+  { id: 'trad', name: 'Reposo Sagrado', price: 0, calories: 250, description: '72 horas de maduración lenta. El estándar napolitano.' },
   { id: 'inte', name: 'Masa Integral', price: 1000, calories: 210, description: 'Mezcla de granos seleccionados para un sabor más rústico.' },
 ];
 

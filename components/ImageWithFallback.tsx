@@ -14,6 +14,7 @@ interface ImageWithFallbackProps {
   width?: number;
   height?: number;
   priority?: boolean;
+  blur?: boolean;
 }
 
 const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({ 
@@ -24,7 +25,8 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   fill = false,
   width,
   height,
-  priority = false
+  priority = false,
+  blur = true
 }) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +56,9 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   return (
     <div className={`${containerStyle} ${className} overflow-hidden bg-gray-100`}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
+        <div className="absolute inset-0 bg-gray-200 animate-pulse z-10 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-vivazza-red/10 border-t-vivazza-red rounded-full animate-spin" />
+        </div>
       )}
       
       <img
@@ -65,7 +69,7 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : "auto"}
-        className={`${imgStyle} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} will-change-transform`}
+        className={`${imgStyle} transition-all duration-700 ease-out ${isLoading ? 'opacity-0 scale-110' : 'opacity-100 scale-100'} ${blur && isLoading ? 'blur-2xl' : 'blur-0'}`}
         style={!fill ? { width: width || '100%', height: height || 'auto' } : {}}
       />
     </div>
